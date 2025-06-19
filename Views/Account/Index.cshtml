@@ -1,0 +1,79 @@
+﻿@model List<DPGSalesClient.Models.AccountModel>
+<style>
+    .table > thead > tr > th {
+        background-color: #272727;
+        color: white;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Account
+    </h1>
+    @*<ol class="breadcrumb hidden-xs">
+            <li><a href="#"><i class="fa fa-home"></i> Sales Management</a></li>
+            <li class="active">Lead</li>
+        </ol>*@
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Search" asp-controller="Account" method="get" id="accountSearch">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Account Name" />
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="tblAccount" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>SAP Account ID</th>
+                        <th>Name</th>
+                        <th>Address 1</th>
+                        <th>Mobile Number</th>
+                        <th>Created On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.SAPAccountID</td>
+                                <td>@item.Name</td>
+                                <td>@item.Address1</td>
+                                <td>@item.MobileNo</td>
+                                <td>@String.Format("{0:dd/MM/yyyy}", item.CreatedOn)</td>
+                                @*<td>
+                                        <a class="nav-btn @strCssDiable" href="@Url.Action("Attachments","Lead",new { leadId = @item.LeadID })" style="padding-right:15px;" title="Attachments"><i class="fa fa-paperclip text-aqua" style="font-size:18px;font-weight:500;"></i></a>
+                                        <a class="nav-btn " href="@Url.Action("Details","Lead",new { leadId = @item.LeadID,status=@item.Status.ToUpper() })" style="padding-right:15px;" title="Details"><i class="fa fa-list text-orange" style="font-size:18px"></i></a>
+                                        <a class="nav-btn @strCssDiable" href="@Url.Action("ActivityIndex","Lead",new { leadId = @item.LeadID })" style="padding-right:5px;" title="Activities"><i class="fa fa-calendar-check-o text-primary" style="font-size:18px"></i></a>
+                                    </td>*@
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script type="text/javascript">
+        $('#btnSearch').click(function () {
+            debugger;
+            var input = $("<input>").attr("type", "hidden").attr("Name", "strKey").val($('#txtSearch').val());
+
+            $('#accountSearch').append(input);
+            $('#accountSearch').submit();
+        });
+    </script>
+}

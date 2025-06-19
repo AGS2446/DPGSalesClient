@@ -1,0 +1,50 @@
+﻿@model DPGSalesClient.Models.ModifyUserReportingViewModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-info">
+        Assign New Reporting User
+    </h1>
+    <ol class="breadcrumb">
+        <li><a asp-action="Index"><i class="fa fa-home"></i> List</a></li>
+        <li><a asp-action="Details" asp-route-id="@Model.UserID"><i class="fa fa-home"></i> Details</a></li>
+        <li class="active"> Assign New Reporting</li>
+    </ol>
+</section>
+
+<section class="content">
+    <form asp-controller="User" asp-action="AssignReporting" method="post" id="formAssignReporting">
+        <input type="hidden" asp-for="@Model.UserID" />
+        <div class="form-horizontal">
+            <div class="b-a b-light">
+                <div class="b-b text-dark">
+                    <h4>Reporting Users Info</h4>                    
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-md-2 text-right text-left-xs">
+                        <label asp-for="ReportingUserID" class="control-label"></label><span class="text-danger">*</span>
+                    </div>
+                    <div class="col-md-4">
+                        <select asp-for="ReportingUserID" class="form-control" asp-items="@(new SelectList(Model?.ReportingUsers,"Value","Text"))">
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="ReportingUserID" class="text-danger"></span>
+                    </div>
+                </div>                          
+                <div class="form-group m-t">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success pull-right" id="btnAssignPosition"><i class="fa fa-save m-r-xs"></i> Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section scripts{
+    <script src="~/js/scripts/User/AssignPosition.js"></script>
+}

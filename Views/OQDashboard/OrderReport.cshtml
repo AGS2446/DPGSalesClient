@@ -1,0 +1,89 @@
+﻿@model DPGSalesClient.Models.OQOrderDataModel
+
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+
+    <h1>
+        <a href="@Url.Action("Search","OQDashboard",new {FromDate=Model.FromDate,ToDate=Model.ToDate })" class="text-info"><i class="fa fa-chevron-circle-left"></i></a>
+        Order
+    </h1>
+
+</section>
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12" >
+
+            <table id="example2" class="table  table-hover" >
+                <thead>
+                    <tr>
+                        <th>AccountName</th>
+                        <th>BusinessSegment</th>
+                        <th>SubSegment</th>
+                        <th>Competitor</th>
+                        <th>Reason</th>
+                        <th>Price</th>
+                        <th>OrderType</th>
+                        <th>ContractValue</th>
+                        <th>Tonnage</th>
+                        <th>ProductName</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+
+                    </tr>
+                </thead>
+                <tbody >
+                    @if (Model != null && Model.OrderItemList != null && Model.OrderItemList.Count > 0)
+                    {
+                        @foreach (var item in Model.OrderItemList)
+                        {
+                            <tr>
+                                <td>@item.AccountName</td>
+                                <td>@item.BusinessSegment</td>
+                                <td>@item.SubSegment</td>
+                                <td>@item.Competitor</td>
+                                <td>@item.Reason</td>
+                                <td>@item.Price</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.ContractValue</td>
+                                <td>@item.Tonnage</td>
+                                <td>@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Status</td>
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8,
+            'order': [[2, 'desc']],
+            columnDefs: [
+                  { type: 'date-uk', targets: 8 }
+            ]
+        });
+
+        $($('#example2').parent()).css('overflow', 'auto');
+      
+    </script>
+}

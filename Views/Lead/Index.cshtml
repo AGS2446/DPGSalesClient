@@ -1,0 +1,134 @@
+﻿@model DPGSalesClient.Models.LeadViewModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+<section class="content-header">
+    <h1>
+        Lead
+    </h1>
+
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Search" asp-controller="Lead" method="get" id="searchForm">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="SearchKey" placeholder="Lead ID or Customer Name" value="@Model?.SearchKey">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat  nav-btn"><i class="fa fa-search"></i></button>
+                            <a href="@Url.Action("Index","Lead")" class="btn btn-primary btn-flat  nav-btn"><i class="fa fa-close"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        @if(ViewBag.RoleId != "ROLE000010")
+        {
+        <div class="col-md-2 col-lg-offset-6">
+            @*<a href="@Url.Action("Create","Lead")" class="btn btn-warning btn-sm nav-btn pull-right" style="margin-right:5px"><i class="fa fa-recycle"></i> <span class="hidden-xs">Convert</span></a>*@
+            <a href="@Url.Action( "Create", "Lead" )" class="btn btn-primary btn-flat nav-btn pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> <span class="hidden-xs">New</span></a>
+        </div>
+        }
+    </div>
+
+    <div class="row table-responsive text-nowrap">
+        <div class="col-xs-12">
+
+            <table id="example2" class="table  table-striped">
+                <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Branch</th>
+                        <th>Lead ID</th>                       
+                        <th>Customer Name</th>
+                        <th>Project Name</th>
+                        <th>Business Segment</th>
+                        <th>Status</th>
+                        <th>Contract Value(In Lakhs)</th>
+                        <th>Probability(%)</th>
+                        <th>Created On</th>
+                        <th style="width:80px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.LeadList != null && Model.LeadList.Count > 0)
+                    {
+
+                        @foreach (var item in Model.LeadList)
+                        {
+                            string strCssDiable = "disable";
+
+                            if(ViewBag.RoleId == "ROLE000010")
+                            { 
+                                strCssDiable = "disable"; 
+                            }
+                            else if(item.Status.ToUpper() == "OPEN")
+                            {
+                                strCssDiable = "";
+                            }
+                            else if(item.Status.ToUpper() != "OPEN")
+                            {
+                                strCssDiable = "disable";
+                            }
+
+                            <tr>          
+                                <td>@item.Division</td>   
+                                <td>@item.Branch</td>                     
+                                <td>@item.LeadID</td>                               
+                                <td>@item.CustomerName</td>
+                                <td>@item.ProjectName</td>
+                                <td>@item.BusineeSegment</td>
+                                <td>@item.Status</td>
+                                <td style="text-align:center">@item.ContractValue</td>
+                                <td style="text-align:center">@item.Probablity</td>
+                                <td>@String.Format("{0:dd/MM/yyyy}", item.CreatedOn)</td>
+                                <td style="width:80px">
+                                    <a class="nav-btn" href="@Url.Action("Attachments","Lead",new { leadId = @item.LeadID })" style="padding-right:15px;" title="Costsheet Docs"><i class="fa fa-paperclip text-aqua" style="font-size:18px;font-weight:500;"></i></a>
+                                    <a class="nav-btn" href="@Url.Action("Details","Lead",new { leadId = @item.LeadID,status=@item.Status.ToUpper() })" style="padding-right:15px;" title="Details"><i class="fa fa-list text-orange" style="font-size:18px"></i></a>
+                                    <a class="nav-btn @strCssDiable" href="@Url.Action("ActivityIndex","Lead",new { leadId = @item.LeadID,custname=@item.CustomerName })" style="padding-right:5px;" title="Activities"><i class="fa fa-calendar-check-o text-primary" style="font-size:18px"></i></a>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'scrollX': true,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8,
+            'order': [[2, 'desc']],
+            columnDefs: [
+                  { type: 'date-uk', targets: 8 }
+            ]
+        });
+
+        $('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#SearchKey').val());
+            if ($('#SearchKey').val() != null && $('#SearchKey').val() != "") {
+                $('#searchForm').append(input);
+                $('#searchForm').submit();
+            } else {
+
+                alert('Please provide Lead Id or Customer Name');
+                return false;
+             }
+        });
+    </script>
+}

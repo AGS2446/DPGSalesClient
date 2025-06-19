@@ -1,0 +1,373 @@
+﻿@model DPGSalesClient.Models.LeadDetailsModel
+
+@section styles{
+<link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-muted">
+        Lead Details
+    </h1>
+
+</section>
+<section class="content">
+
+    <input type="hidden" asp-for="@Model.LeadID" />
+    <div class="box box-default" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Location Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Division </label><br />
+                    <label class="val">@Model.Division </label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Region</label><br />
+                    <label class="val">@Model.Region</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Branch </label><br />
+                    <label class="val">@Model.Branch</label>
+
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Sales Office</label><br />
+                    <label class="val">@Model.SalesOffice</label>
+
+                </div>
+            </div>
+
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Plant</label><br />
+                    <label class="val">@Model.Plant</label>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-info" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Code</label>  <br />
+                    <label class="val">@Model.CustomerCode</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Name</label><br />
+                    <label class="val">@Model.CustomerName</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Classification</label><br />
+                    <label class="val">@Model.CustomerClassification</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Type</label><br />
+                    <label class="val">@Model.CustomerType</label>
+                </div>
+
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Segment</label>  <br />
+                    <label class="val">@Model.CustomerSegment</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Sub Segment</label><br />
+                    <label class="val">@Model.CustomerSubSegment</label>
+                </div>
+                <div class="col-md-3 details">
+
+                </div>
+                <div class="col-md-3 details">
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="box box-success" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Lead Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Business Segment</label>  <br />
+                    <label class="val">@Model.BusinessSegment</label>
+
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Product Required</label><br />
+                    <label class="val">@Model.ProdcutRequired</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Status</label><br />
+                    <label class="val">@Model.Status</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Probability(%)</label><br />
+                    <label class="val">@Model.Probability</label>
+                </div>
+
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Project Name</label><br />
+                    <label class="val">@Model.ProjectName</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Contract Value(In Lakhs) </label><br />
+                    <label class="val">@Model.ContractValue_IN_LAKHS</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Priority</label><br />
+                    <label class="val">@Model.Priority</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Currency </label><br />
+                    <label class="val">@Model.Currency</label>
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Lead Assign To</label><br />
+                    <label class="val">@Model.LeadAssignTo</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Lead Due Date </label><br />
+                    <label class="val">@String.Format("{0:dd/MM/yyyy}",Model.LeadMaturityDate)</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Architect</label><br />
+                    <label class="val">@Model.Architect</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Consultant </label><br />
+                    <label class="val">@Model.Consultant</label>
+                </div>
+
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Classification 1</label><br />
+                    <label class="val">@Model.Classification1</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 2 </label><br />
+                    <label class="val">@Model.Classification2</label>
+                </div>
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Classification 3</label><br />
+                    <label class="val">@Model.Classification3</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Classification 4 </label><br />
+                    <label class="val">@Model.Classification4</label>
+
+                </div>
+
+
+            </div>
+            <div class="row p-t-15">
+                @*<div class="col-md-3 details ">
+
+                    <label class="hdr">Document Created Date</label><br />
+                    <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.DocumentCreatedDate)</label>
+
+                </div>*@
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Source Type </label><br />
+                    <label class="val">@Model.SourceType</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Description</label><br />
+                    <label class="val">@Model.Description</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-warning" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Cost Sheet Documents</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    @if (Model.Files != null && Model.Files.Count > 0)
+                    {
+                    <ol>
+                        @foreach (var file in Model.Files)
+                        {
+                        <li style="color:#673AB7;font-size: 14px;font-weight: 600;">
+                            <a href="@file.FileUrl" target="_blank" style="color: #673AB7;font-size: 14px;font-weight: 600;">
+                                @file.Name
+                            </a>
+                        </li>
+                        }
+                    </ol>
+                    }
+                    else
+                    {
+                    <span>No Documents</span>
+                    }
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        @if(ViewBag.RoleId != "ROLE000010")
+        {
+            string strCssDisable = "";
+            string strParentCssDisable = "";
+            {
+
+                if(Model.Status.ToUpper() == "OPEN")
+                {
+                    strCssDisable = "";
+                    strParentCssDisable = "";
+                }
+                else
+                {
+                    strCssDisable = "disable";
+                    strParentCssDisable = "disable-hdr";
+                }
+            }
+
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-green btn-details nav-btn @strCssDisable" href="@Url.Action( "ConvertToEnquiry", "Lead", new { leadId = Model.LeadID, BusinesSeg = Model.BusinessSegment, DocDate = (Model.DocumentCreatedDate.HasValue ? Model.DocumentCreatedDate.Value.ToString( "dd/MM/yyyy" ) : "") } )"><div><i class="fa fa-refresh"></i><br /><span>Convert</span></div>  </a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-red btn-details nav-btn @strCssDisable" id="btnCancelLead"><div><i class="fa fa-times-circle-o"></i><br /><span>Differed</span></div></a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn btn-warning btn-details nav-btn @strCssDisable" href="@Url.Action( "Edit", "Lead", new { leadId = Model.LeadID } )"><div><i class="fa fa-pencil"></i><br /><span>Edit</span></div></a>
+            </div>
+            <div class="col-md-2">
+                <a class="btn bg-maroon btn-details nav-btn" href="@Url.Action( "RejectionHistory", "Lead", new { leadId = Model.LeadID, status = Model.Status } )"><div><i class="fa fa-history"></i><br /><span>Rejection History</span></div></a>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-info btn-details nav-btn" href="@Url.Action( "Index", "Lead" )"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-2">
+                <a class="btn btn-info btn-details nav-btn" href="@Url.Action( "Index", "Lead" )"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
+            </div>
+        }
+    </div>
+        
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1366a8">
+                    <h5 class="modal-title" id="confirmModalLabel" style="font-weight: bold;width: 80%;float: left;color:white">Cancel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <label id="lblMsg">Are you sure you want to cancel lead ?</label>
+                </div>
+                <div class="modal-footer" style="text-align:center">
+                    <button type="button" id="btnCancelOk" style="width:80px" class="btn btn-primary nav-btn">Yes</button>
+                    <button type="button" class="btn btn-secondary" style="width:80px" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+</section>
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        $('#btnCancelLead').click(function () {
+            $('#confirmModal').modal('show');
+            return false;
+        });
+        $('#btnCancelOk').click(function () {
+            debugger;
+            $.post('@Url.Action("Cancel", "Lead")', { leadId: $('#LeadID').val() }).done(function (data) {
+                debugger;
+                if (data != null) {
+                    if (data.status == "SUCCESS") {
+                        window.location = '@Url.Action("Index","Lead")';
+                    } else {
+
+                    }
+
+                }
+                $("#initialload").hide();
+                $('#confirmModal').modal('hide');
+            });
+
+        });
+
+
+
+    </script>
+}

@@ -1,0 +1,107 @@
+﻿@model DPGSalesClient.Models.UserViewModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+
+<section class="content-header">
+    <h1>User</h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Search" asp-controller="User" method="get" id="searchForm">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="SearchKey" placeholder="User ID or Name" value="@Model?.SearchKey">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat  nav-btn"><i class="fa fa-search"></i></button>
+                            <a href="@Url.Action("Index","User")" class="btn btn-primary btn-flat  nav-btn"><i class="fa fa-close"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2 col-lg-offset-6">
+            <a href="@Url.Action("Create","User")" class="btn btn-primary btn-flat nav-btn pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> <span class="hidden-xs">New</span></a>
+            @if (ViewBag.RoleID != "" && (ViewBag.RoleID == "ROLE000001" || ViewBag.RoleID == "ROLE000002"))
+            {
+                <a href="@Url.Action("Export","User")" class="btn btn-success btn-flat"><i class="fa fa-file-excel-o"></i> <span class="hidden-xs">Export</span></a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="tblUser" class="table  table-hover">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>LogonName</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th style="width:100px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.UserList != null && Model.UserList.Count > 0)
+                    {
+
+                        @foreach (var item in Model.UserList)
+                        {
+                            <tr>
+                                <td>@item.UserID</td>
+                                <td>@item.FirstName</td>
+                                <td>@item.LastName</td>
+                                <td>@item.LogonName</td>
+                                <td>@item.Mobile</td>
+                                <td>@item.Email</td>
+                                <td>@item.Status</td>
+                                <td style="width:100px">
+                                    <a class="nav-btn" asp-action="Edit" asp-route-id="@item.UserID" style="padding-right:15px;" title="Edit"><i class="fa fa-edit text-primary" style="font-size:18px;font-weight:500;"></i></a>
+                                    <a class="nav-btn" asp-action="Details" asp-route-id="@item.UserID" style="padding-right:15px;" title="Details"><i class="fa fa-list text-orange" style="font-size:18px"></i></a>
+                                    @*<a class="nav-btn" asp-action="Delete" asp-route-id="@item.UserID" style="padding-right:5px;" title="Delete"><i class="fa fa-trash text-danger" style="font-size:18px"></i></a>*@
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#tblUser').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'scrollX': true,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8,
+            'order': [[0, 'desc']]
+        });
+
+        $('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#SearchKey').val());
+            if ($('#SearchKey').val() != null && $('#SearchKey').val() != "") {
+                $('#searchForm').append(input);
+                $('#searchForm').submit();
+            } else {
+
+                alert('Please provide User Id or User Name');
+                return false;
+            }
+        });
+    </script>
+}

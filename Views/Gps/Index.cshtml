@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Gps";
+}
+<style>
+    .table > thead > tr > th {
+        background-color: #272727;
+        color: white;
+    }
+</style>
+
+@model List<DPGSalesClient.Models.MapViewModel>
+
+<section>
+    <div class="section-header">
+        <h1>Gps Information</h1>
+    </div>
+    <div class="section-body">
+        <div class="row">
+            <div class="col-xs-10">
+                <div class="box box-info box-solid">
+                    <div class="box-header">
+                        <h3 class="box-title"> <i class="fa fa-filter"></i> Filter</h3>
+                    </div>
+                    <div class="box-body">
+                        <form asp-action="Index" method="get" id="searchForm">                           
+                            <div class="row">
+                                <div class="col-xs-12 col-md-5">
+                                    <div class="form-group">
+                                        <label>Division:</label>
+                                        <select name="division" id="division" asp-items="@ViewBag.Divisions" class="form-control select2" multiple="multiple" data-placeholder="Search Division"></select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-5">
+                                    <div class="form-group">
+                                        <label>Branch: </label><br />
+                                        <select  name="branch" id="branch" asp-items="@ViewBag.Branches" class="form-control select2" multiple="multiple" data-placeholder="Select a Branch"></select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-2">
+                                    <button type="submit" class="btn btn-success btn-block m-t-md" name="filter" id="filter"><i class="fa fa-search"></i> Search</button>                                    
+                                </div>
+                            </div>
+
+
+                        </form>
+                        
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <a asp-action="mapview" class="btn btn-primary btn-flat nav-btn pull-right" data-toggle="tooltip" data-placement="top" data-original-title="Map View"><i class="fa fa-map"></i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 m-t">
+                <table class="table  table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Last Updated On</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-striped table-hover">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.UserID</td>
+                                <td>@item.Name</td>
+                                <td>@item.MobileNumber</td>
+                                <td>@item.EmailID</td>
+                                <td>@item.Address</td>
+                                <td>@item.UpdatedOn</td>
+                                <td class="text-right">
+                                    <a asp-action="Details" asp-route-UserId="@item.UserID" class="btn btn-primary btn-icon-toggle" data-toggle="tooltip" data-placement="top" data-original-title="Navigation"><i class="fa fa-list-alt"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!--end .table-responsive -->
+        </div>
+    </div>
+</section>
+
+
+@section scripts{    
+    <script src="~/js/scripts/gps/index.js"></script>
+}

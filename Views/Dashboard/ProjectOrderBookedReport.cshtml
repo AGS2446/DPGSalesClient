@@ -1,0 +1,43 @@
+﻿<style>
+    .chart-legend ul {
+        list-style-type: none;
+    }
+
+    .chart-legend li span {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+</style>
+
+
+<section class="content-header">
+    <h1>
+        Project Order Booked Report
+    </h1>
+</section>
+<section class="content">
+    <div></div>
+    <div class="row">
+        <div class="col-sm-12 col-sm-9">
+            <div id="divChartContainer">
+                <canvas id="barChart" style="height:250px"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-sm-3">
+            <div>
+                <div class="form-group">
+                    <select class="form-control select2" name="period" id="period" asp-items="@ViewBag.Divisions"></select>
+                </div>
+            </div>
+            <div id="bar_legend" class="chart-legend"></div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+    <!-- Page script -->
+    <script src="~/js/scripts/Dashboard/ProjectOrderBookedReport.js"></script>
+}

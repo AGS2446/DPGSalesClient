@@ -1,0 +1,224 @@
+﻿@model DPGSalesClient.Models.EnquiryConvertQuoteModel
+
+<style>
+    .table > thead > tr > th {
+        background-color: #0c5792;
+        color: white;
+        font-weight: 600;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Enquiry Approval
+    </h1>
+</section>
+<section class="content">
+
+    <form asp-action="ConvertToQuote" asp-controller="EnquiryApprovalReport" id="enqConvertForm">
+        <input type="hidden" asp-for="@Model.EnquiryID" />
+        <input type="hidden" asp-for="@Model.EnquiryDocumentCreatedDate" />
+        <div class="box box-primary">
+
+            <div class="box-body">
+                <div class="row">
+                 
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Quote Due Date <span class="text-red">*</span></label>
+
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.QuoteMaturityDate" placeholder="dd/mm/yyyy">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Quote Offer Date <span class="text-red">*</span></label>
+
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.OfferDate" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row">
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Quote Valid Date <span class="text-red">*</span></label>
+
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.QuoteValidityDate" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            <label>Document Created Date <span class="text-red">*</span></label>
+
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.QuoteDocumentCreatedDate" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Products</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-xs-12">
+                    <table id="example2" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Business Segment</th>
+                                <th>Product Seg ID</th>
+                                <th>Product Seg</th>
+                                <th>Total Quantity</th>
+                                <th>Total Value(In Lakhs)</th>
+                                <th>Total Tonnage</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model?.QuoteProducts != null && Model?.QuoteProducts.Count > 0)
+                            {
+                            @foreach (var item in Model?.QuoteProducts)
+                                {
+                            <tr>
+                                <td>@item.BusinessSegment</td>
+                                <td>@item.ProductSegID</td>
+                                <td>@item.ProductSeg</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.TotalValue</td>
+                                <td>@item.TotalTonnage</td>
+                            </tr>
+                                }}
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-md-11 " style="text-align:center">
+                        <button class="btn btn-success  margin-r-5 nav-btn" style="padding-left:35px;padding-right:35px" type="submit">Approve</button>
+                        <a class="btn btn-default  nav-btn" href="@Url.Action("Index","EnquiryApprovalReport")" style="padding-left:35px;padding-right:35px">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#QuoteMaturityDate').datepicker({
+            autoclose: true,
+            format: 'd/m/yyyy',
+            startDate: "today"
+        }).on('changeDate', function (ev) {
+            debugger;
+            //if ($('#QuoteValidityDate').val() == "") {
+            //    AlertPopup('Please select Enquiry Valid Date first');
+            //    $('#QuoteMaturityDate').val('');
+
+            //} else if (ConvertStrDate($('#QuoteMaturityDate').val()) > ConvertStrDate($('#QuoteValidityDate').val())) {
+            //    AlertPopup('Maturity date should be less than or equal to Valid date (' + $('#QuoteValidityDate').val() + ')');
+            //    $('#QuoteMaturityDate').val('');
+            //}
+        });
+        $('#OfferDate').datepicker({
+            autoclose: true,
+            format: 'd/m/yyyy',
+            startDate: "today"
+        });
+        //$('#QuoteValidityDate').datepicker({
+        //    autoclose: true,
+        //    format: 'd/m/yyyy',
+        //    startDate: "today"
+        //});
+        //$('#QuoteDocumentCreatedDate').datepicker({
+        //    autoclose: true,
+        //    format: 'd/m/yyyy',
+        //    endDate: "today",
+        //    startDate: $('#EnquiryDocumentCreatedDate').val()
+        //});
+
+        $("#enqConvertForm").validate({
+            errorClass: "error-class",
+            rules: {
+               
+                QuoteMaturityDate: {
+                    required: true
+                },
+               
+                OfferDate: {
+                    required: true
+                }
+
+            },
+            messages: {
+               
+                QuoteValidityDate: {
+                    required: "Please provide Quote Validity Date"
+                },
+                
+                OfferDate: {
+                    required: "Please provide Offer Date"
+                }
+
+            },
+            submitHandler: function (form) {             
+                        form.submit();     
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (event, validator) {
+                // 'this' refers to the form
+                $("#initialload").hide();
+            }
+        });
+
+
+      
+
+
+        function ConvertStrDate(strDate) {
+            if (strDate != null && strDate != "" && strDate != undefined) {
+                return new Date(strDate.toString().split('/')[2], strDate.toString().split('/')[1], strDate.toString().split('/')[0])
+            } else {
+                return null;
+
+            }
+        }
+    </script>
+}

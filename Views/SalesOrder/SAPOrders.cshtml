@@ -1,0 +1,86 @@
+﻿@model List<DPGSalesClient.Models.SAPOrdersViewModel>
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+<section class="content-header">
+    <h1>
+       SAP Sales Orders
+    </h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="SAPSearch" asp-controller="SalesOrder" method="post" id="searchForm">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Customer Name">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat nav-btn"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div> 
+        <div class="col-md-offset-6 col-md-2">
+            <a class="btn btn-info pull-right" href="@Url.Action("Index","SalesOrder")"> Orders</a>
+        </div>     
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="example2" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>CRM SalesOrderID</th>
+                        <th>SAP Order NO</th>
+                        <th>Order ID</th>
+                        <th>Order Type</th>
+                        <th>Customer</th>
+                        <th>SAP Remarks</th>
+                        <th>Created On</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var item in Model)
+                        { 
+                            <tr>
+                                <td>@item.CRMSalesOrderID</td>
+                                <td>@item.SAPOrderNO</td>
+                                <td>@item.OrderID</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.Customer</td>
+                                <td>@item.SAPRemarks</td>
+                                <td>@item.CreatedOn</td>                                
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8
+        });
+
+        $('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#txtSearch').val());
+
+            $('#searchForm').append(input);
+            $('#searchForm').submit();
+        });
+    </script>
+}

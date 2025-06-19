@@ -1,0 +1,198 @@
+﻿@{
+    Layout = "";
+}
+@model DPGSalesClient.Models.LoginViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DPG Sales</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/theme-blue/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+    <link rel="stylesheet" href="~/theme-blue/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/theme-blue/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/theme-blue/bower_components/Ionicons/css/ionicons.min.css">
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="~/theme-blue/plugins/iCheck/all.css">
+
+
+    <link rel="stylesheet" href="~/theme-blue/dist/css/skins/_all-skins.css">
+    <!-- Theme style -->
+    @*<link rel="stylesheet" href="~/theme-blue/dist/css/AdminLTE.css">*@
+    <link href="~/css/site.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+   
+    <style>
+    input:-webkit-autofill 
+    {
+        -webkit-box-shadow: 0 0 0px 1000px #3276BD inset;
+        -webkit-text-fill-color: white !important;
+    }
+    </style>
+
+</head>
+<body>
+    <div id="initialload">
+        <div class="bg-black-opacity" style="z-index:1200; position:fixed;width:100%;height:100%;"></div>
+        <div class="progress progress-sm progress-striped  active" style="margin:0px;height:0px">
+            <div class="progress-bar progress-bar-info" style="z-index: 1202; position: fixed; width: 100%;height:3px;"></div>
+        </div>
+        <div class="text-center text-white" style="z-index: 1201; position: fixed; background: #EDEDED; color: #3B3B3B; width: 160px; height: 124px; left: 50%; top: 50%; margin-left: -80px; margin-top: -62px; border-radius: 5px; padding: 40px;min-height:124px">
+            <p class="m-n">
+                <i class="fa fa-3x fa-spinner fa-pulse fa-fw" style="color:#0889ea"></i>
+                @*<span class="h2 font-thin">Loading...</span>*@
+            </p>
+        </div>
+    </div>
+    <div class="col-md-8 hidden-xs login-left">
+        <img src="~/images/voltas-logo-white.png" class="logo-m" />
+        <div class="Login-disp-box">        
+            <label class="lbl-left-H1">Welcome To <span >DPG SALES</span></label><br />
+            <label class="lbl-left-H2">Login to access your account</label>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12 login-right">
+
+        <div class="login-box" style="padding-top:80px;padding-bottom:80px">
+            <div class="header">
+                <div class="hidden-md hidden-lg logo-white">
+                    <img src="~/images/voltas-logo-white.png" style="margin-top:-30px;margin-left:-10px" />
+                </div>
+                <label style="color:white;font-size:24px;font-weight:100"><span style="color:white;font-weight:bold;font-size:24px;">DPG SALES</span> LOGIN</label>
+            </div>
+            <div class="body">
+                <form class="MyForm" method="post" asp-action="Login" asp-controller="Auth" id="loginForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="Username" asp-for="@Model.UserID" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" asp-for="@Model.Password" />
+                    </div>
+                    <div style="padding-top:20PX;">
+                        <div class="col-md-7 col-sm-12">
+                            <a style="color:white;margin-left:-15px;font-weight:100;text-decoration:none" href="@Url.Action("ForgotPassword")">Can't access?</a>
+                        </div>
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-default pull-left nav-btn" style="width:90%;" value="Sign In" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="padding-top:40px;">
+                        @*<label> <input type="checkbox" class="minimal" id="chkRem" /></label>*@<input type="checkbox"   asp-for="@Model.RememberMe" /> <span style="color:white;top:1px;left:5px;position:relative"> Remember Me</span>
+                    </div>
+                   
+
+                </form>
+            </div>
+
+        </div>
+        <div class="footer">
+            <div class="col-md-6"><span style="font-weight:100;color:white">&copy;2017 Advent Global</span></div>
+            <div class="col-md-6">                
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- jQuery 3 -->
+    <script src="~/theme-blue/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/theme-blue/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/theme-blue/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+   
+
+    <!-- iCheck 1.0.1 -->
+    <script src="~/theme-blue/plugins/iCheck/icheck.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/additional-methods.js"></script>
+
+
+
+    <script type="text/javascript">
+        $("#initialload").hide();
+
+       
+        $('#RememberMe').iCheck({
+            checkboxClass: 'icheckbox_minimal-yellow',
+            radioClass: 'iradio_minimal-yellow',
+        });
+
+        $(document).on('click', '#closePopupNotificationView', function (e) {
+            $("#_PopupNotificationView").hide();
+        });
+
+        $(document).on('click', '.nav-btn', function (e) {
+            $("#initialload").show();
+        });
+
+        $("#loginForm").validate({
+            errorClass: "error-class",
+            rules: {
+
+                UserID: {
+                    required: true
+                },
+                Password: {
+                    required: true,
+                    minlength: 5
+                }
+            },
+            messages: {
+
+                UserID: {
+                    required: "Please provide Username"
+                },
+                Password: {
+                    required: "Please provide password",
+                    minlength: "Password length should be 5 or more characters."
+                }
+            },
+            submitHandler: function (form) {
+                // do other things for a valid form
+                form.submit();
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (event, validator) {
+                // 'this' refers to the form
+                $("#initialload").hide();
+            }
+        });
+
+
+    </script>
+
+
+    @if (TempData["PopupViewModel"] != null)
+    {
+        var popupViewModel = TempData.GetObjectFromJson<DPGSalesClient.Models.PopupViewModel>("PopupViewModel");
+        @Html.Partial("Popup", popupViewModel)
+    }
+
+
+</body>
+</html>

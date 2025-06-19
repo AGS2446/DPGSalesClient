@@ -1,0 +1,105 @@
+﻿
+@model DPGSalesClient.Models.StOpportunityReportSearchModel
+<style>
+    .chart-legend ul {
+        list-style-type: none;
+    }
+
+    .chart-legend li span {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+
+    #container {
+        max-width: 800px;
+        height: 400px;
+        margin: 1em auto;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Enquiry Conversion Report
+    </h1>
+</section>
+<section class="content">
+    <form asp-action="StrikeEnquiryReportExcel" asp-controller="StrikeEnquiryreport" id="frmOpportunityReport">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Division</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="hidden" asp-for="@Model.Division" />
+                            <select class="form-control select2" multiple="multiple" id="divisionid" placeholder="Select Division" style="width: 100%;" asp-items="@Model?.DivisionList"></select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-info btn-block" id="EnquairySubmit" type="button"><i class="fa fa-area-chart"></i> Go</button>
+                            @*<button class="btn btn-success nav-btn"  type="submit">Go</button>*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <input type="hidden" asp-for="@Model.Branch" />
+                            <label>Branch</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control select2" multiple="multiple" id="branchid" data-placement="Select Branch" style="width: 100%;" asp-items="@Model?.BranchList"></select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary btn-block" id="btnExport" type="submit"><i class="fa fa-file-excel-o"></i> Export</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Date From</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.DateFrom" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Date To</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.DateTo"  autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <div id="divChartContainer">
+                                <div id="container" style="height: 400px; min-width: 380px"></div>
+                                @*<canvas id="barChartOpprtunity" style="height:250px"></canvas>*@
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div id="bar_legend" class="chart-legend"></div>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+    </form>
+</section>
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+
+    @*<script type="text/javascript" src="~/js/scripts/OpportunityReport/report.js">
+        </script>*@
+    <script type="text/javascript" src="~/js/scripts/OpportunityReport/Strikereport.js"></script>
+}

@@ -1,0 +1,55 @@
+﻿@model DPGSalesClient.Models.AccordionModel
+
+<label class="text-center" style="width:100%;color:#808080">Divisions</label>
+@for (int intD = 0; intD < Model.Divisions.Count; intD++)
+{
+    <div class="box-group" id="accordion-@Model.ParentID-@intD">
+        <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+        <div class="panel box @Model.BoxClass">
+            <div class="box-header with-border">
+                <h4 class="box-title" style="width:100%">
+                    <a data-toggle="collapse" data-parent="#accordion-@Model.ParentID-@intD" href="#collapseD-@Model.ParentID-@intD" aria-expanded="false" class="collapsed">
+                        <span class="@Model.FontClass"> @Model.Divisions[intD].DivisionName</span> <span class="pull-right badge @Model.BadgeClass"> @Model.Divisions[intD].Value.ToString("#.##") lakhs</span>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseD-@Model.ParentID-@intD" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                <div class="box-body" style="padding:0">
+                    <label class="text-center" style="width:100%;color:#808080">Regions</label>
+                    
+                    @for (int intR = 0; intR < Model.Divisions[intD].Regions.Count; intR++)
+                    {
+                        <div class="box-group" id="accordionR-@Model.ParentID-@intD-@intR">
+                            <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+                            <div class="panel box box-warning">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title" style="width:100%">
+                                        <a data-toggle="collapse" data-parent="#accordionR-@Model.ParentID-@intD-@intR" href="#collapseR-@Model.ParentID-@intD-@intR" aria-expanded="false" class="collapsed">
+                                            <span class="text-yellow"> @Model.Divisions[intD].Regions[intR].RegionName </span><span class="pull-right badge bg-yellow">@Model.Divisions[intD].Regions[intR].Value.ToString("#.##") lakhs</span>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseR-@Model.ParentID-@intD-@intR" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                    <div class="box-body" style="padding:0">
+                                        <label class="text-center" style="width:100%;color:#808080" >Segments</label>
+                                        <ul class="nav nav-stacked">
+                                            @for (int intS = 0; intS < Model.Divisions[intD].Regions[intR].Segments.Count; intS++)
+                                            {
+                                                <li><a href="@Url.Action("ReportViewNavigator","OQDashboard",new DPGSalesClient.Models.OQReportNavModel{Type=Model.ParentID,Division = Model.Divisions[intD].DivisionName,Region=Model.Divisions[intD].Regions[intR].RegionName,Segment=Model.Divisions[intD].Regions[intR].Segments[intS].SegmentName,FromDate=Model.FromDate,ToDate=Model.ToDate })">@Model.Divisions[intD].Regions[intR].Segments[intS].SegmentName <span class="pull-right badge bg-purple">@Model.Divisions[intD].Regions[intR].Segments[intS].Value.ToString("#.##") lakhs</span></a></li>
+                                                @*<li><a href="#">@Model.Divisions[intD].Regions[intR].Segments[intS].SegmentName <span class="pull-right badge bg-purple">@Model.Divisions[intD].Regions[intR].Segments[intS].Value.ToString("#.##")</span></a></li>*@
+                                            }
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+

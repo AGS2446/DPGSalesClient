@@ -1,0 +1,447 @@
+﻿@model DPGSalesClient.Models.EnquiryApprovalIndexModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+    <style>
+        #example2 {
+            border-bottom-style: solid;
+            border-bottom-color: #c5bbbb;
+            border-bottom-width: 1px;
+        }
+
+            #example2 > tbody > tr > td {
+                border-left-style: solid;
+                border-left-width: 1px;
+                border-left-color: #D0D0D0;
+            }
+
+                #example2 > tbody > tr > td:last-child {
+                    border-right-style: solid;
+                    border-right-width: 1px;
+                    border-right-color: #D0D0D0;
+                }
+
+        .p-t-25 {
+            padding-top: 25px;
+        }
+    </style>
+}
+
+
+@*<section class="content-header">
+    <h1>
+        Review Report
+    </h1>
+    @*<ol class="breadcrumb hidden-xs">
+            <li><a href="#"><i class="fa fa-home"></i> Sales Management</a></li>
+            <li class="active">Lead</li>
+        </ol>
+    </section>*@
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Search" asp-controller="EnquiryApprovalReport" method="get" id="searchForm">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Division<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.Division" asp-items="@(new SelectList(Model.DivisionList,"Value","Text"))"></select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Branch<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.Branch" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))"></select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Enquiry No<span class="text-red">*</span></label>
+                        <input type="text" class="form-control" asp-for="@Model.EnquiryNo" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    @*<div class="form-group">
+                            <label>Date range:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="reservation" asp-for="@Model.DateFrom">
+                            </div>
+                        </div>*@
+
+                    <div class="form-group">
+                        <label>From</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="DateFrom" name="DateFrom" value="@Model.DateFrom" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>To</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="DateTo" name="DateTo" value="@Model.DateTo" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-1 p-t-25">
+                    <button type="submit" class="btn btn-info btn-flat nav-btn"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></button>
+                </div>
+            </form>
+            <div class="col-md-1 p-t-25">
+                <form asp-action="ReportExcel" asp-controller="EnquiryApprovalReport">
+                    <button class="btn btn-info btn-flat" id="btnExport" type="submit"><i class="fa fa-file-excel-o"></i> Export</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row table-responsive text-nowrap">
+        <div class="col-xs-12">
+
+            <table id="example2" class="table  table-hover">
+                <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Branch</th>
+                        <th>Client</th>
+                        <th>Enquiry No</th>
+                        <th>Segment</th>
+                        <th>Sub Segment</th>
+                        <th>Value (In lakhs)</th>
+                        <th>Status</th>
+                        <th>Expected FinalQtr</th>
+                        <th>Expected FinalYear</th>
+                        <th>Lost Price</th>
+                        <th style="width:160px">Final Status</th>
+                        <th style="width:100px;">Remarks</th>
+                        <th>Contact Plan</th>
+                        <th>Cost Sheet</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.EnquiryList != null && Model.EnquiryList.Count > 0)
+                    {
+
+                        @foreach (var item in Model.EnquiryList)
+                        {
+
+                            <tr>
+                                <td>@item.Division</td>
+                                <td>@item.Branch</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.EnquiryID</td>
+                                <td>@item.Segment</td>
+                                <td>@item.SubSegment</td>
+                                <td>@item.TotalValue</td>
+                                <td style="width:80px;font-weight:700;color:@GetColor(item.Status)">@item.Status</td>
+                                <td>@item.ExpectedFinalQtr</td>
+                                <td>@item.ExpectedFinalYear</td>
+                                <td>@item.LostPrice</td>
+                                <td style="width:100px;padding: 0;padding-top:10px;padding-left:2px">
+                                    <div class="btn-group " style="display: block; visibility:@GetVisibleInfo(item.Status,"Approval")">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:95px">
+                                            Approval
+                                            <i class="fa fa-caret-down pull-right"></i>
+                                        </button>
+                                        <div class="dropdown-menu" style="z-index: 10;position:relative">
+                                            <ul style="padding-left:5px;z-index: 100;position:relative">
+                                                <li style="list-style:none;padding-top:5px"><a onclick="EnquiryApprovePermissionApproval('@item.EnquiryID','@item.TotalValue','@item.CostSheet');" class="dropdown-item btn btn-success  btn-sm" href="#" style="margin:5px;width:80px">Approve</a></li>
+                                                <li style="list-style:none"><a onclick="RejectEnquiry('@item.EnquiryID');" class="dropdown-item btn btn-danger  btn-sm" href="#" style="margin:5px;width:80px">Reject</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn-group " style="display: block; visibility:@GetVisibleInfo(item.Status, "Recommend");top:-30px;position:relative">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:95px">
+                                            Recommend
+                                            <i class="fa fa-caret-down"></i>
+                                        </button>
+                                        <div class="dropdown-menu" style="z-index: 10;position:relative">
+                                            <ul style="padding-left:5px">
+                                                <li style="list-style:none;padding-top:5px"><a onclick="EnquiryApprovePermissionRecommend('@item.EnquiryID','@item.TotalValue','@item.CostSheet');" class="dropdown-item btn btn-success  btn-sm" href="#" style="margin:5px;width:85px">Recommend</a></li>
+                                                <li style="list-style:none"><a onclick="RejectEnquiry('@item.EnquiryID');" class="dropdown-item btn btn-danger  btn-sm" href="#" style="margin:5px;width:85px">Reject</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    @*<div class="btn-group" style="visibility:@GetVisibleInfo(item.Status,"Approval")">
+                                            <button type="button" class="btn btn-flat btn-xs btn-default">Approve</button>
+                                            <button type="button" class="btn btn-flat btn-xs  btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu" >
+                                                <li ><a  onclick="EnquiryApprovePermission('@item.EnquiryID','@item.TotalValue');"  class="btn bg-green nav-btn" style="width:80px;margin:5px">Approve</a></li>
+                                                <li><a  onclick="RejectEnquiry('@item.EnquiryID');"  class="btn bg-red " style="width:80px;margin:5px">Reject</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="btn-group" style="visibility:@GetVisibleInfo(item.Status, "Recommand");margin-top:-20px">
+                                            <button type="button" class="btn btn-flat btn-xs btn-default">Approve</button>
+                                            <button type="button" class="btn btn-flat btn-xs  btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a onclick="EnquiryApprovePermission('@item.EnquiryID','@item.TotalValue');" class="btn bg-green nav-btn" style="width:80px;margin:5px">Recommand</a></li>
+                                                <li><a onclick="RejectEnquiry('@item.EnquiryID');" class="btn bg-red " style="width:80px;margin:5px">Reject</a></li>
+                                            </ul>
+                                        </div>*@
+                                </td>
+                                <td style="width:100px;">@item.Remarks</td>
+
+                                <td style="text-align:center;width:80px"><a href="@Url.Action("ActivityIndex", "EnquiryApprovalReport", new {enqId=item.EnquiryID,qteId=item.QuoteID,ordId=item.OrderID })" style="cursor:pointer;color:#0F5AD9">@item.Contactplan</a></td>
+                                <td style="text-align:center;width:80px"><a id="btnAttachments" href="@Url.Action("Attachments", "EnquiryApprovalReport", new {enqId=item.EnquiryID,qteId=item.QuoteID,ordId=item.OrderID })" style="cursor:pointer;color:#0F5AD9">@item.CostSheet</a></td>
+
+
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+    <!--Attachment Modal -->
+    <div class="modal fade" id="RejectModal" tabindex="-1" role="dialog" aria-labelledby="RejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="RejectModalLabel" style="font-weight: bold;width: 80%;float: left;">Reject</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <input type="text" class="form-control" id="rejectRemarks" />
+                        <input type="hidden" class="form-control" id="hdnEnqId" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger nav-btn" id="btnRejectEnquiry"><i class="fa fa-times-circle"></i> Reject</a>
+                    <a class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions{
+    public string GetColor(string strStatus)
+    {
+        string strRes = "";
+        switch (strStatus.ToUpper())
+        {
+            case "CANCELLED":
+            case "LOST":
+                strRes = "#FF0103";
+                break;
+            case "OPEN":
+                strRes = "#216BEE";
+                break;
+            case "CONVERTED":
+                strRes = "#39B4B2";
+                break;
+            case "DEFERRED":
+                strRes = "#FF006E";
+                break;
+            case "BUDGETARY":
+                strRes = "#004A7F";
+                break;
+            case "PENDING FOR APPROVAL":
+                strRes = "#85439A";
+                break;
+            case "WIN":
+                strRes = "#3FA810";
+                break;
+        }
+        return strRes;
+    }
+
+    public string GetVisibleInfo(string strStatus, string type)
+    {
+        string strRes = "hidden";
+        if (strStatus.ToUpper() == "PENDING FOR APPROVAL" && type.ToUpper() == "APPROVAL")
+        {
+            strRes = "visible";
+        }
+        else if (strStatus.ToUpper() == "PENDING FOR RECOMMEND" && type.ToUpper() == "RECOMMEND")
+        {
+
+            strRes = "visible";
+        }
+        return strRes;
+    }
+
+    public string ConvertToCrs(double? val)
+    {
+        string strRes = "";
+        try
+        {
+            strRes = (val.HasValue ? (val.Value / 100).ToString() : "");
+        }
+        catch (Exception ex)
+        {
+        }
+        return strRes;
+    }
+
+}
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'scrollX': true,
+            'searching': false,
+            'ordering': false,
+            'info': false,
+            'pageLength': 10,
+            'autoWidth': false
+        });
+
+        //$('#reservation').daterangepicker({
+        //locale: {
+        //    format: 'DD/MM/YYYY'
+        //    }
+        //});
+
+        $('#DateFrom').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today"
+        }).on('changeDate', function (ev) {
+            debugger;
+            if ($('#DateFrom').val() != "" && $('#DateTo').val() != "") {
+                if (ConvertStrDate($('#DateFrom').val()) > ConvertStrDate($('#DateTo').val())) {
+                    AlertPopup('Date From should be less than or equal to Date To ');
+                    $('#DateFrom').val('');
+                    $('#DateTo').val('');
+                }
+            }
+        });
+
+        $('#DateTo').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today",
+        }).on('changeDate', function (ev) {
+            debugger;
+            if ($('#DateFrom').val() == "") {
+                AlertPopup('Please select Date From ');
+                $('#DateTo').val('');
+
+            } else if (ConvertStrDate($('#DateFrom').val()) > ConvertStrDate($('#DateTo').val())) {
+                AlertPopup('Date From should be less than or equal to Date To ');
+                $('#DateFrom').val('');
+                $('#DateTo').val('');
+            }
+        });
+        function ConvertStrDate(strDate) {
+            debugger;
+            if (strDate != null && strDate != "" && strDate != undefined) {
+                if (strDate.toString().split('/').length > 0)
+                    return new Date(strDate.toString().split('/')[2], strDate.toString().split('/')[1], strDate.toString().split('/')[0])
+                else if (strDate.toString().split('/').length > 0)
+                    return new Date(strDate.toString().split('-')[2], strDate.toString().split('-')[1], strDate.toString().split('-')[0])
+
+            } else {
+                return null;
+
+            }
+        }
+
+        function EnquiryApprovePermissionApproval(enqId, contractVal, costsheetcnt) {
+            if (parseInt(costsheetcnt) > 0) {
+                $.post('../EnquiryApprovalReport/CheckAuthorizeToApprove', { enqId: enqId, totalVal: contractVal, processName: 'APPROVE' }).done(function (data) {
+                    debugger;
+                    if (data.status == "SUCCESS") {
+                        window.location = "../EnquiryApprovalReport/ConvertToQuote?enqID=" + enqId;
+                    } else {
+                        AlertPopup('You are not authorized to approve, total value is ' + (contractVal / 100) + 'Cr');
+                        $('#initialload').hide();
+                    }
+
+                });
+            } else {
+                AlertPopup('Atleast one Costsheet should be upload for Approval');
+                $('#initialload').hide();
+
+            }
+            return false;
+        }
+        function EnquiryApprovePermissionRecommend(enqId, contractVal, costsheetcnt) {
+            if (parseInt(costsheetcnt) > 0) {
+                $.post('../EnquiryApprovalReport/CheckAuthorizeToApprove', { enqId: enqId, totalVal: contractVal, processName: 'RECOMMEND' }).done(function (data) {
+                    debugger;
+                    if (data.status == "SUCCESS") {
+
+                        $.post('../EnquiryApprovalReport/ApprovalEnquiry', { enqId: enqId }).done(function (data) {
+
+                            window.location = "../EnquiryApprovalReport/Index";
+
+                        })
+
+
+                    } else {
+                        AlertPopup('You are not authorized to approve, total value is ' + (contractVal / 100) + 'Cr');
+                        $('#initialload').hide();
+                    }
+
+                });
+            } else {
+                AlertPopup('Atleast one Costsheet should be upload for Approval');
+                $('#initialload').hide();
+
+            }
+            return false;
+        }
+
+        function RejectEnquiry(enqId) {
+            debugger;
+            $('#hdnEnqId').val(enqId);
+            $('#rejectRemarks').val('');
+            $('#RejectModal').modal("show");
+        }
+
+        $('#btnRejectEnquiry').click(function () {
+            var txtRemarks = $('#rejectRemarks').val();
+            debugger;
+            if (txtRemarks != undefined && txtRemarks != "") {
+                $.post('../EnquiryApprovalReport/RejectEnquiry', { enqId: $('#hdnEnqId').val(), status: "Reject", remarks: txtRemarks }).done(function (data) {
+                    if (data.status == "SUCCESS") {
+
+                        $('#RejectModal').modal("hide");
+                        window.location = "../EnquiryApprovalReport/Index";
+                    }
+
+                });
+
+            } else {
+                debugger;
+                $('#initialload').hide();
+                AlertPopup('Please provide remarks');
+
+            }
+            return false;
+        });
+
+    </script>
+}

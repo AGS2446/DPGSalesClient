@@ -1,0 +1,75 @@
+﻿@model DPGSalesClient.Models.OQQuoteDataModel
+
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1>
+        <a href="@Url.Action("Search","OQDashboard",new {FromDate=Model.FromDate,ToDate=Model.ToDate })" class="text-info"><i class="fa fa-chevron-circle-left"></i></a>
+        Quotation
+    </h1>
+
+</section>
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <table id="example2" class="table  table-hover">
+                <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Plant</th>
+                        <th>Contract Value</th>
+                        <th>Tonnage</th>
+                        <th>ProductRequired</th>
+                        <th>SalesEngg</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.QuoteItemList != null && Model.QuoteItemList.Count > 0)
+                    {
+
+                        @foreach (var item in Model.QuoteItemList)
+                        {
+                            <tr>
+                                <td>@item.Division</td>
+                                <td>@item.Plant</td>
+                                <td>@item.ContractValue</td>
+                                <td>@item.Tonnage</td>
+                                <td>@item.ProductRequired</td>
+                                <td>@item.SalesEngg</td>
+                               
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8,
+            columnDefs: [
+                  { type: 'date-uk', targets: 8 }
+            ]
+        });
+
+       
+    </script>
+}

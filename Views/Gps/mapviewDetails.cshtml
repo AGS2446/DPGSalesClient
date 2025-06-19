@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Gps Navigation";
+}
+<section>
+    <div class="section-header">
+        <div class="section-header">
+            <h1>Navigation Details</h1>
+            <ol class="breadcrumb" style="padding:0px">
+                <li><a asp-action="Index">Gps</a></li>
+                <li class="active">Navigation Details</li>
+            </ol>
+        </div>
+    </div>
+    <div class="section-body">
+        <div class="row">
+            <div class="col-xs-8">
+                <form id="frmMapViewDetails" asp-controller="Gps" asp-action="mapviewDetails" method="get" class="form floating-label">
+                    <input id="UserId" type="hidden" class="form-control" name="UserId" value="@ViewBag.UserId">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="Search" type="text" class="form-control pull-right" name="Search" value="@ViewBag.Search">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-4">
+                <a asp-action="Details" asp-route-UserId="@ViewBag.UserID" asp-route-Search="@ViewBag.Search" class="btn btn-primary btn-flat nav-btn pull-right" data-toggle="tooltip" data-placement="top" data-original-title="Navigation List View"><i class="fa fa-list"></i></a>
+            </div>
+            <div class="col-xs-12 m-t">
+                <div id="map-user-navigation" style="height: 400px; width: 100%;"></div>
+            </div><!--end .card-body -->
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IxioBMPtWsIVJCBIdtGPidf1D9fM7b4&amp;"></script>
+    <script type="text/javascript" src="~/lib/gmaps/markerwithlabel.js"></script>
+    <script src="~/js/scripts/gps/mapviewdetails.js"></script>
+}

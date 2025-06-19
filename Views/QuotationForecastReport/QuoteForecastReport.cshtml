@@ -1,0 +1,93 @@
+﻿@model DPGSalesClient.Models.QuoteForecastReportModel
+
+<section class="content-header">
+    <h1>
+        Quotation Due Date Report
+    </h1>
+</section>
+<section class="content">
+    <form asp-action="QuotationForecastReportExcel" asp-controller="QuotationForecastReport" id="formQuoteForecastReport">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Division</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="hidden" asp-for="@Model.Division" />
+                            <select class="form-control select2 " multiple="multiple" id="DivisionID" asp-items="@(new SelectList(Model.DivisionList,"Value","Text"))" data-placement="Select Division"></select>
+                        </div>
+                        <div class="col-md-2">
+                                @*<button class="btn btn-success nav-btn" type="submit">Go</button>*@
+                            <button class="btn btn-info btn-block" id="btnSubmit" type="button"><i class="fa fa-line-chart"></i> GO</button>
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <input type="hidden" asp-for="@Model.Branch" />
+                            <label>Branch</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control select2" multiple="multiple" id="BranchID" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))" data-placement="Select Branch"></select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary btn-block" id="btnExport" type="submit"><i class="fa fa-file-excel-o"></i> Export</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Date From</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+
+                                <input type="text" class="form-control pull-right" asp-for="@Model.DateFrom" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Date To</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" asp-for="@Model.DateTo" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @*<button class="btn btn-info btn-block" id="btnSubmit" type="button"><i class="fa fa-bar-chart"></i> GO</button>*@
+                            
+                            @*<button class="btn btn-primary  nav-btn" id="btnSubmit" type="button">Search</button>
+                            <button class="btn btn-success" id="btnExport" type="submit">Export</button>*@
+                        </div>
+                        <div class="col-md-2">
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <div id="divChartContainer">
+                                <canvas id="lineChart" style="height:250px"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div id="bar_legend" class="chart-legend"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+    <script type="text/javascript" src="~/js/scripts/QuotationForecastReport/QuotationForecastReport.js">
+
+    </script>
+}

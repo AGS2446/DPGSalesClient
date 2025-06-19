@@ -1,0 +1,38 @@
+﻿
+
+<section class="content-header">
+    <h1>
+        Upload
+    </h1>    
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form id="frmOrderUpload" asp-controller="OrderUpload" asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-xs-8 col-md-10">
+                        <input class="form-control" type="file" name="files" />
+                    </div>
+                    <div class="col-xs-4 col-md-2">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="text-success">@ViewBag.Result</label>
+                        <label class="text-danger">@ViewBag.Error</label>
+                    </div>
+                </div>
+
+                <div class="margin-bottom-xxl"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="text-right">
+                            Do you have upload excel format ??  <a href="~/templates/UploadOrder.xlsx" class="btn-link"><i class="fa fa-download"></i> click here to download</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

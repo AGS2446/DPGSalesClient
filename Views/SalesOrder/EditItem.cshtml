@@ -1,0 +1,66 @@
+﻿@model DPGSalesClient.Models.SalesOrderItem
+
+<section class="content-header">
+    <h1>
+        Edit Item
+    </h1>
+
+</section>
+<section class="content">
+    <form asp-action="EditItem" asp-controller="SalesOrder" method="post" id="frmSalesOrderEditItem">
+        <div class="box box-success">
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Material No<span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.MaterialNo" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Material Desc<span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.MaterialDesc" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Plant <span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.Plant" readonly />
+                            @*<select class="form-control select2" style="width: 100%;" asp-for="@Model.Plant" asp-items="@(new SelectList(Model.PlantList,"Value","Text"))"></select>*@
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Quantity <span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.Quantity">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total Value <span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.TotalValue">
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-md-11 ">
+                        <a class="btn btn-default pull-right nav-btn" href="@Url.Action("EditItem","SalesOrder")" style="padding-left:35px;padding-right:35px"> Cancel</a>
+                        <button class="btn btn-success pull-right margin-r-5 nav-btn" style="padding-left:35px;padding-right:35px" type="submit"> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>

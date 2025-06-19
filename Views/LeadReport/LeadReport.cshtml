@@ -1,0 +1,81 @@
+﻿@model DPGSalesClient.Models.LeadReportSearchModel
+
+<section class="content-header">
+    <h1>
+        Lead Report
+    </h1>
+</section>
+<section class="content">
+    <form asp-action="LeadReportExcelSide" asp-controller="LeadReport" id="frmLeadReport">
+        <div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="divChartContainer">
+                        <canvas id="barChart" style="height:300px"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="box box-info box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title"> <i class="fa fa-filter"></i> Filter</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Division</label>
+                                <input type="hidden" asp-for="@Model.Division" />
+                                <select class="form-control select2" multiple="multiple" id="divisionid" placeholder="Select Division" style="width: 100%;" asp-items="@Model?.DivisionList"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Branch</label>
+                                <input type="hidden" asp-for="@Model.Branch" />
+                                <select class="form-control select2" multiple="multiple" id="branchid" data-placement="Select Branch" style="width: 100%;" asp-items="@Model?.BranchList"></select>
+                            </div>
+                            @*<div class="form-group">
+                                <label>Date From</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" asp-for="@Model.DateFrom">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Date To</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" asp-for="@Model.DateTo">
+                                </div>
+                            </div>*@
+                            <div class="form-group">
+                                <label>Date Range</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" asp-for="@Model.DateRange" id="reservation">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-info btn-block" id="btnGo" type="button"><i class="fa fa-bar-chart"></i> Go</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-primary btn-block" id="btnExport" type="submit"><i class="fa fa-file-excel-o"></i> Export</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+    <script type="text/javascript" src="~/js/scripts/LeadReport/report.js">
+    </script>
+}

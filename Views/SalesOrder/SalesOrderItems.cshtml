@@ -1,0 +1,84 @@
+﻿@model DPGSalesClient.Models.SalesOrderItemModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+<section class="content-header">
+    <h1>
+        Sales Order Items
+    </h1>
+</section>
+<section class="content">
+
+    <div class="row" style="margin-bottom:10px">
+        <div class="col-md-4 ">
+            <a id="btnBackToEditCreate" class="btn btn-default btn-flat nav-btn pull-left"><i class="fa fa-backward"></i> <span class="hidden-xs">Back</span></a>
+        </div>
+        <div class="col-md-4 col-lg-offset-4">
+
+            <a href="@Url.Action("AddItem","SalesOrder")" class="btn btn-info btn-flat nav-btn pull-right"><i class="fa fa-plus"></i> <span class="hidden-xs">New</span></a>
+        </div>
+
+    </div>    
+    <input type="hidden" asp-for="@Model.CRMOrderID" />
+    <input type="hidden" asp-for="@Model.SalesOrderID" />
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="col-xs-12">
+                <table id="example2" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Material No</th>
+                            <th>Material Desc</th>
+                            <th>Plant ID</th>                            
+                            <th>Quantity</th>
+                            <th>Total Value</th>                           
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model?.salesOrderItems != null && Model?.salesOrderItems.Count > 0)
+                        {
+                            @foreach (var item in Model?.salesOrderItems)
+                            {
+                                if (item.EntityState != PurchaseOrderProxy.EntityState.Deleted)
+                                {
+                                    <tr>
+                                        <td>@item.MaterialNo</td>
+                                        <td>@item.MaterialDesc</td>
+                                        <td>@item.Plant</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.TotalValue</td>                                        
+                                        <td>
+                                            <a class="nav-btn" href="@Url.Action("EditItem", "SalesOrder", new { materialNo = item.MaterialNo,plant=item.Plant })" style="padding-right:15px;" title="Edit"><i class="fa fa fa-pencil text-primary" style="font-size:18px;font-weight:500;"></i></a>
+                                            <a class="nav-btn" href="@Url.Action("DeleteItem", "SalesOrder", new { materialNo = item.MaterialNo,plant=item.Plant })" style="padding-right:5px;" title="Delete"><i class="fa fa-trash text-red" style="font-size:18px"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+@section scripts{
+    <script type="text/javascript">
+
+        $('#btnBackToEditCreate').click(function (da) {
+            debugger;
+
+                debugger;
+                var url = '@Url.Action("Create","SalesOrder")';
+            window.location = url + "?ordId=" +$('#CRMOrderID').val() +"&stBack=BACK";
+
+
+            return false;
+        });
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@model DPGSalesClient.Models.ModifyUserPositionViewModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-info">
+        Assign Role
+    </h1>
+    <ol class="breadcrumb">
+        <li><a asp-action="Index"><i class="fa fa-home"></i> List</a></li>
+        <li><a asp-action="Details" asp-route-id="@Model.UserID"><i class="fa fa-home"></i> Details</a></li>
+        <li class="active"> Assign New Positions</li>
+    </ol>
+</section>
+
+<section class="content">
+    <form asp-controller="User" asp-action="AssignPosition" method="post" id="formAssignPosition">
+        <input type="hidden" asp-for="@Model.UserID" />
+        <div class="form-horizontal">
+            <div class="b-a b-light">
+                <div class="b-b text-dark">
+                    <h4>Position Info</h4>
+                    <input asp-for="UserID" type="hidden" class="form-control">
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-md-2 text-right text-left-xs">
+                        <label asp-for="ClientID" class="control-label"></label><span class="text-danger">*</span>
+                    </div>
+                    <div class="col-md-4">
+                        <select asp-for="ClientID" class="form-control" asp-items="@(new SelectList(Model?.Clients,"Value","Text"))">
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="ClientID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-md-2 text-right text-left-xs">
+                        <label asp-for="LOBID" class="control-label"></label><span class="text-danger">*</span>
+                    </div>
+                    <div class="col-md-4">
+                        <select asp-for="LOBID" class="form-control" asp-items="@(new SelectList(Model?.LOBs,"Value","Text"))">
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="LOBID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-md-2 text-right text-left-xs">
+                        <label asp-for="RoleID" class="control-label"></label><span class="text-danger">*</span>
+                    </div>
+                    <div class="col-md-4">
+                        <select asp-for="RoleID" class="form-control" asp-items="@(new SelectList(Model?.Roles,"Value","Text"))">
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="RoleID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-md-2 text-right text-left-xs">
+                        <label asp-for="OrgID" class="control-label"></label><span class="text-danger">*</span>
+                    </div>
+                    <div class="col-md-4">
+                        <select asp-for="OrgID" class="form-control" asp-items="@(new SelectList(Model?.Organizations,"Value","Text"))">
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="OrgID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success pull-right" id="btnAssignPosition"><i class="fa fa-save m-r-xs"></i> Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section scripts{
+    <script src="~/js/scripts/User/AssignPosition.js"></script>
+}

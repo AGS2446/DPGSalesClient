@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Gps Navigation";
+}
+
+@model List<DPGSalesClient.Models.GpsNavigationViewModel>
+<section>
+    <div class="section-header">
+        <div class="section-header">
+            <h1>Navigation Details</h1>
+            <ol class="breadcrumb" style="padding:0px">
+                <li><a asp-action="Index">Gps</a></li>
+                <li class="active">Navigation Details</li>
+            </ol>
+        </div>
+    </div>
+    <div class="section-body">
+        <div class="row">
+            <div class="col-xs-8">
+                <form id="frmGpsDetails" asp-controller="Gps" asp-action="Details" method="get" class="form floating-label">
+                    <input id="UserId" type="hidden" class="form-control" name="UserId" value="@ViewBag.UserId">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="Search" type="text" class="form-control pull-right" name="Search" value="@ViewBag.Search">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-4">
+                <a asp-action="mapviewDetails" asp-route-UserId="@ViewBag.UserID"  asp-route-Search="@ViewBag.Search" class="btn btn-primary btn-flat nav-btn pull-right" data-toggle="tooltip" data-placement="top" data-original-title="Navigation Map View"><i class="fa fa-map"></i></a>
+            </div>
+            <div class="col-xs-12 m-t">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead class="bg-info">
+                                <tr>
+                                    <th>Updated On</th>
+                                    <th>Sync On</th>
+                                    <th>Address</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-striped table-hover">
+
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.GpsDate.Value</td>
+                                        <td>@item.Createdon.Value</td>
+                                        <td>@item.Address</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div><!--end .table-responsive -->
+                }
+                else
+                {
+                    <p class="text-lg v-inline-middle">
+                        Does not found any GPS Information
+                    </p>
+
+                }
+            </div><!--end .card-body -->
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script src="~/js/scripts/gps/details.js"></script>
+}

@@ -1,0 +1,456 @@
+﻿@model DPGSalesClient.Models.QuoteConvertOrderModel
+
+@section styles{
+<link href="~/css/Index.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="pull-left">
+        Quote to Order
+    </h1>
+    <a class="btn nav-btn bg-green pull-right" id="btnAddProduct">Items</a>
+</section>
+<section class="content">
+ 
+    <form asp-action="ConvertToOrder" asp-controller="Quote" id="quoteConvertForm">
+        <input type="hidden" asp-for="@Model.QuoteID" />
+        <input type="hidden" asp-for="@Model.EnquiryID" />
+        <input type="hidden" asp-for="@Model.LeadID" />
+        <input type="hidden" asp-for="@Model.Division" />
+        @*<input type="hidden" asp-for="@Model.QuoteDocumentCreatedDate" />*@
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="row">
+                                @*<div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Order Type <span class="text-red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.OrderType" asp-items="@(new SelectList(Model.OrderTypeList,"Value","Text"))"></select>
+                                    </div>
+                                </div>*@
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Won/Loss <span class="text-red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.WonLossValue" asp-items="@(new SelectList(Model.WonLossList,"Value","Text"))"></select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Reasons</label>
+                                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.Reasons" asp-items="@(new SelectList(Model.ReasonsList,"Value","Text"))" readonly></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>PO No </label>
+                                        <input type="text" class="form-control" asp-for="@Model.PONo">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>PO Date </label>
+
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control pull-right" asp-for="@Model.PODate" placeholder="dd/mm/yyyy">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Comp Name </label>
+                                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.CompName" asp-items="@(new SelectList(Model.CompNameList,"Value","Text"))" readonly></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Compititor Price (In Lakhs)</label>
+                                        <input type="text" class="form-control" asp-for="@Model.CompititorPrice" readonly>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Total Cost (In Lakhs)</label>
+                                        <input type="number" class="form-control" asp-for="@Model.TotalCost">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Turn Over Value (In Lakhs)</label>
+                                        <input type="text" class="form-control" asp-for="@Model.TurnOver">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gross Margin (In Lakhs) </label>
+                                        <input type="text" class="form-control" asp-for="@Model.GrossMargin">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tonnage Total </label>
+                                        <input type="text" class="form-control" asp-for="@Model.TotalTonnage">
+                                    </div>
+                                </div>
+                                @*<div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Document Created Date <span class="text-red">*</span></label>
+
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control pull-right" asp-for="@Model.OrderDocumentCreatedDate" placeholder="dd/mm/yyyy">
+                                        </div>
+
+                                    </div>
+                                </div>*@
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Contract Value(In Lakhs)</label>
+                                        <input type="text" class="form-control" asp-for="@Model.ContractValue">
+                                    </div>
+                                </div>
+                                @if (Model.Division == "CC")
+                                {
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Competitor Name2</label>
+                                        <input type="text" class="form-control" asp-for="@Model.CompName2" maxlength="200">
+                                    </div>
+                                </div>
+                                }
+
+                            </div>
+
+                        </div>
+                        <div class="box-footer">
+                            <div class="row">
+                                <div class="col-md-11 " style="text-align:center">
+                                    <button class="btn btn-success  margin-r-5 nav-btn" style="padding-left:35px;padding-right:35px" type="submit">Save</button>
+                                    <a class="btn btn-default  nav-btn" href="@Url.Action("Details","Quote",new {qteId=Model.QuoteID,status="OPEN" })" style="padding-left:35px;padding-right:35px">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript" >
+
+        $(document).ready(function () {
+            readonly(document.getElementById('Reasons'), true);
+            readonly(document.getElementById('CompName'), true);
+            readonly(document.getElementById('CompititorPrice'), true);
+        });
+
+        $('#PODate').datepicker({
+            autoclose: true,
+            format: 'd/m/yyyy'
+        });
+        //$('#OrderDocumentCreatedDate').datepicker({
+        //    autoclose: true,
+        //    format: 'd/m/yyyy',
+        //    endDate:"today",
+        //    startDate: $('#QuoteDocumentCreatedDate').val()
+        //});
+       
+        $("#GrossMargin").focusout(function () {
+            if (($('#WonLossValue').val() != null && $('#WonLossValue').val() != '' && $('#WonLossValue').val() == 'Win') && ($('#TurnOver').val() != null && $('#TurnOver').val() != '') && ($('#TurnOver').val() != null && $('#TurnOver').val() != '') && ($('#GrossMargin').val() != null && $('#GrossMargin').val() != ''))
+            {
+                var res = $('#TurnOver').val() - $("#GrossMargin").val();
+                $("#TotalCost").val(res);
+                if (res < 0) {
+                    AlertPopup('Turn over value should greater than Margin value');
+                    $("#TotalCost").val(0);
+                } else
+                    $("#TotalCost").val(res);
+             }
+        });
+        $("#TurnOver").focusout(function () {
+            if (($('#WonLossValue').val() != null && $('#WonLossValue').val() != '' && $('#WonLossValue').val() == 'Win') && ($('#GrossMargin').val() != null && $('#GrossMargin').val() != '')) {
+                var res = $('#TurnOver').val() - $("#GrossMargin").val();
+                if (res < 0) {
+                    AlertPopup('Turn over value should greater than Margin value');
+                    $("#TotalCost").val(0);
+                }else
+                $("#TotalCost").val(res);
+
+            }
+        });
+
+        $('#WonLossValue').change(function () {
+            var wonVal = $('#WonLossValue').val();
+            if (wonVal.toUpperCase() == 'LOST') {
+                //$('#Reasons').attr('disabled', false);
+                //$('#CompName').attr('disabled', false);
+                //$('#TurnOver').attr('disabled', true);
+                //$('#TotalTonnage').attr('disabled', true);
+                //$('#GrossMargin').attr('disabled', true);
+                readonly(document.getElementById('Reasons'), false);
+                readonly(document.getElementById('CompName'), false);
+                readonly(document.getElementById('CompititorPrice'), false);
+            
+                
+                readonly(document.getElementById('TotalTonnage'), true);
+                readonly(document.getElementById('GrossMargin'), true);
+                readonly(document.getElementById('TurnOver'), true);
+                readonly(document.getElementById('PODate'), true);
+                readonly(document.getElementById('PONo'), true);
+
+            } else if (wonVal.toUpperCase() == 'WIN') {
+                //$('#TurnOver').attr('disabled', false);
+                //$('#TotalTonnage').attr('disabled', false);
+                //$('#GrossMargin').attr('disabled', false);
+                //$('#Reasons').attr('disabled', true);
+                //$('#CompName').attr('disabled', true);
+
+              //  $('#TurnOver').removeAttr('readonly');
+             
+                readonly(document.getElementById('TotalTonnage'), false);
+                readonly(document.getElementById('GrossMargin'), false);
+                readonly(document.getElementById('TurnOver'), false);
+                readonly(document.getElementById('PODate'), false);
+                readonly(document.getElementById('PONo'), false);
+
+                readonly(document.getElementById('Reasons'), true);
+                readonly(document.getElementById('CompName'), true);
+                readonly(document.getElementById('CompititorPrice'), true);
+              
+            }
+        });
+
+        $('#btnAddProduct').click(function () {
+            debugger;
+
+            //create
+            var validator = $("#quoteConvertForm").validate();
+            var isValid = validator.form();
+            var data = $("#quoteConvertForm").serialize();
+
+            if (isValid) {
+                $.post('NavigateOrderItems', data).done(function (data) {
+                    if (data != null) {
+                        if (data.status == "FAILED") {
+                            AlertPopup('Please provide all required date');
+                        } else {
+                            debugger;
+                            window.location = "OrderItems?BusinessSegment=" + data.businessSegment;
+                        }
+                    }
+
+                });
+
+            } else {
+                //  alert('failed');
+            }
+
+            return false;
+        });
+
+        function ConvertStrDate(strDate) {
+            if (strDate != null && strDate != "" && strDate != undefined) {
+                return new Date(strDate.toString().split('/')[2], strDate.toString().split('/')[1], strDate.toString().split('/')[0])
+            } else {
+                return null;
+
+            }
+        }
+
+        $("#quoteConvertForm").validate({
+            errorClass: "error-class",
+            rules: {
+                Reasons: {
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return true;
+                        else
+                            return false;                        
+                     }
+                },
+                CompName: {
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return true;
+                        else
+                            return false;
+                    }
+                },
+                TotalCost: {
+                    number:true
+                },
+                TotalTonnage: {
+                    number: true,
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return false;
+                        else if ($('#WonLossValue').val() == 'Win') {
+                            return true;
+                        }
+
+                    }
+                },
+                GrossMargin: {
+                    number: true,
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return false;
+                        else if ($('#WonLossValue').val() == 'Win') {
+                            return true;
+                        }
+
+                    }
+                },
+                TurnOver: {
+                    required:function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return false;
+                        else if ($('#WonLossValue').val() == 'Win') {
+                            return true;
+                        }
+                            
+                    },
+                    number: true
+                },
+                CompititorPrice: {
+                    number: true,
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return true;
+                        else
+                            return false;
+                    }
+                },
+                PODate: {
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return false;
+                        else if ($('#WonLossValue').val() == 'Win') {
+                            return true;
+                        }
+
+                    }
+                },
+                PONo: {
+                    required: function () {
+                        if ($('#WonLossValue').val() == 'Lost')
+                            return false;
+                        else if ($('#WonLossValue').val() == 'Win') {
+                            return true;
+                        }
+
+                    }
+                },
+                OrderType: {
+                    required: true
+                },
+                TotalItemValue: {
+                    required: true,
+                    number:true
+                },
+                WonLossValue: {
+                    required: true
+                }
+
+            },
+            messages: {
+               
+                Reasons: {
+                    required: "Please select Reason"
+                },
+                CompName: {
+                    required: "Please select Compititor Name"
+                },
+                PONo: {
+                    required: "Please provide PO No"
+                },
+                PODate: {
+                    required: "Please provide PO Date"
+                },
+               
+                OrderType: {
+                    required: "Please select Order Type"
+                },
+                TotalItemValue: {
+                    required: "Please provide Total Item Value",
+                    number: "Please provide numarical values"
+                },
+               
+                WonLossValue: {
+                    required: "Please select Won Loss status"
+                },
+                TotalCost: {
+                    number: "Please provide numarical values"
+                },
+                TotalTonnage: {
+                    number: "Please provide numarical values",
+                    required: "Please provide Total Tonnage"
+                },
+                GrossMargin: {
+                    number: "Please provide numarical values",
+                    required: "Please provide Gross Margin"
+                },
+                TurnOver: {
+                    number: "Please provide numarical values",
+                    required: "Please provide Turn Over"
+                },
+                CompititorPrice: {
+                    number: "Please provide numarical values",
+                    required: "Please select Compititor Price"
+                }
+            },
+            submitHandler: function (form) {
+                // do other things for a valid form
+                form.submit();
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (event, validator) {
+                // 'this' refers to the form
+                $("#initialload").hide();
+            }
+        });
+    </script>
+}

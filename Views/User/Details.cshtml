@@ -1,0 +1,315 @@
+﻿@model DPGSalesClient.Models.UserDetailsViewModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-info">
+        User Details
+    </h1>
+    <ol class="breadcrumb">
+        <li><a asp-action="Index"><i class="fa fa-home"></i> List</a></li>
+        <li class="active"> Details</li>
+    </ol>
+</section>
+
+<section class="content">
+    <input type="hidden" asp-for="@Model.UserID" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Personal Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+                    <label class="hdr">ID </label><br />
+                    <label class="val">@Model.UserID </label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Logon Name</label><br />
+                    <label class="val">@Model.LogonName</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">First Name </label><br />
+                    <label class="val">@Model.FirstName</label>
+
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Last Name</label><br />
+                    <label class="val">@Model.LastName</label>
+
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Plant</label><br />
+                    <label class="val">@Model.Mobile</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Email</label><br />
+                    <label class="val">@Model.Email</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Status</label><br />
+                    <label class="val">@Model.Status</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{
+        string strCssDisable = "";        
+        if (Model.Status.ToUpper() == "ACTIVE")
+        {
+            strCssDisable = "";            
+        }
+        else
+        {
+            strCssDisable = "disable";        
+        }
+    }
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Roles</h3>
+            <div class="box-tools pull-right">
+                <a asp-action="AssignRole" asp-route-id="@Model.UserID" class="btn btn-sm btn-primary nav-btn @strCssDisable"><i class="fa fa-check-square-o m-r-xs"></i>New Role</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="bg-light dker">
+                        <th>
+                            Role ID
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Roles)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <button value="@item.RoleID" class="btn btn-xs btn-danger pull-right m-r-xs trg-remove-role @strCssDisable"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <em id="remove-role-error-msg" class="error-class"></em>
+        </div>
+    </div>
+    
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Positions</h3>
+            <div class="box-tools pull-right">
+                <a asp-action="AssignPosition" asp-route-id="@Model.UserID" class="btn btn-sm btn-primary nav-btn @strCssDisable"><i class="fa fa-check-square-o m-r-xs"></i>New Position</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="bg-light dker">
+                        <th>
+                            Role
+                        </th>
+                        <th>
+                            Client
+                        </th>
+                        <th>
+                            LOB
+                        </th>
+                        <th>
+                            Organization
+                        </th>
+
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Positions)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClientName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LobName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrgName)
+                        </td>
+
+                        <td>
+
+                            @{
+                                    string IDs = item.RoleID + "#" + item.ClientID + "#" + item.LobID + "#" + item.OrgID;
+                            }
+                            <button value="@IDs" class="btn btn-xs btn-danger pull-right m-r-xs trg-remove-position @strCssDisable"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                                    }
+                </tbody>
+            </table>
+            <em id="remove-position-error-msg" class="error-class"></em>
+        </div>
+    </div>
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Reportings</h3>
+            <div class="box-tools pull-right">
+                <a asp-action="AssignReporting" asp-route-id="@Model.UserID" class="btn btn-sm btn-primary nav-btn @strCssDisable" ><i class="fa fa-check-square-o m-r-xs"></i>New Reporting</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="bg-light dker">
+                        <th>
+                            Reporting To
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Mobile
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Reportings)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReportingUserID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReportingUserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReportingMobile)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReportingEmail)
+                            </td>
+
+                            <td>
+                                <button value="@item.ReportingUserID" class="btn btn-xs btn-danger pull-right m-r-xs trg-remove-reporting @strCssDisable"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <em id="remove-reporting-error-msg" class="error-class"></em>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="removeRoleModal" tabindex="-1" role="dialog" aria-labelledby="removeRoleModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="removeRoleModal" style="font-weight: 800;color: #00BCD4;">Remove Role</h5>
+                </div>
+                <div class="modal-body" style="height:100px;overflow-y:auto">
+                    <span class="h6">Are you Sure, you want to Remove ?? </span>
+                    <input type="hidden" name="RoleID" id="RoleID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnRemoveRole" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="removePositionModal" tabindex="-1" role="dialog" aria-labelledby="removePositionModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="removePositionModal" style="font-weight: 800;color: #00BCD4;">Remove Position</h5>
+                </div>
+                <div class="modal-body" style="height:100px;overflow-y:auto">
+                    <span class="h6">Are you Sure, you want to Remove?? </span>
+                    <input type="hidden" name="IDs" id="IDs" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnRemovePosition" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="removeReportingModal" tabindex="-1" role="dialog" aria-labelledby="removeReportingModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="removeReportingModal" style="font-weight: 800;color: #00BCD4;">Remove Reporting User</h5>
+                </div>
+                <div class="modal-body" style="height:100px;overflow-y:auto">
+                    <span class="h6">Are you Sure, you want to Remove?? </span>
+                    <input type="hidden" name="ReportingID" id="ReportingID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnRemoveReporting" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+@section scripts{
+    <script type="text/javascript" src="~/js/scripts/User/Details.js"></script>
+}

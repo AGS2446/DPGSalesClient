@@ -1,0 +1,85 @@
+﻿@model DPGSalesClient.Models.EnquiryAttachmentHistoryModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+
+<section class="content-header">
+    <h1 class="pull-left">
+       Costsheet Documents
+    </h1>
+    <a href="@Url.Action("Index","ExecutiveSummaryReport")" class="btn btn-default btn-flat nav-btn pull-right"><i class="fa fa-backward"></i> <span class="hidden-xs">Back</span></a>
+</section>
+<section class="content">  
+   
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content">
+                <div class="box box-primary">
+
+                    <div class="box-body">
+                        <div class="col-md-3 hidden-sm hidden-xs">
+
+                        </div>
+                            <div class="col-md-6 col-xs-12 col-sm-12">
+
+                                <table id="example2" class="table  table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>User ID</th>
+                                            <th>User Name</th>
+                                            <th>Created On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model?.Attachments != null && Model?.Attachments.Count > 0)
+                                        {
+
+                                            @foreach (var file in Model.Attachments)
+                                            {
+                                                <tr>
+                                                    <td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>
+                                                    <td>@file.Name</td>
+                                                    <td>@file.UserID</td>
+                                                    <td>@file.UserName</td>
+                                                    <td>@String.Format("{0:dd/MM/yyyy HH:mm:ss}", file.CreatedOn)</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+</section>
+
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': false,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': false,
+            'info': false,
+            'autoWidth': false
+        });
+
+
+    </script>
+}

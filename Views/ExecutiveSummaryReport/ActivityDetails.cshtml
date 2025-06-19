@@ -1,0 +1,194 @@
+﻿@model DPGSalesClient.Models.ContactPlanDetailsModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-muted">
+       Activity Details
+    </h1>
+   
+</section>
+<section class="content" >
+
+    <input type="hidden" asp-for="@Model.ActivityId" />
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">CustomerID</label>  <br />
+                    <label class="val">@Model.CustomerID</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Name</label><br />
+                    <label class="val">@Model.CustomerName</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Contact Person</label><br />
+                    <label class="val">@Model.ContactName</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Designation</label><br />
+                    <label class="val">@Model.Designation</label>
+
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Mobile Number</label><br />
+                    <label class="val">@Model.MobileNumber</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Email ID </label><br />
+                    <label class="val">@Model.EmailID</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title">Activity Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Visit Date </label><br />
+                    <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.VisitOn)</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Objective of the Visit</label><br />
+                    <label class="val">@Model.ObjectiveofVisit</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">List of Discussion </label><br />
+                    <label class="val">@Model.ListofDicsussion</label>
+
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Outcome of the meeting </label><br />
+                    <label class="val">@Model.OutcomeofMeeting</label>
+
+                </div>
+            </div>
+
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Support Required</label><br />
+                    <label class="val">@Model.SupportRequired</label>
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Other Team Members </label><br />
+                    <label class="val">@Model.OtherTeamMembers</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">DocumentID</label><br />
+                    <label class="val">@Model.DocumentID</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Remarks </label><br />
+                    <label class="val">@Model.Remarks</label>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+        <div class="box box-warning" style="padding-right:50px">
+            <div class="box-header with-border">
+                <h3 class="box-title">Documents</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                <div class="col-md-6">
+                    @if (Model.Files != null && Model.Files.Count > 0)
+                    {
+                    <ol>
+                        @foreach (var file in Model.Files)
+                        {
+                            <li style="color:#673AB7;font-size: 14px;font-weight: 600;">
+                                <a href="@file.FileUrl" target="_blank" style="color: #673AB7;font-size: 14px;font-weight: 600;">
+                                    @file.Name
+                                </a>
+                            </li>
+                        }                       
+                    </ol>
+                    }
+                    else
+                    {
+                        <span>No Attachments</span>
+                    }
+
+                </div>
+
+
+                </div>
+      
+            </div>
+        
+        </div>
+   
+        <div class="row">
+        <div class="col-md-3 ">
+            <a class="btn btn-danger btn-details nav-btn" href="@Url.Action("ActivityIndex","ExecutiveSummaryReport",new {enqId=Model.DocumentID })"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+        <div class="col-md-3">
+        </div>
+            <div class="col-md-3">
+               
+            </div>
+    </div>
+
+    
+
+</section>
+
+
+@section scripts{
+
+    <script type="text/javascript">
+     
+
+    </script>
+}

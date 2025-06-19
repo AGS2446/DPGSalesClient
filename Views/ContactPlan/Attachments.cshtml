@@ -1,0 +1,108 @@
+﻿@model DPGSalesClient.Models.AttachmentsModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1>
+       Documents
+    </h1>
+
+</section>
+<section class="content" >
+
+    <form asp-action="Attachments" asp-controller="ContactPlan" method="post" >
+        <input type="hidden" value="@Model.PendingUploadFiles" asp-for="@Model.PendingUploadFiles" id="datFile" />     
+        <input type="hidden" value="@Model.ActivityId" asp-for="@Model.ActivityId"  />   
+        <div class="box box-warning" style="padding-right:50px">
+            <div class="box-header with-border">
+                <h3 class="box-title text-warning">Uploaded Documents</h3>
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="col-md-6 ">
+                        @if (Model.UploadedFiles != null && Model.UploadedFiles.Count > 0)
+                        {
+                            <table id="tblAttachments" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>User ID</th>
+                                        <th>User Name</th>
+                                        <th>Created On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var file in Model.UploadedFiles)
+                                    {
+                                        <tr>
+                                            <td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>
+                                            <td>@file.Name</td>
+                                            <td>@file.UserID</td>
+                                            <td>@file.UserName</td>
+                                            <td>@String.Format("{0:dd/MM/yyyy HH:mm:ss}", file.CreatedOn)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span style="margin-left: 15px;    top: -10px;    position: relative;">No Attachments uploaded yet.</span>
+                        }
+                    </div>
+
+                </div>
+               
+             
+                 <h4 class="box-title text-green">New Documents</h4>
+               
+                 <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="exampleInputFile">File input</label>
+                            <input type="file" id="cpFileupload">
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <a id="btnAdd" class="btn btn-warning margin">Add File</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 ">
+                        <ul id="uploadFileList" style="padding: 0;"></ul>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-md-11 ">                       
+                        <button class="btn btn-success  margin-r-5 " style="padding-left:35px;padding-right:35px" type="submit">Upload</button>
+                        <a class="btn btn-default " href="@Url.Action("Index","ContactPlan")" style="padding-left:35px;padding-right:35px">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>  
+      
+    </form>
+
+
+    <!-- Modal -->
+  
+
+</section>
+
+
+@section scripts{
+
+    <script type="text/javascript" src="~/js/scripts/Attachments.js">
+
+    </script>
+}

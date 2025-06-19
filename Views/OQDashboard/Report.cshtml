@@ -1,0 +1,425 @@
+﻿@model DPGSalesClient.Models.OQDashReportModel
+<style>
+    .content-wrapper {
+        min-height: 100%;
+        background-color: #eee !important;
+        z-index: 800;
+    }
+
+   .nav>li>a{
+        padding-top:20px;
+        padding-bottom:20px;
+    }
+
+   .bg-lg-Active>a{
+        background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #6EFF33 !important;
+    }
+    .bg-lr-Active>a{
+        background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #FF5533 !important;
+    }
+     .bg-lo-Active>a{
+        background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #FF7D33 !important;
+    }
+
+
+    .rupSymbol{
+        color: #444;
+        font-size:10px;
+        font-weight: 400;
+    }
+     .lbl-Cat-Name{
+        color: #444;
+        font-size:14px;
+        font-weight: 400;
+    }
+
+    .reportActive>a{
+       
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #3c8dbc !important;
+    }
+    .divisionActive>a{
+          background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #FF5533 !important;
+    }
+    .regionActive>a{
+          background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #F9FF33 !important;
+    }
+    
+    .segmentActive>a{
+         background: transparent !important;
+        color: #444 !important;
+       border-top: 0 !important;
+       border-left-color: #6EFF33 !important;
+        
+    }
+
+  
+</style>
+<section class="content">
+    <form asp-controller="OQDashboard" method="post" asp-action="Search" id="frmOQDashSearch">
+        <div class="row">
+            <div class="col-md-7 col-sm-12">
+                <h3 style="margin-top:0">Dashboard </h3>
+            </div>
+            <div class="col-md-2 col-sm-12 ">
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right" asp-for="@Model.FromDate" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12 ">
+
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right" asp-for="@Model.ToDate" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-md-1 col-sm-12">
+                <button class="btn btn-info btn-block" name="filter" id="filter" type="submit"> GO</button>
+            </div>
+
+        </div>
+    </form>
+    <div class="row m-t-md">
+        <div class="col-md-3">
+            <div class="box box-solid">
+                <div class="box-body no-padding">
+                    <ul class="nav nav-pills nav-stacked" id="ulReport">
+                        <li class="bg-lg-Active">
+                            <a href="#" onclick="MainFunction(this, 'OW');">
+                                <span class="text-bold" >Order Booked</span>                                
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderWinValue)</span>
+                            </a>
+                            <input type="hidden" value="@Model.Response.OrderWinDivisionWise"  />
+                        </li>
+                        <li  class="bg-lr-Active">
+                            <a href="#" onclick="MainFunction(this);">
+                                <span class="text-bold">Order Lost</span>                                
+                                <span class="label lbl-Cat-Name pull-right" ><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderLostValue)</span>
+                            </a>
+                            <input type="hidden" value="@Model.Response.OrderLostDivisionWise"  />
+                        </li>
+
+                        <li class="bg-lo-Active">
+                            <a href="#" onclick="MainFunction(this);">
+                                <span class="text-bold">Quotes</span>
+                               
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.QuotesValue)</span>
+                            </a>
+                            <input type="hidden" value="@Model.Response.QuotesDivisionWise" />
+                        </li>
+                        <li class="bg-lo-Active">
+                            <a href="#" onclick="MainFunction(this,'OF3');">
+                                <span class="text-bold">Order Forecast 3 Months</span>
+                                
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderForcast3MonthsValue)</span>
+                            </a>
+                            <input type="hidden" value="@Model.Response.OrderForcast3MonthsDivisionWise"  />
+                        </li>
+
+                        <li class="bg-lo-Active">
+                            <a href="#" onclick="MainFunction(this, 'M1');">
+                                <span class="text-bold">@Model.Response.OrderForcastMonth1Name</span>
+                                
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderForcastMonth1Value)</span>
+                            </a>
+                                                        <input type="hidden" value="@Model.Response.OrderForcastMonth1DivisionWise"  />
+
+                        </li>
+                        <li class="bg-lo-Active">
+                            <a href="#" onclick="MainFunction(this);">
+                                
+                                <span class="text-bold">@Model.Response.OrderForcastMonth2Name</span>
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderForcastMonth2Value)</span>
+                            </a>
+                            <input type="hidden" value="@Model.Response.OrderForcastMonth2DivisionWise"/>
+                        </li>
+                        <li class="bg-lo-Active">
+                            <a href="#" onclick="MainFunction(this);">                                
+                                <span class="text-bold">@Model.Response.OrderForcastMonth3Name</span>
+                                <span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>@FormatValue(Model.Response.OrderForcastMonth3Value)</span>
+                            </a>
+                            <input type="hidden"  value="@Model.Response.OrderForcastMonth3DivisionWise"  />
+                        </li>
+
+                    </ul>
+                </div>
+
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-solid" id="dvDivisons">
+                <div class="box-header text-bold">
+                    DIVISIONS
+                </div>
+                <div class="box-body no-padding" >
+                    <ul class="nav nav-pills nav-stacked" id="ulDivisons">
+                       
+                    </ul>
+                </div>
+
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <div class="box box-solid" id="dvRegions">
+                <div class="box-header text-bold" >
+                    ZONES
+                </div>
+                <div class="box-body no-padding" >
+                    <ul class="nav nav-pills nav-stacked" id="ulRegions">
+                   
+                    </ul>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-3 ">
+          <div class="box box-solid" id="dvSegment">
+              <div class="box-header text-bold" >
+                  SEGMENTS
+              </div>
+                <div class="box-body no-padding" >
+                    <ul class="nav nav-pills nav-stacked" id="ulSegment">
+                       
+                    </ul>
+                </div>
+            </div>
+       </div>
+    </div>
+
+    <div class="row">
+        <sapn style="margin-left:20px;font-weight:bold;font-size:20px;">* Values in Lakhs</sapn>
+    </div>
+
+    <div class="modal fade" id="modal-default" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title text-info" id="modelTitle">Default Modal</h4>
+                </div>
+                <div class="modal-body" style="height:350px;overflow-y:auto">
+                    @*<ul id="ulData" class="list-group">
+
+            </ul>*@
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Contract Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modelBody">
+
+                        </tbody>
+                        </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+</section>
+@functions{
+        public string FormatValue(double valu)
+        {
+            var strres = "";
+            try
+            {
+                if (valu == 0)
+                    strres = "0";
+                else if (valu > 0)
+                    strres = valu.ToString("#.##");
+            }
+            catch (Exception ex)
+            {
+            }
+            return strres;
+        }
+    }
+
+    @section scripts{
+
+    <script>
+        $('#FromDate').datepicker({
+        autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today"
+        });
+        $('#ToDate').datepicker({
+        autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today"
+        });
+
+        $(document).ready(function () {
+            $('#dvDivisons').hide();
+            $('#dvRegions').hide();
+            $('#dvSegment').hide();
+        });
+
+        function MainFunction(obj,strType) {
+            debugger;
+            // alert($($(obj).children()[0]).val());
+            $('#ulReport >li.reportActive').removeClass('reportActive');
+            $($(obj).parent()).addClass("reportActive");
+
+            $('#ulDivisons').empty();
+
+            var objChilds = JSON.parse($($($(obj).parent()).children()[1]).val());
+
+            for (var intD = 0; intD < objChilds.divisions.length; intD++) {
+
+                debugger;
+                var child = encodeURIComponent(JSON.stringify(objChilds.divisions[intD].Childs));
+
+                var divisonTemp = '<li><a href="#" onclick="DivionFunction(this);"> ' + objChilds.divisions[intD].Name + '<span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>' + objChilds.divisions[intD].Value + '</span> </a> <input type="hidden" value="' + child + '" id="OW" /></li>';
+                $('#ulDivisons').append(divisonTemp);
+            }
+
+            //{ "Regions":'+JSON.stringify(objChilds.divisions[intD].Childs)+'}
+            $('#dvDivisons').show();
+
+            $('#ulRegions').empty();
+            $('#ulSegment').empty();
+       
+            $('#dvRegions').hide();
+            $('#dvSegment').hide();
+
+        }
+        function DivionFunction(obj) {
+            debugger;
+            // alert($($(obj).children()[0]).val());
+
+            $('#ulDivisons >li.divisionActive').removeClass('divisionActive');
+            $($(obj).parent()).addClass("divisionActive");
+
+            $('#ulRegions').empty();
+
+            var objChilds = JSON.parse(decodeURIComponent($($($(obj).parent()).children()[1]).val()));
+            for (var intD = 0; intD < objChilds.length; intD++) {
+
+                debugger;
+                var child = encodeURIComponent(JSON.stringify(objChilds[intD].Childs));
+
+                var regionTemp = '<li><a href="#" onclick="RegionFunction(this);"> ' + objChilds[intD].Name + '<span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>' + objChilds[intD].Value + '</span> </a> <input type="hidden" value="' + child + '" id="OW" /></li>';
+                $('#ulRegions').append(regionTemp);
+            }
+         
+            $('#dvRegions').show();
+            $('#dvSegment').hide();
+
+            $('#ulSegment').empty();
+        }
+        function RegionFunction(obj) {
+            debugger;
+            // alert($($(obj).children()[0]).val());
+
+            $('#ulRegions >li.regionActive').removeClass('regionActive');
+            $($(obj).parent()).addClass("regionActive");
+
+            $('#ulSegment').empty();
+
+            var objChilds = JSON.parse(decodeURIComponent($($($(obj).parent()).children()[1]).val()));
+            for (var intD = 0; intD < objChilds.length; intD++) {
+
+                debugger;
+                var child = encodeURIComponent(JSON.stringify(objChilds[intD].Parent + '#' + objChilds[intD].Name));
+
+                var segmentTemp = '<li><a href="#" onclick="SegmentFunction(this);"> ' + objChilds[intD].Name + '<span class="label lbl-Cat-Name pull-right"><i class="fa fa-inr rupSymbol"></i>' + objChilds[intD].Value + '</span> </a> <input type="hidden" value="' + child + '" id="OW" /></li>';
+                $('#ulSegment').append(segmentTemp);
+            }
+        
+            $('#dvSegment').show();
+        }
+
+        function SegmentFunction(obj) {
+            debugger;
+            $('#ulSegment >li.segmentActive').removeClass('segmentActive');
+            $($(obj).parent()).addClass("segmentActive");
+
+            
+            var currSegment = JSON.parse(decodeURIComponent($($($(obj).parent()).children()[1]).val()));
+            var inpVals = currSegment.split('#');
+                     
+            $.post("../OQDashboard/ReportViewNavigator", { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), Type: inpVals[0], Division: inpVals[1], Region: inpVals[2], Segment: inpVals[3] }, function (resp) {
+                debugger;
+                if (resp.result.value != null && resp.result.value != undefined) {
+                    if (resp.result.value.orderItemList!=undefined ) {
+                        var strListDate = '';
+                        $('#modelBody').empty();
+                        for (var intO = 0; intO < resp.result.value.orderItemList.length; intO++) {
+                          //  strListDate += '<li class="list-group-item d-flex justify-content-between align-items-center">' + resp.result.value.orderItemList[intO].accountName + + ' <span class="badge badge-pill">' + resp.result.value.orderItemList[intO].contractValue + '</span></li>';
+                            strListDate += '<tr><td>' + resp.result.value.orderItemList[intO].accountName + '</td><td>' + resp.result.value.orderItemList[intO].branch + '</td><td><i class="fa fa-inr rupSymbol"></i>' + resp.result.value.orderItemList[intO].contractValue.toFixed(2) + '</td></tr>';
+                        }
+                        
+                      //  $('#ulData').append(strListDate);
+                        $('#modelTitle').html(inpVals[3]+' Values');
+                        $('#modelBody').append(strListDate);
+                        $('#modal-default').modal('show');
+
+                    } else if (resp.result.value.quoteItemList != undefined) {
+
+                        var strListDate = '';
+                        $('#modelBody').empty();
+                        for (var intO = 0; intO < resp.result.value.quoteItemList.length; intO++) {
+                            //strListDate += '<li class="list-group-item d-flex justify-content-between align-items-center">' + resp.result.value.quoteItemList[intO].salesEngg + ' <span class="badge badge-pill">' + resp.result.value.quoteItemList[intO].contractValue + '</span></li>';
+                            strListDate += '<tr><td>' + resp.result.value.quoteItemList[intO].salesEngg + '</td><td>' + resp.result.value.quoteItemList[intO].branch + '</td><td><i class="fa fa-inr rupSymbol"></i>' + resp.result.value.quoteItemList[intO].contractValue.toFixed(2) + '</td></tr>';
+                        }
+
+                       // $('#ulData').append(strListDate);
+                        $('#modelTitle').html(inpVals[3] + ' Values');
+                        $('#modelBody').append(strListDate);
+
+                        $('#modal-default').modal('show');
+                    } 
+
+                }
+
+            })
+             .fail(function (err) {
+                 alert('Error: '+err);
+             })
+             .always(function () {
+              //   alert("finished");
+             });
+
+           
+        }
+       
+ 
+
+      
+
+    </script>
+
+}

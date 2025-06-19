@@ -1,0 +1,143 @@
+﻿@model DPGSalesClient.Models.QuoteProduct
+
+
+
+<section class="content-header">
+    <h1>
+        New Product
+    </h1>
+  
+</section>
+<section class="content" >
+
+    <form asp-action="AddProduct" asp-controller="Quote" method="post" id="frmAddProduct">
+        <input type="hidden" asp-for="@Model.Division" />
+        <div class="box box-success">
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>BusinessSegment<span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.BusinessSegment" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Product Segment <span class="text-red">*</span></label>
+                            <select class="form-control select2" style="width: 100%;" asp-for="@Model.ProductSeg" asp-items="@Model.ProductList">
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total Quantity <span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.Quantity">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total Value (In Lakhs)<span class="text-red">*</span></label>
+                            <input type="text" class="form-control" asp-for="@Model.TotalValue">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total Tonnage</label>
+                            <input type="text" class="form-control" asp-for="@Model.TotalTonnage">
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-md-11 ">
+                        <a class="btn btn-default pull-right nav-btn" href="@Url.Action("QuoteItems","Quote")" style="padding-left:35px;padding-right:35px">Cancel</a>
+                        <button class="btn btn-success pull-right margin-r-5 nav-btn" style="padding-left:35px;padding-right:35px" type="submit">Save</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </form>
+
+    
+</section>
+
+
+@section scripts{
+<script src="~/js/scripts/AddProduct.js"></script>
+
+    @*<script type="text/javascript">
+        $('#frmQuoteAddProduct').validate({
+            errorClass: "error-class",
+            rules: {
+                BusinessSegment: {
+                    required: true
+                },
+                ProductSeg: {
+                    required:true
+                },
+                Quantity: {
+                    required: true,
+                    number: true
+                },
+                TotalValue: {
+                    required: true,
+                    number:true
+                },
+                TotalTonnage: {                   
+                    number: true
+                }
+            },
+            messages: {
+                BusinessSegment: {
+                    required: true
+                },
+                ProductSeg: {
+                    required: "Please select Product Segment"
+                },
+                Quantity: {
+                    required: "Please provide Total Quantity",
+                    number: "Please enter numarical values"
+                },
+                TotalValue: {
+                    required: "Please provide Total value",
+                    number: "Please enter numarical values"
+                },
+                TotalTonnage: {                  
+                    number: "Please enter numarical values"
+                }
+            },
+            submitHandler: function (form) {
+                // do other things for a valid form
+                form.submit();
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            invalidHandler: function (event, validator) {
+                // 'this' refers to the form
+                $("#initialload").hide();
+            }
+        });
+    </script>*@
+}

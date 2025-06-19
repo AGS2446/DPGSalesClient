@@ -1,0 +1,518 @@
+﻿@model DPGSalesClient.Models.QuoteDetailsModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-muted">
+       Quotation Details
+    </h1>   
+</section>
+<section class="content">
+
+    <input type="hidden" asp-for="@Model.QuoteID" />
+    <div class="box box-primary" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Location Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Division </label><br />
+
+                    <label class="val">@Model.Division </label>
+                    <input type="hidden" class="form-control" id="hdnDivision" asp-for="@Model.Division"/>
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Region</label><br />
+                    <label class="val">@Model.Region</label>
+
+                </div>
+
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Branch </label><br />
+                    <label class="val">@Model.Branch</label>
+
+
+                </div>
+                <div class="col-md-3 details">
+
+                    <label class="hdr">Sales Office</label><br />
+                    <label class="val">@Model.SalesOffice</label>
+
+                </div>
+            </div>
+
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+
+                    <label class="hdr">Plant</label><br />
+                    <label class="val">@Model.Plant</label>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-info" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Customer Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Code</label>  <br />
+                    <label class="val">@Model.CustomerCode</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Name</label><br />
+                    <label class="val">@Model.CustomerName</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Classification</label><br />
+                    <label class="val">@Model.CustomerClassification</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Type</label><br />
+                    <label class="val">@Model.CustomerType</label>
+                </div>
+
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Segment</label>  <br />
+                    <label class="val">@Model.CustomerSegment</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Customer Sub Segment</label><br />
+                    <label class="val">@Model.CustomerSubSegment</label>
+                </div>
+                <div class="col-md-3 details">
+
+                </div>
+                <div class="col-md-3 details">
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="box box-success" style="padding-right:50px">
+        <div class="box-header with-border">
+            <h3 class="box-title">Quote Info</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3 details">
+                    <label class="hdr">Business Segment</label>  <br />
+                    <label class="val">@Model.BusinessSegment</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Product Required</label><br />
+                    <label class="val">@Model.ProdcutRequired</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Status</label><br />
+                    <label class="val">@Model.Status</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Probability(%)</label><br />
+                    <label class="val">@Model.Probability</label>
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details ">
+                    <label class="hdr">Project Name</label><br />
+                    <label class="val">@Model.ProjectName</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Contract Value(In Lakhs) </label><br />
+                    <label class="val">@Model.ContractValue_IN_LAKHS</label>
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Quote Due Date</label><br />
+                    <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.QuoteMaturityDate)</label>
+                </div>
+                <div class="col-md-3 details ">
+                    <label class="hdr">Assigned To</label><br />
+                    <label class="val">@Model.QuoteAssignTo</label>
+                </div>
+                @*<div class="col-md-3 details">
+                        <label class="hdr">Quote Validity Date </label><br />
+                        <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.QuoteValidityDate)</label>
+                    </div>*@
+            </div>
+
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Architect</label><br />
+                    <label class="val">@Model.Architect</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Consultant</label><br />
+                    <label class="val">@Model.Consultant</label>
+                </div>
+                <div class="col-md-3 details ">
+                    <label class="hdr">Offer Date</label><br />
+                    <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.QuoteOfferDate)</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Currency</label><br />
+                    <label class="val">@Model.Currency</label>
+                </div>
+
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Total Value(In Lakhs) </label><br />
+                    <label class="val">@Model.TotalValue</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Tonnage </label><br />
+                    <label class="val">@Model.Tonnage</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Source Type </label><br />
+                    <label class="val">@Model.SourceType</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Description</label><br />
+                    <label class="val">@Model.QuoteDescription</label>
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 1</label><br />
+                    <label class="val">@Model.Classification1</label>
+                </div>
+
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 2 </label><br />
+                    <label class="val">@Model.Classification2</label>
+                </div>
+                <div class="col-md-3 details ">
+                    <label class="hdr">Classification 3</label><br />
+                    <label class="val">@Model.Classification3</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 4 </label><br />
+                    <label class="val">@Model.Classification4</label>
+                </div>
+            </div>
+            <div class="row p-t-15">
+                <div class="col-md-3 details">
+                    <label class="hdr">Lead ID </label><br />
+                    <label class="val">@Model.LeadID</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Enquiry ID </label><br />
+                    <label class="val">@Model.EnquiryID</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Quote ID </label><br />
+                    <label class="val">@Model.QuoteID</label>
+                </div>
+                <div class="col-md-3 details">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-warning">
+        <div class="box-header with-border">
+            <h3 class="box-title">Documents</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    @if (Model.Files != null && Model.Files.Count > 0)
+                    {
+                        <ol>
+                            @foreach (var file in Model.Files)
+                            {
+                                <li style="color:#673AB7;font-size: 14px;font-weight: 600;">
+                                    <a href="@file.FileUrl" target="_blank" style="color: #673AB7;font-size: 14px;font-weight: 600;">
+                                        @file.Name
+                                    </a>
+                                </li>
+                            }
+                        </ol>
+                    }
+                    else
+                    {
+                        <span>No documents</span>
+                    }
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if(ViewBag.RoleId != "ROLE000010")
+        {
+            string strCssDisable = "";
+            string strParentCssDisable = "";
+            string strConvertCssDisable = "";
+            string strConvertParentCssDisable = "";
+            {
+
+                if(Model.Status.ToUpper() == "OPEN")
+                {
+                    strCssDisable = "";
+                    strParentCssDisable = "";
+                }
+                else
+                {
+                    strCssDisable = "disable";
+                    strParentCssDisable = "disable-hdr";
+                }
+
+                if(Model.Status.ToUpper() == "LOI" || Model.Status.ToUpper() == "OPEN")
+                {
+                    strConvertCssDisable = "";
+                    strConvertParentCssDisable = "";
+                }
+                else
+                {
+                    strConvertCssDisable = "disable";
+                    strConvertParentCssDisable = "disable-hdr";
+                }
+
+            }
+
+            <div class="col-md-2 @strConvertParentCssDisable">
+                <a class="btn bg-green btn-details ConformButton nav-btn @strConvertCssDisable" href="@Url.Action( "ConvertToOrder", "Quote", new { qteId = Model.QuoteID } )"><div><i class="fa fa-refresh"></i><br /><span>Convert</span></div>  </a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-red btn-details RemarksButton nav-btn @strCssDisable" id="btnCancelQuote"><div><i class="fa fa-times-circle-o"></i><br /><span>Cancel</span></div></a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-blue btn-details RemarksButton nav-btn @strCssDisable" id="btnDeferredQuote"><div><i class="fa fa-times-circle-o"></i><br /><span>Deferred</span></div></a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-maroon btn-details RemarksButton nav-btn @strCssDisable" id="btnBudgetaryQuote"><div><i class="fa fa-times-circle-o"></i><br /><span>Budgetary</span></div></a>
+            </div>
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn btn-warning btn-details nav-btn @strCssDisable" href="@Url.Action( "Edit", "Quote", new { qteId = Model.QuoteID, status = Model.Status } )"><div><i class="fa fa-pencil"></i><br /><span>Edit</span></div></a>
+            </div>
+
+            <div class="col-md-2 @strParentCssDisable">
+                <a class="btn bg-blue btn-details ConformButton nav-btn @strCssDisable" id="btnQuoteLOI"><div><i class="fa fa-times-circle-o"></i><br /><span>LOI</span></div></a>
+            </div>
+            <div class="col-md-2 m-t">
+                <a class="btn bg-maroon btn-details nav-btn" href="@Url.Action( "RejectionHistory", "Quote", new { qteId = Model.QuoteID, status = Model.Status } )"><div><i class="fa fa-history"></i><br /><span>Status History</span></div></a>
+            </div>
+            <div class="col-md-2 m-t">
+                <a class="btn btn-info btn-details nav-btn" href="@Url.Action( "Index", "Quote" )"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
+            </div>
+            @if(Model.Status.ToUpper() == "BUDGETARY")
+            {
+
+                <div class="col-md-2 m-t">
+                    <a class="btn bg-blue btn-details ConformButton nav-btn" id="btnOpenQuote"><div><i class="fa fa-plus-circle"></i><br /><span>Open</span></div></a>
+                </div>
+
+            }
+        }
+        else
+        {
+            <div class="col-md-2 m-t">
+                <a class="btn btn-info btn-details nav-btn" href="@Url.Action( "Index", "Quote" )"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
+            </div>
+        }
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1366a8">
+                    <h5 class="modal-title" id="confirmModalLabel" style="font-weight: bold;width: 80%;float: left;color:white"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <label id="lblMsg"></label>
+                </div>
+                <div class="modal-footer" style="text-align:center">
+                    <button type="button" id="btnCloseActivityOk" style="width:80px" class="btn btn-primary nav-btn">Yes</button>
+                    <button type="button" class="btn btn-secondary" style="width:80px" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="statusRemarksModal" tabindex="-1" role="dialog" aria-labelledby="statusRemarksModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="remarksModalLabel">Remarks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Remarks </label>
+                        <textarea type="text" class="form-control" id="remarksForStatus"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Date </label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="statusDate" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnRemarksSubmitOk" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+@section scripts{
+    <script type="text/javascript">
+        $('#statusDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+
+        });
+
+        $('.ConformButton').click(function (obj) {
+            debugger;
+            var btnName = $(this).attr('id').replace('btn', '').replace('Quote', '');
+            switch (btnName.toUpperCase()) {
+                case 'BUDGETARY':
+                    $('#remarksModalLabel').html('BUDGETARY');
+                    
+                    $('#lblMsg').html('Are you sure you want to change status Budgetary?');
+                    break;
+                case 'CANCEL':
+                    $('#remarksModalLabel').html('CANCELLED');
+                    $('#lblMsg').html('Are you sure you want to Cancel?');
+                    break;
+                case 'DEFERRED':
+                    $('#remarksModalLabel').html('DEFERRED');
+                    $('#lblMsg').html('Are you sure you want to Differ?');
+                    break;
+                case 'LOI':
+                    $('#confirmModalLabel').html('LOI');
+                    $('#lblMsg').html('Are you sure you want to update status to LOI?');
+                    break;
+                case 'OPEN':
+                    $('#confirmModalLabel').html('OPEN');
+                    $('#lblMsg').html('Are you sure you want to update status to OPEN?');
+                    break;
+            }
+           
+            $('#confirmModal').modal('show');
+            return false;
+        });
+    $('.RemarksButton').click(function (obj) {
+        debugger;
+        var btnName = $(this).attr('id').replace('btn', '').replace('Quote', '');
+
+        if ($('#hdnDivision').val() == "CC - VOLTAS") {
+        switch (btnName.toUpperCase()) {
+            case 'BUDGETARY':
+                $('#remarksModalLabel').html('BUDGETARY');
+
+                break;
+            case 'CANCEL':
+                $('#remarksModalLabel').html('CANCELLED');
+
+                break;
+            case 'DEFERRED':
+                $('#remarksModalLabel').html('DEFERRED');
+
+                break;
+        }
+       
+            $('#statusRemarksModal').modal('show');
+        }
+        else {
+            switch (btnName.toUpperCase()) {
+                case 'BUDGETARY':
+                    $('#confirmModalLabel').html('BUDGETARY');
+
+                    $('#lblMsg').html('Are you sure you want to change status Budgetary?');
+                    break;
+                case 'CANCEL':
+                    $('#confirmModalLabel').html('CANCELLED');
+                    $('#lblMsg').html('Are you sure you want to Cancel?');
+
+                    break;
+                case 'DEFERRED':
+                    $('#confirmModalLabel').html('DEFERRED');
+                    $('#lblMsg').html('Are you sure you want to Differ?');
+
+                    break;
+            }
+            $('#confirmModal').modal('show');
+        }
+        
+        return false;
+    });
+        $('#btnCloseActivityOk').click(function () {
+            debugger;
+            $.post('@Url.Action("UpdateQuotationByConfirmation", "Quote")', { qteId: $('#QuoteID').val(), strAction: $('#confirmModalLabel').html() }).done(function (data) {
+                if (data != null) {
+                    if (data.status == "SUCCESS") {
+                        window.location = '@Url.Action("Index","Quote")';
+                    } else {
+
+                    }
+                }
+
+                $('#confirmModal').modal('hide');
+            });
+        });
+        $('#btnRemarksSubmitOk').click(function () {
+            debugger;
+            if ($('#hdnDivision').val() == "CC - VOLTAS" && ($('#remarksForStatus').val() == "" || $('#statusDate').val()=="")) {
+                AlertPopup("Please enter Remarks and Date");
+                return;
+            }
+            else {
+
+                $.post('@Url.Action("UpdateQuotationByStatusRemarks", "Quote")', { qteId: $('#QuoteID').val(), strAction: $('#remarksModalLabel').html(), strRemarks: $('#remarksForStatus').val(), strDate: $('#statusDate').val()  }).done(function (data) {
+                    if (data != null) {
+                        if (data.status == "SUCCESS") {
+                            window.location = '@Url.Action("Index","Quote")';
+                        } else {
+
+                        }
+                    }
+                    $("#initialload").hide();
+                    $('#statusRemarksModal').modal('hide');
+                });
+
+            }
+            
+        });
+
+    </script>
+   
+}

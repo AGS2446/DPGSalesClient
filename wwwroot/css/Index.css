@@ -1,0 +1,11 @@
+﻿.table > thead > tr > th {
+        background-color: #272727;
+        color: white;
+    }
+
+.odd{
+    background-color:  #F3F3F3 !important;
+}
+.even{
+    background-color:  #dedede !important;
+}

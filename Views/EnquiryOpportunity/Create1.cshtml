@@ -1,0 +1,434 @@
+﻿@model DPGSalesClient.Models.EnquiryNewModel
+
+<style>
+  
+</style>
+<section class="content-header">
+    <h1>
+        New Enquiry
+    </h1>
+   
+</section>
+<section class="content">   
+    <form asp-action="Create" asp-controller="EnquiryOpportunity" id="enqCreateForm" onload="SelectTab();">
+        <input type="hidden" asp-for="@Model.SelectTab" />
+      <input type="hidden" asp-for="@Model.strProducts" />
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Header</a></li>                
+                        <li ><a href="#tab_2"  data-toggle="tab">Items</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_1">
+                           <div class="content" >
+                               <div class="box box-primary">
+                                   <div class="box-header with-border">
+                                       <h3 class="box-title">Location</h3>
+                                   </div>
+
+                                   <div class="box-body">
+
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Division<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Division" asp-items="@Model?.DivisionList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Region<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Region" asp-items="@Model?.RegionList"></select>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Branch<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Branch" asp-items="@Model?.BranchList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Sales Office<span class="text-red">*</span></label>
+                                                   <input type="text" class="form-control" asp-for="@Model.SalesOffice" readonly>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Plant<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Plant" asp-items="@Model?.PlantsList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+
+                               <div class="box box-info">
+                                   <div class="box-header with-border">
+                                       <h3 class="box-title">Customer Details</h3>
+                                   </div>
+                                   <div class="box-body">
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Code</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.CustomerCode" readonly>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Name<span class="text-red">*</span></label>
+                                                   <div class="input-group input-group-sm">
+                                                       <input type="text" class="form-control" asp-for="@Model.CustomerName">
+                                                       <span class="input-group-btn">
+                                                           <a href="@Url.Action("Customers","EnquiryOpportunity")" id="btnCustomerSearch" class="btn btn-info btn-flat"><i class="fa fa-search"></i></a>
+                                                       </span>
+                                                   </div>
+                                               </div>
+
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>City</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.City"  readonly>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>State</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.State"  readonly>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Phone Number</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.MobileNumber" readonly>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Pincode</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.Pincode" readonly>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Contact Person</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.ContactPerson" readonly>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Address</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.CustomerAddress"  readonly>
+                                               </div>
+
+                                           </div>
+                                       </div>
+
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Segment<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.CustomerSegment" asp-items="@Model?.CustomerSegmentList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Sub Segment<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.CustomerSubSegment" asp-items="@Model?.CustomerSubSegmentList"></select>
+                                               </div>
+
+                                           </div>
+                                       </div>
+
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Classification<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.CustomerClassification" asp-items="@Model?.CustomerClassificationList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Customer Type<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.CustomerType" asp-items="@Model?.CustomerTypeList"></select>
+                                               </div>
+
+                                           </div>
+                                       </div>
+
+                                   </div>
+                               </div>
+
+                               <div class="box box-success">
+                                   <div class="box-header with-border">
+                                       <h3 class="box-title">Enquiry Details</h3>
+                                   </div>
+                                   <div class="box-body">
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Status</label>
+                                                   <input type="text" class="form-control" value="OPEN" asp-for="@Model.Status" readonly />
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Product Required<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.ProdcutRequired" asp-items="@Model?.ProdcutRequiredList"></select>
+                                               </div>
+
+                                           </div>
+                                           
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Project Name<span class="text-red">*</span></label>
+                                                   <input type="text" class="form-control" asp-for="@Model.ProjectName">
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Probability(%)<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Probability" asp-items="@Model?.ProbabilityList"></select>
+                                               </div>
+                                           </div>
+                                          
+                                           
+                                       </div>
+                                     
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Contract Value<small>In Lacks</small><span class="text-red">*</span></label>
+                                                   <input type="text" class="form-control" asp-for="@Model.ContractValue_IN_LAKHS">
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Enquiry Validity Date<span class="text-red">*</span></label>
+                                                   <div class="input-group date">
+                                                       <div class="input-group-addon">
+                                                           <i class="fa fa-calendar"></i>
+                                                       </div>
+                                                       <input type="text" class="form-control pull-right" asp-for="@Model.EnquiryValidityDate">
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Business Segment<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.BusinessSegment" asp-items="@Model?.BusinessSegmentList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Document Created Date<span class="text-red">*</span></label>
+                                                   <div class="input-group date">
+                                                       <div class="input-group-addon">
+                                                           <i class="fa fa-calendar"></i>
+                                                       </div>
+                                                       <input type="text" class="form-control pull-right"  asp-for="@Model.DocumentCreatedDate">
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Lead Assign To<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.AssignedToUser" asp-items="@Model?.EnquiryAssignToList"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Enquiry Maturity Date<span class="text-red">*</span></label>
+                                                   <div class="input-group date">
+                                                       <div class="input-group-addon">
+                                                           <i class="fa fa-calendar"></i>
+                                                       </div>
+                                                       <input type="text" class="form-control pull-right" asp-for="@Model.EnquiryMaturityDate">
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>                                      
+                                     
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Classification1<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Classification1" asp-items="@Model?.Classification1List"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Classification2</label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Classification2" asp-items="@Model?.Classification2List"></select>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Classification3<span class="text-red">*</span></label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Classification3" asp-items="@Model?.Classification3List"></select>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Classification4</label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.Classification4" asp-items="@Model?.Classification4List"></select>
+                                               </div>
+
+                                           </div>
+                                       </div>
+
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Tonnage<span class="text-red">*</span></label>
+                                                   <input type="text" class="form-control" asp-for="@Model.Tonnage" readonly>
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Total Value<span class="text-red">*</span></label>
+                                                   <input type="text" class="form-control" asp-for="@Model.TotalValue" readonly>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Architect</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.Architect">
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Consultant</label>
+                                                   <input type="text" class="form-control" asp-for="@Model.Consultant">
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">                                           
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Source Type</label>
+                                                   <select class="form-control select2" style="width: 100%;" asp-for="@Model.SourceType" asp-items="@Model?.SourceTypeList"></select>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-12">
+                                               <div class="form-group">
+                                                   <label>Description of Enquiry<span class="text-red">*</span></label>
+                                                   <textarea  class="form-control"  style="height:60px" ></textarea>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>                                  
+                               </div>
+                           </div>                          
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2">
+                            <div class="box box-info" style="padding-right:50px">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Products</h3>
+                                    <a href="@Url.Action("AddProduct", "EnquiryOpportunity")" id="btnAddProduct" class="btn  btn-flat nav-btn pull-right" style="background-color:#0c5792;color:white;margin-right:15px"><i class="fa fa-plus"></i> <span class="hidden-xs">New</span></a>
+                                </div>
+                                <div class="box-body">
+                                    <div class="col-xs-12">
+                                        <table id="example2" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Business Segment</th>
+                                                    <th>Product Seg ID</th>
+                                                    <th>Product Seg</th>
+                                                    <th>Total Quantity</th>
+                                                    <th>Total Value</th>
+                                                    <th>Total Tonnage</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model != null && Model?.OpportunityProducts != null && Model?.OpportunityProducts.Count > 0)
+                                                {
+                                                    @foreach (var item in Model?.OpportunityProducts)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.BussinessSegment</td>
+                                                            <td>@item.ProductSegID</td>
+                                                            <td>@item.ProductSeg</td>
+                                                            <td>@item.Quantity</td>
+                                                            <td>@item.TotalValue</td>
+                                                            <td>@item.TotalTonnage</td>
+                                                            <td>
+                                                                <a class="nav-btn" href="@Url.Action("EnquiryEditProduct", "Lead", new { productid= item.ProductSegID })" style="padding-right:15px;" title="Edit"><i class="fa fa fa-pencil text-primary" style="font-size:18px;font-weight:500;"></i></a>
+                                                                <a class="nav-btn" href="@Url.Action("EnquiryDeleteProduct", "Lead", new { productid= item.ProductSegID })" style="padding-right:5px;" title="Delete"><i class="fa fa-trash text-red" style="font-size:18px"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    }}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                       
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+                <!-- nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+          
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-11 ">
+                <a class="btn btn-default pull-right nav-btn" href="@Url.Action("Index","EnquiryOpportunity")" style="padding-left:35px;padding-right:35px">Cancel</a>
+                <button class="btn btn-success pull-right margin-r-5 nav-btn" style="padding-left:35px;padding-right:35px" >Save</button>
+            </div>
+        </div>
+
+    </form> 
+</section>
+
+@section scripts{
+  
+     
+    <script type="text/javascript" src="~/js/scripts/Enquiry/CreateEdit.js">
+       
+    </script>
+<script>
+   
+</script>
+}

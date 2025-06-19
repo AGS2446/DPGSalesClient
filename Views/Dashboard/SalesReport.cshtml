@@ -1,0 +1,48 @@
+﻿<style>
+    .chart-legend ul {
+        list-style-type: none;
+    }
+
+    .chart-legend li span {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+</style>
+
+
+<section class="content-header">
+    <h1>
+        Major Order Win & Loss 
+    </h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-6">
+            <div id="divChartContainer">                
+                <canvas id="pieChart" style="height:250px"></canvas>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div>
+                <div class="form-group">                    
+                    <select class="form-control select2" name="period" id="period">
+                        <option value="1">Yearly</option>                        
+                        <option value="4">Q1</option>
+                        <option value="5">Q2</option>
+                        <option value="6">Q3</option>
+                        <option value="7">Q4</option>                                               
+                    </select>
+                </div>
+            </div>
+            <div id="pie_legend" class="chart-legend"></div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+    <!-- Page script -->
+    <script src="~/js/scripts/Dashboard/SalesReport.js"></script>
+}

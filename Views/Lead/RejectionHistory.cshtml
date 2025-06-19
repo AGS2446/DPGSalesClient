@@ -1,0 +1,88 @@
+﻿@model DPGSalesClient.Models.LeadHistoryModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+
+
+<section class="content-header">
+    <h1>
+       Rejection History
+    </h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12 m-b">
+            <a class="btn btn-default pull-right" href="@Url.Action("Details","Lead",new {leadId=Model.LeadId,status=Model.Status })"><i class="fa fa-arrow-circle-left"></i> Back</a>
+        </div>
+    </div>
+
+            <div class="box box-warning" >
+                @*<div class="box-header with-border">
+                        <h3 class="box-title text-warning">Uploaded Documents</h3>
+                    </div>*@
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="col-md-6 ">
+                            @if (Model.HistoryRecords != null && Model.HistoryRecords.Count > 0)
+                            {
+                                <table id="tblAttachments" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                            <th>Created By</th>
+                                            <th>Created On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var hist in Model.HistoryRecords)
+                                        {
+                                            <tr>
+                                                <td>@hist.Status</td>
+                                                <td>@hist.Remarks</td>
+                                                <td>@hist.CreatedBy</td>
+                                        <td>@String.Format("{0:dd/MM/yyyy HH:mm:ss}", hist.CreatedOn)</td>
+                                    </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <span style="margin-left: 15px;    top: -10px;    position: relative;">No history.</span>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+
+
+</section>
+
+
+@section scripts{
+    @*<script type="text/javascript">
+            //$(':file').on('fileselect', function (event, numFiles, label) {
+            //    console.log(numFiles);
+            //    console.log(label);
+            //    $('#sp1').html(label);
+            //});
+            //$(document).on('change', ':file', function () {
+            //    debugger;
+            //    var input = $(this),
+            //        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            //        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            //    input.trigger('fileselect', [numFiles, label]);
+            //});
+
+        </script>*@
+
+    <script type="text/javascript" src="~/js/scripts/Attachments.js">
+
+    </script>
+}

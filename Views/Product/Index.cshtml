@@ -1,0 +1,74 @@
+﻿@model List<DPGSalesClient.Models.ProductViewModel>
+<style>
+    .table > thead > tr > th {
+        background-color: #272727;
+        color: white;
+    }
+</style>
+<section class="content-header">
+    <h1>Products</h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Search" asp-controller="Product" method="get" id="searchProduct">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Product Name">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="example2" class="table  table-hover">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Description</td>
+                                <td>@item.Category</td>
+                                <td>@item.Status</td>
+                            </tr>
+
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false
+        });
+$('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#txtSearch').val());
+
+            $('#searchProduct').append(input);
+            $('#searchProduct').submit();
+        });
+        </script>
+    }

@@ -1,0 +1,354 @@
+﻿@model DPGSalesClient.Models.EnquiryApprovalIndexModel
+
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+    <style>
+        #example2 {
+            border-bottom-style: solid;
+            border-bottom-color: #c5bbbb;
+            border-bottom-width: 1px;
+        }
+
+            #example2 > tbody > tr > td {
+                border-left-style: solid;
+                border-left-width: 1px;
+                border-left-color: #D0D0D0;
+            }
+
+                #example2 > tbody > tr > td:last-child {
+                    border-right-style: solid;
+                    border-right-width: 1px;
+                    border-right-color: #D0D0D0;
+                }
+
+        .p-t-25 {
+            padding-top: 25px;
+        }
+    </style>
+}
+
+ 
+
+
+@*<section class="content-header">
+    <h1>
+        Review Report
+    </h1>
+    @*<ol class="breadcrumb hidden-xs">
+            <li><a href="#"><i class="fa fa-home"></i> Sales Management</a></li>
+            <li class="active">Lead</li>
+        </ol>
+    </section>*@
+<section class="content">
+
+    
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Search" asp-controller="ExecutiveSummaryReport" method="get" id="searchForm">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Division<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.Division" asp-items="@(new SelectList(Model.DivisionList,"Value","Text"))"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Branch<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" asp-for="@Model.Branch" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))"></select>
+                    </div>
+                </div>
+
+                @*<div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date range:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="reservation" asp-for="@Model.DateFrom">
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>From</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="DateFrom" name="DateFrom" value="@Model.DateFrom" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>To</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="DateTo" name="DateTo" value="@Model.DateTo" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 p-t-25">
+                    <button type="submit" class="btn btn-info btn-flat nav-btn"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></button>
+                </div>
+            </form>
+            <div class="col-md-1 p-t-25">
+                <form asp-action="ReportExcel" asp-controller="ExecutiveSummaryReport">
+                    <button class="btn btn-info btn-flat" id="btnExport" type="submit"><i class="fa fa-file-excel-o"></i> Export</button>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="row table-responsive text-nowrap">
+        <div class="col-xs-12">
+            <table id="example2" class="table table-striped ">
+                <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Branch</th>
+                        <th>Id</th>
+                        <th>Client</th>
+                        <th>Segment</th>
+                        <th>Sub Segment</th>
+                        <th>Value (Rs.Cr)</th>
+                        <th>Status</th>
+                        <th>Expected FinalQtr</th>
+                        <th>Expected FinalYear</th>
+                        <th>Lost Price</th>
+                        <th>Contact Plan</th>
+                        <th>Cost Sheet</th>
+                        <th style="width:100px;">Remarks</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model.EnquiryList != null && Model.EnquiryList.Count > 0)
+                    {
+
+                    @foreach (var item in Model.EnquiryList)
+                        {
+
+                    <tr>
+                        <td>@item.Division</td>
+                        <td>@item.Branch</td>
+                        <td>@item.ID</td>
+                        <td>@item.CustomerName</td>
+                        <td>@item.Segment</td>
+                        <td>@item.SubSegment</td>
+                        <td><a onclick="ShowModelForValue('@item.ID');" style="cursor:pointer;color:#0F5AD9">@ConvertToCrs(item.TotalValue)</a></td>
+                        <td style="width:80px;font-weight:700;color:@GetColor(item.Status)">@item.Status</td>
+                        <td>@item.ExpectedFinalQtr</td>
+                        <td>@item.ExpectedFinalYear</td>
+                        <td>@item.LostPrice</td>
+                        <td style="text-align:center;width:80px"><a href="@Url.Action("ActivityIndex", "ExecutiveSummaryReport", new {enqId=item.EnquiryID,qteId=item.QuoteID,ordId=item.OrderID })" style="cursor:pointer;color:#0F5AD9">@item.Contactplan</a></td>
+                        <td style="text-align:center;width:80px"><a id="btnAttachments" href="@Url.Action("AttachmentHistory", "ExecutiveSummaryReport", new {enqId=item.EnquiryID,qteId=item.QuoteID,ordId=item.OrderID })" style="cursor:pointer;color:#0F5AD9">@item.CostSheet</a></td>
+                        <td style="width:100px;">@item.Remarks</td>
+                    </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+    <!-- Modal -->
+    <!--Attachment Modal -->
+    <div class="modal fade" id="TotalValueModal" tabindex="-1" role="dialog" aria-labelledby="TotalValueModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="TotalValueModalLabel" style="font-weight: bold;width: 80%;float: left;">Total Value</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Value(In Lacks)</label>
+                        <input type="number" class="form-control" id="tValue" />
+                        <input type="hidden" class="form-control" id="hdnId" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success nav-btn" id="btnUpdateTotalValue"><i class="fa fa-save"></i> Save</a>
+                    <a class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+@functions{
+    public string GetColor(string strStatus)
+    {
+        string strRes = "";
+        switch (strStatus.ToUpper())
+        {
+            case "CANCELLED":
+            case "LOST":
+                strRes = "#FF0103";
+                break;
+            case "OPEN":
+                strRes = "#216BEE";
+                break;
+            case "CONVERTED":
+                strRes = "#39B4B2";
+                break;
+            case "DEFERRED":
+                strRes = "#FF006E";
+                break;
+            case "BUDGETARY":
+                strRes = "#004A7F";
+                break;
+            case "PENDING FOR APPROVAL":
+                strRes = "#85439A";
+                break;
+            case "WIN":
+                strRes = "#3FA810";
+                break;
+        }
+        return strRes;
+    }
+
+    public string GetVisibleInfo(string strStatus, string type)
+    {
+        string strRes = "hidden";
+        if (strStatus.ToUpper() == "PENDING FOR APPROVAL" && type.ToUpper() == "APPROVAL")
+        {
+            strRes = "visible";
+        }
+        else if (strStatus.ToUpper() == "PENDING FOR RECOMMEND" && type.ToUpper() == "RECOMMEND")
+        {
+
+            strRes = "visible";
+        }
+        return strRes;
+    }
+
+    public string ConvertToCrs(double? val)
+    {
+        string strRes = "";
+        try
+        {
+            strRes = (val.HasValue ? (val.Value / 100).ToString() : "");
+        }
+        catch (Exception ex)
+        {
+        }
+        return strRes;
+    }
+
+}
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'scrollX': true,
+            'searching': false,
+            'ordering': false,
+            'info': false,
+            'pageLength': 10,
+            'autoWidth': false
+        });
+
+        $('#DateFrom').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today"
+        }).on('changeDate', function (ev) {
+            debugger;
+            if ($('#DateFrom').val() != "" && $('#DateTo').val() != "") {
+                if (ConvertStrDate($('#DateFrom').val()) > ConvertStrDate($('#DateTo').val())) {
+                    AlertPopup('Date From should be less than or equal to Date To ');
+                    $('#DateFrom').val('');
+                    $('#DateTo').val('');
+                }
+            }
+        });
+
+        $('#DateTo').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            endDate: "today",
+        }).on('changeDate', function (ev) {
+            debugger;
+            if ($('#DateFrom').val() == "") {
+                AlertPopup('Please select Date From ');
+                $('#DateTo').val('');
+
+            } else if (ConvertStrDate($('#DateFrom').val()) > ConvertStrDate($('#DateTo').val())) {
+                AlertPopup('Date From should be less than or equal to Date To ');
+                $('#DateFrom').val('');
+                $('#DateTo').val('');
+            }
+        });
+        function ConvertStrDate(strDate) {
+            debugger;
+            if (strDate != null && strDate != "" && strDate != undefined) {
+                if (strDate.toString().split('/').length > 0)
+                    return new Date(strDate.toString().split('/')[2], strDate.toString().split('/')[1], strDate.toString().split('/')[0])
+                else if (strDate.toString().split('/').length > 0)
+                    return new Date(strDate.toString().split('-')[2], strDate.toString().split('-')[1], strDate.toString().split('-')[0])
+
+            } else {
+                return null;
+
+            }
+        }
+
+
+        function ShowModelForValue(strId) {
+            debugger;
+            $('#hdnId').val(strId);
+            $('#tValue').val('');
+            $('#TotalValueModal').modal("show");
+
+            return false;
+        }
+
+        $('#btnUpdateTotalValue').click(function () {
+
+            var txtValue = $('#tValue').val();
+            debugger;
+            if (txtValue != undefined && txtValue > 0) {
+                $.post('../ExecutiveSummaryReport/UpdateTotalValue', { strId: $('#hdnId').val(), totalvalue: txtValue }).done(function (data) {
+                    if (data.status == "SUCCESS") {
+
+                        $('#TotalValueModal').modal("hide");
+                        window.location = "../ExecutiveSummaryReport/Index";
+                    } else {
+                        $('#TotalValueModal').modal("hide");
+                        $('#initialload').hide();
+                    }
+
+                });
+
+            } else {
+                debugger;
+                $('#initialload').hide();
+                AlertPopup('Please provide Total Value');
+
+            }
+            return false;
+
+        });
+
+
+    </script>
+}

@@ -1,0 +1,109 @@
+﻿@model DPGSalesClient.Models.ContactPlanViewModel
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1>
+        Customer Contact Plan
+    </h1>
+   
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Search" asp-controller="ContactPlan" method="get" id="searchForm">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Customer Name" value="@Model?.SearchName">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-info btn-flat nav-btn"><i class="fa fa-search"></i></button>
+                            <a href="@Url.Action("Index","ContactPlan")" class="btn btn-info btn-flat "><i class="fa fa-close"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-md-1 col-lg-offset-7">
+            <a href="@Url.Action("Create","ContactPlan")" class="btn btn-info btn-flat nav-btn pull-right"><i class="fa fa-plus"></i> <span class="hidden-xs">New</span></a>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+
+
+            <table id="example2" class="table table-hover">
+                <thead>
+                    <tr>
+                    
+                        <th>Visit Date</th>
+                        <th>Customer Name</th>
+                        <th>Objective of Visit</th>
+                        <th>Status</th>
+                        <th></th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model?.ActivityList.Count > 0)
+                    {
+                        @foreach (var item in Model?.ActivityList)
+                        {
+                            <tr>
+                             
+                                <td>@string.Format("{0:dd/MM/yyyy}", item.VisitOn)</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.ObjectOfVisit</td>
+                                <td>@item.Status</td>
+                                <td>
+                                    <a class="nav-btn" href="@Url.Action("Attachments", "ContactPlan", new { activityId = @item.ActivityID })" style="padding-right:15px;" title="Attachments"><i class="fa fa-paperclip text-orange" style="font-size:18px;font-weight:500;"></i></a>
+                                    <a class="nav-btn" href="@Url.Action("Details", "ContactPlan", new { activityId = @item.ActivityID })" style="padding-right:5px;" title="Details"><i class="fa fa-list text-aqua" style="font-size:18px"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+
+
+
+
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8           
+        });
+
+        $('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#txtSearch').val());
+            debugger;
+            if ($('#txtSearch').val() != null && $('#txtSearch').val() != "") {
+                $('#searchForm').append(input);
+                $('#searchForm').submit();
+            } else {
+                alert('Please provide Customer Name');
+                return false;
+            }
+        });
+
+     
+    </script>
+}

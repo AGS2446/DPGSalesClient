@@ -1,0 +1,132 @@
+﻿<style>
+    .pie-legend {
+        padding-left: 0px;
+    }
+
+    .chart-legend ul {
+        list-style-type: none;
+    }
+
+    .chart-legend li span {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+</style>
+
+<section class="content-header">
+    <h1>Sales Report</h1>
+</section>
+<section class="content">
+    <form asp-action="ExportSalesReport" method="post" id="formExportSalesReport">
+        <div class="row">
+            <div class="col-xs-8">
+                <div id="divChartContainer">
+                    <canvas id="pieChart" style="height:250px"></canvas>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="box box-primary box-solid">
+                    <div class="box-header">
+                        <h3 class="box-title"> <i class="fa fa-filter"></i> Filter</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label>Date From</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="DateFrom"  name="DateFrom" value="@ViewBag.DateFrom" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Date To</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="DateTo" name="DateTo" value="@ViewBag.DateTo" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Division</label>
+                            <select name="division" id="division" asp-items="@ViewBag.Divisions" class="form-control select2" multiple="multiple" data-placeholder="Select a Division"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <select name="branch" id="branch" asp-items="@ViewBag.Branches" class="form-control select2" multiple="multiple" data-placeholder="Select a Branch"></select>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-6"><button type="button" class="btn btn-info btn-block nav-btn" name="filter" id="filter"><i class="fa fa-pie-chart"></i> GO</button></div>
+                                <div class="col-xs-6"><button type="submit" class="btn btn-primary btn-block" value="export" name="export" id="export"><i class="fa fa-file-excel-o"></i> Export</button></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <div id="pie_legend" class="chart-legend"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+    @*<div class="box box-info box-solid">
+            <div class="box-header">
+                <h3 class="box-title"> <i class="fa fa-filter"></i> Filter</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-5">
+                        <div class="form-group">
+                            <label>Date range:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="reservation">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-5">
+                        <div class="form-group">
+                            <label>Branch: </label><br />
+                            <select style="width:100%;" name="list_branch" id="branch" asp-items="@ViewBag.Branches" class="form-control select2" multiple="multiple" data-placeholder="Select a Branch"></select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <button class="btn btn-success btn-block m-t-md" name="filter" id="filter"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>*@
+
+    @*<div class="nav-tabs-justified">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1-1" data-toggle="tab"><i class="fa fa-pie-chart"></i> Graph View</a></li>
+                <li><a href="#tab_2-2" data-toggle="tab"><i class="fa fa-table"></i> List View</a></li>
+                <li class="pull-left header"><i class="fa fa-th"></i> Sales Report</li>
+            </ul>
+            <div class="tab-content box-body b-l b-r b-b r">
+                <div class="tab-pane active" id="tab_1-1">
+
+                </div>
+                <div class="tab-pane" id="tab_2-2">
+
+                </div>
+            </div>
+        </div>*@
+
+
+
+</section>
+
+@section scripts{
+    <script src="~/theme-blue/bower_components/Chart.js/Chart.js"></script>
+    <!-- Page script -->
+    <script src="~/js/scripts/SalesReport/SalesReport.js"></script>
+}

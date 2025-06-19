@@ -1,0 +1,44 @@
+﻿@model List<NavHeaderViewModel>
+
+<ul class="sidebar-menu" data-widget="tree">
+    @foreach (var bSenario in Model)
+    {
+        string cssClass = "";
+
+
+        if (bSenario.ScenarioID == @ViewBag.BusinessScenarioID)
+        {
+            cssClass = "active menu-open";
+        }
+        else
+        {
+            cssClass = "";
+
+        }
+        <li class="treeview @cssClass">
+            <a href="#">
+                <i class="fa @bSenario.Icon"></i> <span>@bSenario.ScenarioName</span>
+            </a>
+
+            @if (bSenario.Items != null && bSenario.Items.Count > 0)
+            {
+                <ul class="treeview-menu">
+                    @foreach (var bProcess in bSenario.Items)
+                    {
+                        string cssClass1 = "";
+                        if (bProcess.Controller == @ViewBag.ControllerName)
+                        {
+                            cssClass1 = "active";
+                        }
+                        else
+                        {
+                            cssClass1 = "";
+                        }
+
+                        <li class="@cssClass1"><a asp-action="@bProcess.Action" asp-controller="@bProcess.Controller" class="nav-btn"><i class="fa @bProcess.Icon"></i> @bProcess.Description</a></li>
+                    }
+                </ul>
+            }
+        </li>
+    }
+</ul>

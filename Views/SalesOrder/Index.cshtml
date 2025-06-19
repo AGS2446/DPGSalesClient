@@ -1,0 +1,102 @@
+﻿@model List<DPGSalesClient.Models.SalesOrderViewModel>
+
+@section styles{
+    <link href="~/css/Index.css" rel="stylesheet" />
+}
+
+
+<section class="content-header">
+    <h1>
+        Sales Order
+    </h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Search" asp-controller="SalesOrder" method="post" id="searchForm">
+                <div class="form-group">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Customer Name">
+                        <span class="input-group-btn">
+                            <button id="btnSearch" class="btn btn-primary btn-flat nav-btn"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-offset-6 col-md-2">
+            <a class="btn bg-green pull-right" href="@Url.Action("SAPOrders", "SalesOrder")" id="btnSAPOrders">SAP Orders</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+            <table id="example2" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Customer</th>
+                        <th>Total Value</th>                        
+                        <th>Status</th>
+                        <th>Created On</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            string strCssDiable = "disable";
+
+                            if (item.Status.ToUpper() == "OPEN")
+                            {
+                                strCssDiable = "";
+                            }
+                            else
+                            {
+                                strCssDiable = "disable";
+                            }
+
+                    <tr>
+                        @*<td>@item.Division</td>
+                            <td>@item.Branch</td>*@
+                        <td>@item.Division</td>
+                        <td>@item.CustomerName</td>
+                        <td>@item.TotalValue</td>                        
+                        <td>@item.Status</td>
+                        <td>@item.CreatedOn</td>
+                        <td>
+                            <a class="nav-btn " href="@Url.Action("Details", "SalesOrder", new { ordId = @item.OrderID, status = @item.Status })" style="padding-right:15px;" title="Details"><i class="fa fa-list text-orange" style="font-size:18px"></i></a>                            
+                        </td>
+
+                    </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.col -->
+    </div>
+
+</section>
+@section scripts{
+    <script type="text/javascript">
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'pageLength': 8
+        });
+
+        $('#btnSearch').click(function () {
+            var input = $("<input>").attr("type", "hidden").attr("name", "strKey").val($('#txtSearch').val());
+
+            $('#searchForm').append(input);
+            $('#searchForm').submit();
+        });
+    </script>
+}

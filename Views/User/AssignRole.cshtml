@@ -1,0 +1,49 @@
+﻿@model DPGSalesClient.Models.ModifyUserRoleViewModel
+
+@section styles{
+    <link href="~/css/Details.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1 class="text-info">
+        Assign Role
+    </h1>
+    <ol class="breadcrumb">
+        <li><a asp-action="Index"><i class="fa fa-home"></i> List</a></li>
+        <li><a asp-action="Details" asp-route-id="@Model.UserID"><i class="fa fa-home"></i> Details</a></li>
+        <li class="active"> Assign New Role</li>
+    </ol>
+</section>
+
+<section class="content">
+    <form asp-controller="User" asp-action="AssignRole" method="post" id="formAssignRole">
+        <input type="hidden" asp-for="@Model.UserID" />
+        <div class="form-horizontal">
+            <div class="b-a b-light">
+                <div class="b-b text-dark">
+                    <h4>Role Info</h4>
+                    <input asp-for="UserID" type="hidden" class="form-control">
+                </div>
+                <div class="form-group m-t">
+                    <label asp-for="RoleID" class="col-md-2 control-label text-danger"></label>
+                    <div class="col-md-4">
+                        <select asp-for="RoleID" class="form-control" asp-items="@(new SelectList(Model?.Roles,"Value","Text"))">                            
+                            <option value="" class="text-muted"> ---Select--- </option>
+                        </select>
+                        <span asp-validation-for="RoleID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group m-t">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success pull-right" id="btnAssignRole"><i class="fa fa-save m-r-xs"></i> Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section scripts{
+
+}

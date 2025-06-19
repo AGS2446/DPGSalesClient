@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "User Gps Locations";
+}
+<section>
+    <div class="section-header">
+        <h1>Gps Information</h1>
+    </div>
+    <div class="section-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <a asp-action="Index" class="btn btn-primary btn-flat nav-btn pull-right" data-toggle="tooltip" data-placement="top" data-original-title="List View"><i class="fa fa-list"></i></a>
+            </div>
+            <div class="col-xs-12 m-t">                
+                <div id="map-users" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    @*<script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=AIzaSyD7IxioBMPtWsIVJCBIdtGPidf1D9fM7b4&amp;"></script>*@
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IxioBMPtWsIVJCBIdtGPidf1D9fM7b4&amp;"></script>
+    <script type="text/javascript" src="~/lib/gmaps/markerwithlabel.js"></script>
+    <!-- App -->    
+    <script src="~/js/scripts/gps/mapview.js"></script>
+}
