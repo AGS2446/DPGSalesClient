@@ -49,7 +49,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>PO No </label>
+                                        <label>PO No / LOI Ref No </label>
                                         <input type="text" class="form-control" asp-for="@Model.PONo">
                                     </div>
                                 </div>
@@ -234,6 +234,7 @@
                 readonly(document.getElementById('TurnOver'), true);
                 readonly(document.getElementById('PODate'), true);
                 readonly(document.getElementById('PONo'), true);
+                readonly(document.getElementById('TotalCost'), true);
 
             } else if (wonVal.toUpperCase() == 'WIN') {
                 //$('#TurnOver').attr('disabled', false);
@@ -249,10 +250,11 @@
                 readonly(document.getElementById('TurnOver'), false);
                 readonly(document.getElementById('PODate'), false);
                 readonly(document.getElementById('PONo'), false);
-
+                readonly(document.getElementById('TotalCost'), false);
                 readonly(document.getElementById('Reasons'), true);
                 readonly(document.getElementById('CompName'), true);
                 readonly(document.getElementById('CompititorPrice'), true);
+
               
             }
         });

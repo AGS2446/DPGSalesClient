@@ -8,6 +8,7 @@ namespace DPGSalesClient.Models
     {
         public string SearchKey { get; set; }
         public string RoleID { get; set; }
+        public int Addcount { get; set; }
         public List<EnquiryViewItemModel> EnquiryList { get; set; }
         public class EnquiryViewItemModel
         {

@@ -24,7 +24,7 @@
                 </div>
             </form>
         </div>
-        @if(ViewBag.RoleId != "ROLE000010")
+        @if(ViewBag.RoleId != "ROLE000010" && Model.Addcount==0)
         {
         <div class="col-md-2 col-lg-offset-6">
             @*<a href="@Url.Action("Create","Lead")" class="btn btn-warning btn-sm nav-btn pull-right" style="margin-right:5px"><i class="fa fa-recycle"></i> <span class="hidden-xs">Convert</span></a>*@

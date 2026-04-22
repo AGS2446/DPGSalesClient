@@ -157,6 +157,9 @@ namespace DPGSalesClient.Controllers
                             f.SalesOffice,
                             f.CustomerName,
                             f.ProjectName,
+                            f.CV,
+                            f.BusinessSeg,
+                            f.CustomerSeg,
                             f.CustomerSubSeg,
                             f.CustomerType,
                             f.Status,
@@ -191,7 +194,7 @@ namespace DPGSalesClient.Controllers
                     header.Style.Font.Color.SetColor( Color.Black );
                     //header.Style.WrapText = true;
 
-                    header[ "X1" ].Value = "QuoteCancelled/Budgetary/Defferred Date";
+                    header[ "AA1" ].Value = "QuoteCancelled/Budgetary/Defferred Date";
 
                     FileContentResult response = new FileContentResult( package.GetAsByteArray(), "application/vnd.ms-excel" ) { FileDownloadName = "QuotationReport.xlsx" };
                     return response;

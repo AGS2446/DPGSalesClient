@@ -12,6 +12,7 @@ namespace DPGSalesClient.Models
     {
         public string SearchKey { get; set; }
         public List<LeadViewItemModel> LeadList { get; set; }
+        public int Addcount { get; set; } = 0;
         public class LeadViewItemModel
         {
             public string Division { get; set; }
@@ -78,7 +79,7 @@ namespace DPGSalesClient.Models
         public string Status { get; set; }
         [Required]
         public double? ContractValue_IN_LAKHS { get; set; }
-        [Required]
+        
         public string Priority { get; set; }
         [Required]
         public string Currency { get; set; }
@@ -87,10 +88,10 @@ namespace DPGSalesClient.Models
         public string LeadAssignTo { get; set; }
         [Required]
         public string LeadMaturityDate { get; set; }
-        [Required]
+       
         public string Classification1 { get; set; }
         public string Classification2 { get; set; }
-        [Required]
+       
         public string Classification3 { get; set; }
         public string Classification4 { get; set; }
         public string Architect { get; set; }

@@ -134,7 +134,12 @@ namespace LeadProxy
         private string UserIDField;
         
         private string UsernameField;
-        
+
+        private System.Collections.Generic.List<OpportunityProxy.AGS_OpportunityProduct> OpportunityProductsField;
+        private System.Nullable<System.DateTime> EnquiryMaturityDateField;
+
+
+
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string AccountID
         {
@@ -888,6 +893,33 @@ namespace LeadProxy
                 this.UsernameField = value;
             }
         }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> EnquiryMaturityDate
+        {
+            get
+            {
+                return this.EnquiryMaturityDateField;
+            }
+            set
+            {
+                this.EnquiryMaturityDateField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.Generic.List<OpportunityProxy.AGS_OpportunityProduct> OpportunityProducts
+        {
+            get
+            {
+                return this.OpportunityProductsField;
+            }
+            set
+            {
+                this.OpportunityProductsField = value;
+            }
+        }
+
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

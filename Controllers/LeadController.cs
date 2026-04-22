@@ -74,6 +74,16 @@ namespace DPGSalesClient.Controllers
                     HttpContext.Session.SetString( "UserRoleId", logInfo.RoleInfo[0].RoleID );
                     ViewBag.RoleId = logInfo.RoleInfo[ 0 ].RoleID;
                     var lsLeads = await _serLead.GetLeadsAsync();
+                    var lsLocdetails = await _serLocation.RetreiveLocationDetails();
+                    var ids = new List<string>
+                                {
+                                    "CLNT000002",
+                                    "CLNT000007",
+                                    "CLNT000008",
+                                    "CLNT000009"
+                                };
+
+                    objData.Addcount = lsLocdetails.Divisions.Count(x => ids.Contains(x.ID));
                     if (lsLeads != null)
                     {
                         objData.LeadList = lsLeads.Select(y => new LeadViewModel.LeadViewItemModel { LeadID = y.CRMLeadID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName,ProjectName=y.ProjectName, Status = y.Status, CreatedOn = y.CreatedOn, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue }).OrderByDescending(z=>z.LeadID).ToList();

@@ -3401,7 +3401,7 @@ namespace OrderProxy
         {
             if ((endpointConfiguration == EndpointConfiguration.OrderProxySOAPEndPoint))
             {
-                return new System.ServiceModel.EndpointAddress("http://192.168.10.146/GateKeeper/Proxy/OrderProxyService.svc/SOAP");
+                return new System.ServiceModel.EndpointAddress("http://localhost/GateKeeper/Proxy/OrderProxyService.svc/SOAP");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

@@ -12,6 +12,7 @@ using QuotationProxy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using AuthorizationProxy;
+using DPGSalesClient.CommonLibrary.Exceptions;
 
 namespace DPGSalesClient.Controllers
 {
@@ -1153,7 +1154,8 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
-
+                var logMessage = $"{DateTime.Now} - {System.Reflection.MethodBase.GetCurrentMethod().Name}  - {qteId} - {qteId}";
+                GenericExceptionHandler.ErrorLogWrite(logMessage);
                 var objConOrder = HttpContext.Session.GetObjectFromJson<QuoteConvertOrderModel>("ConvertOrderInfo");
                 if (objConOrder != null)
                 {
@@ -1344,9 +1346,16 @@ namespace DPGSalesClient.Controllers
             }
             catch (Exception ex)
             {
-            }
+                var fullError = ex.ToString();
+                var logMessage = $"{DateTime.Now} - {System.Reflection.MethodBase.GetCurrentMethod().Name}  - {ex.Message} - {ex.InnerException} - {fullError}";
+                GenericExceptionHandler.ErrorLogWrite(logMessage);
+                TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Quotation", ex.Message +" _ " + ex.InnerException));
+                
 
-            return View();
+                _logger.LogError(ex, ex?.InnerException?.InnerException?.Message);
+            }
+            return RedirectToAction("ConvertToOrder", new { qteId = objInput.QuoteID });
+            //return RedirectToAction("ConvertToOrder");
         }
 
         public async Task<IActionResult> OrderItems(string BusinessSegment)//string BusinesSeg,

@@ -11,6 +11,7 @@ namespace DPGSalesClient.Models
         public string RefObjectId { get; set; }
         public string CustomerName { get; set; }
         public string PendingUploadFiles { get; set; }
+        public string DocType { get; set; }
         public List<DownloadFileObject> UploadedFiles { get; set; }
     }
     public class UploadFileobject

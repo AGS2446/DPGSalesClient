@@ -13,6 +13,7 @@ using OpportunityProxy;
 using SAPEnquiryProxy;
 using AuthorizationProxy;
 using Microsoft.Extensions.Options;
+using LeadProxy;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,9 +26,11 @@ namespace DPGSalesClient.Controllers
         ServiceConnectors.OpportunityServiceConnector _serOpportunity = null;
         ServiceConnectors.LocationServiceConnector _serLocation = null;
         ServiceConnectors.EntityMapServiceConnector _serEntity = null;
+        ServiceConnectors.LeadServiceConnector _serLead = null;
         ServiceConnectors.UserServiceConnector _serUser = null;
         ServiceConnectors.ProductServiceConnector _serProduct = null;
         ServiceConnectors.SAPEnquiryServiceConnector _serSAPEnquiry = null;
+        ServiceConnectors.OpportunityServiceConnector _serEnquiry = null;
 
         Models.BusinessLogic.ActivityBL _serActivity = null;
         Models.BusinessLogic.AttachmentBL _serAttachment = null;
@@ -45,10 +48,11 @@ namespace DPGSalesClient.Controllers
             _serOpportunity = new ServiceConnectors.OpportunityServiceConnector(strIp, httpContextAccessor);
             _serLocation = new ServiceConnectors.LocationServiceConnector(strIp, httpContextAccessor);
             _serEntity = new ServiceConnectors.EntityMapServiceConnector(strIp, httpContextAccessor);
+            _serLead = new ServiceConnectors.LeadServiceConnector(strIp, httpContextAccessor);
             _serUser = new ServiceConnectors.UserServiceConnector(strIp, httpContextAccessor);
             _serProduct = new ServiceConnectors.ProductServiceConnector(strIp, httpContextAccessor);
             _serSAPEnquiry = new ServiceConnectors.SAPEnquiryServiceConnector(strIp, httpContextAccessor);
-
+            _serEnquiry = new ServiceConnectors.OpportunityServiceConnector(strIp, httpContextAccessor);
             _serActivity = new Models.BusinessLogic.ActivityBL(strIp, httpContextAccessor);
             _serAttachment = new Models.BusinessLogic.AttachmentBL(strIp, httpContextAccessor);
             _serCustomer = new Models.BusinessLogic.CustomerBL(strIp, httpContextAccessor);
@@ -96,7 +100,16 @@ namespace DPGSalesClient.Controllers
                             SAPEnquiryID = y.SAPOpportunityID
 
                         }).ToList();
+                        var lsLocdetails = await _serLocation.RetreiveLocationDetails();
+                        var ids = new List<string>
+                                {
+                                    "CLNT000002",
+                                    "CLNT000007",
+                                    "CLNT000008",
+                                    "CLNT000009"
+                                };
 
+                        objData.Addcount = lsLocdetails.Divisions.Count(x => ids.Contains(x.ID));
                         return View("Index", objData);
                     }
                 }
@@ -1657,5 +1670,576 @@ namespace DPGSalesClient.Controllers
         #endregion
 
 
+
+        // Dinesh
+        [SessionTimeout]
+        public async Task<IActionResult> CreateEnquiry(string strBack)
+        {
+            try
+            {
+                if (strBack == "BACK")
+                {
+
+                    #region Back
+
+                    var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadNewModel>("LeadNew");
+                    if (objNewEnq != null)
+                    {
+                        if (objNewEnq.Branch != null)
+                        {
+                            var lsPlans = await _serLocation.RetreiveLocationDetailsByOrg(objNewEnq.Region.Split('#')[1], objNewEnq.Division.Split('#')[1]);
+                            if (lsPlans != null)
+                            {
+                                objNewEnq.BranchList = lsPlans.Branches.Select(x => new SelectListItemObject { Value = x.Name + "#" + x.ID, Text = x.Name }).ToList();
+                            }
+                        }
+
+                        if (objNewEnq.Plant != null)
+                        {
+                            var lsPlans = await _serLocation.RetreiveLocationDetailsByOrg(objNewEnq.Branch.Split('#')[1], objNewEnq.Division.Split('#')[1]);
+                            if (lsPlans != null)
+                            {
+                                objNewEnq.PlantsList = lsPlans.Plants.Select(x => new SelectListItemObject { Value = x.Name + "#" + x.Code, Text = x.Name }).ToList();
+                            }
+                        }
+                        if (objNewEnq.LeadAssignTo != null)
+                        {
+                            var lsUsers = await _serUser.GetAssignedUsers(objNewEnq.Division.Split('#')[1], objNewEnq.Branch.Split('#')[1]);
+                            if (lsUsers != null)
+                            {
+                                objNewEnq.LeadAssignToList = lsUsers.Select(x => new SelectListItemObject { Value = x.Text + "#" + x.Value, Text = x.Text }).ToList();
+                                if (objNewEnq.LeadAssignToList.Count > 1)
+                                {
+                                    objNewEnq.LeadAssignToList.Insert(0, new SelectListItemObject { Value = "", Text = "SELECT" });
+                                }
+                            }
+                        }
+                        if (objNewEnq.CustomerSubSegment != null)
+                        {
+                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", objNewEnq.CustomerSegment.Split('#')[0]);
+                            if (lsSubseg != null)
+                            {
+                                objNewEnq.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
+                                if (objNewEnq.CustomerSubSegmentList.Count > 1)
+                                {
+                                    objNewEnq.CustomerSubSegmentList.Insert(0, new SelectListItemObject { Value = "", Text = "SELECT" });
+                                }
+                            }
+                        }
+
+                        HttpContext.Session.SetObjectAsJson("LeadNew", objNewEnq);
+                        return View(objNewEnq);
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    HttpContext.Session.ClearSession("LeadNew");
+
+                    LeadNewModel objNew = new LeadNewModel();
+                    #region Location details
+
+                    var lsLocdetails = await _serLocation.RetreiveLocationDetails();
+
+                    if (lsLocdetails != null)
+                    {
+                        var lsobjList = new List<SelectListItemObject>();
+                        //Divisions
+                        if (lsLocdetails.Divisions.Count > 0)
+                        {
+                            lsobjList = lsLocdetails.Divisions.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
+                            if (lsobjList.Count > 1)
+                                lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
+
+                            objNew.DivisionList = lsobjList;
+
+                            // objNew.DivisionList = new SelectList(lsobjList, "Value", "Text");
+                        }
+
+                        //Regions
+                        if (lsLocdetails.Regions.Count > 0)
+                        {
+                            lsobjList = new List<SelectListItemObject>();
+                            lsobjList = lsLocdetails.Regions.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
+                            if (lsobjList.Count > 1)
+                            {
+                                lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
+                                objNew.RegionList = lsobjList;
+
+                                //Branch
+                                lsobjList = new List<SelectListItemObject>();
+                                lsobjList.Add(new SelectListItemObject { Text = "SELECT", Value = "" });
+                                objNew.BranchList = lsobjList;
+
+                                //Plant
+                                objNew.PlantsList = lsobjList;
+
+                            }
+                            else if (lsLocdetails.Regions.Count == 1)
+                            {
+                                //Region
+                                objNew.RegionList = lsobjList;
+
+                                //Branch
+                                var lsBranches = await _serLocation.RetreiveLocationDetailsByOrg(lsLocdetails.Regions[0].ID, lsLocdetails.Divisions[0].ID);
+                                if (lsBranches != null && lsBranches.Branches.Count > 0)
+                                {
+                                    lsobjList = new List<SelectListItemObject>();
+                                    lsobjList = lsBranches.Branches.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
+
+                                    if (lsobjList.Count > 0)
+                                    {
+                                        lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
+                                        objNew.BranchList = lsobjList;
+
+                                        //Plants
+                                        lsobjList = new List<SelectListItemObject>();
+                                        lsobjList.Add(new SelectListItemObject { Text = "SELECT", Value = "" });
+                                        objNew.PlantsList = lsobjList;
+                                    }
+                                    else if (lsBranches.Branches.Count == 1)
+                                    {
+                                        //Branch
+                                        objNew.BranchList = lsobjList;
+
+                                        //Plants
+                                        var lsPlants = await _serLocation.RetreiveLocationDetailsByOrg(lsBranches.Branches[0].ID, lsBranches.Branches[0].ID);
+                                        if (lsPlants != null)
+                                        {
+                                            if (lsPlants.SalesOffices != null && lsPlants.SalesOffices.Count > 0)
+                                                objNew.SalesOffice = lsPlants.SalesOffices[0].Code;
+
+                                            lsobjList = new List<SelectListItemObject>();
+                                            lsobjList = lsPlants.Plants.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.Code }).ToList();
+                                            if (lsobjList.Count > 1)
+                                                lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
+                                            objNew.PlantsList = lsobjList;
+                                        }
+
+                                        if (objNew.DivisionList.Count == 1)
+                                        {
+                                            //Assigned To Users
+                                            var lsUsers = await _serUser.GetAssignedUsers(objNew.DivisionList[0].Value.Split('#')[1], lsBranches.Branches[0].ID);
+                                            if (lsUsers != null && lsUsers.Count > 0)
+                                            {
+                                                var lsUserSelect = lsUsers.Select(x => new SelectListItemObject { Text = x.Text, Value = x.Text + "#" + x.Value }).ToList();
+
+                                                if (lsUserSelect.Count > 0)
+                                                    lsUserSelect.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
+
+                                                objNew.LeadAssignToList = lsUserSelect;
+                                            }
+                                        }
+
+
+
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                    }
+
+
+
+                    #endregion
+
+                    //EntityMap
+                    var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
+                    if (lsEntity != null)//&& lsEntity.Count>0
+                    {
+                        objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
+                        objNew.CustomerClassificationList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERCLASSIFICATION", lsEntity, "B");
+                        objNew.CustomerTypeList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERTYPE", lsEntity, "B");
+                        objNew.BusinessSegmentList = SalesStaticMethods.GetSelectlistItemsByName("BUSINESSSEGMENT", lsEntity, "B");
+                        objNew.ProdcutRequiredList = SalesStaticMethods.GetSelectlistItemsByName("PRODUCTREQUIRED", lsEntity, "P");
+                        objNew.ProbabilityList = SalesStaticMethods.GetSelectlistItemsByName("PROBABILITY", lsEntity, "P");
+                        objNew.PriorityList = SalesStaticMethods.GetSelectlistItemsByName("Priority", lsEntity, "P");
+                        objNew.CurrencyList = SalesStaticMethods.GetSelectlistItemsByName("CURRENCY", lsEntity, "P");
+                        objNew.Classification1List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION1", lsEntity, "P");
+                        objNew.Classification2List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION2", lsEntity, "P");
+                        objNew.Classification3List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION3", lsEntity, "B");
+                        objNew.Classification4List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION4", lsEntity, "P");
+                        objNew.SourceTypeList = SalesStaticMethods.GetSelectlistItemsByName("SOURCETYPE", lsEntity, "P");
+
+                        objNew.CustomerSubSegmentList = new List<SelectListItemObject> { new SelectListItemObject { Text = "SELECT", Value = "" } };
+
+                        if (objNew.LeadAssignToList == null)
+                        {
+                            objNew.LeadAssignToList = new List<SelectListItemObject> { new SelectListItemObject { Text = "SELECT", Value = "" } };
+                        }
+                    }
+
+                    if (objNew.DivisionList == null)
+                        objNew.DivisionList = new List<SelectListItemObject>();
+                    if (objNew.RegionList == null)
+                        objNew.RegionList = new List<SelectListItemObject>();
+                    if (objNew.BranchList == null)
+                        objNew.BranchList = new List<SelectListItemObject>();
+                    if (objNew.PlantsList == null)
+                        objNew.PlantsList = new List<SelectListItemObject>();
+
+
+
+
+                    HttpContext.Session.SetObjectAsJson("LeadNew", objNew);
+                    return View(objNew);
+                }
+
+            }
+            catch (TimeoutException tex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return View();
+        }
+        public async Task<IActionResult> EnquiryItemsN(string BusinessSegment)//string BusinesSeg,
+        {
+            var itemsObject = new LeadConvertEnquiryModel();
+            try
+            {
+                itemsObject.BusinessSegment = BusinessSegment;
+
+                var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
+                if (objNewEnq != null)
+                {
+                  //  itemsObject.LeadId = objNewEnq.LeadId;
+                    itemsObject.BusinessSegment = objNewEnq.BusinessSegment;
+                    itemsObject.Division = objNewEnq.Division;
+                    itemsObject.EnquiryProducts = objNewEnq.EnquiryProducts;
+                }
+            }
+            catch (TimeoutException tex) { }
+            catch (Exception ex)
+            {
+            }
+
+
+
+            return View(itemsObject);
+        }
+        public async Task<IActionResult> EnquiryAddProductN(string BusinesSeg)
+        {
+            var newEnquiryProduct = new EnquiryProduct();
+            try
+            {
+                newEnquiryProduct.BusinessSegment = BusinesSeg;
+                newEnquiryProduct.Division = HttpContext.Session.GetObjectFromJson<string>("division");
+                // newEnquiryProduct.BusinessSegment = BusinesSeg;
+
+                var lsProds = await _serProduct.GetProducts();
+                if (lsProds != null)
+                {
+                    var lsSelect = lsProds.Select(x => new SelectListItem { Text = x.Text, Value = x.Text + "#" + x.Value }).ToList();
+                    if (lsSelect.Count > 1)
+                        lsSelect.Insert(0, new SelectListItem { Text = "SELECT", Value = "" });
+
+                    newEnquiryProduct.ProductList = new SelectList(lsSelect, "Value", "Text");
+                }
+
+                // newEnquiryProduct.ProductSegmentList = new SelectList(new List<SelectListItem> { new SelectListItem {Text="PRD1",Value="PRD1" }, new SelectListItem { Text = "PRD2", Value = "PRD2" } }, "Value", "Text");
+            }
+            catch (TimeoutException tex) { }
+            catch (Exception ex)
+            {
+
+
+            }
+            return View(newEnquiryProduct);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EnquiryAddProductN(EnquiryProduct objInput)
+        {
+            try
+            {
+                var enqNewObj = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
+                if (enqNewObj != null)
+                {
+                    if (enqNewObj.EnquiryProducts == null)
+                        enqNewObj.EnquiryProducts = new List<EnquiryProduct>();
+
+                    var idxObj = enqNewObj.EnquiryProducts.Where(x => x.ProductSegID == objInput.ProductSeg.Split('#')[1]).FirstOrDefault();
+                    if (idxObj != null)
+                    {
+                        var idx = enqNewObj.EnquiryProducts.IndexOf(idxObj);
+                        enqNewObj.EnquiryProducts[idx].Quantity += objInput.Quantity;
+                        enqNewObj.EnquiryProducts[idx].TotalValue += objInput.TotalValue;
+                        enqNewObj.EnquiryProducts[idx].TotalTonnage += objInput.TotalTonnage;
+
+                        objInput.ProductSegID = objInput.ProductSeg.Split('#')[0];
+                        enqNewObj.TotalValue += objInput.TotalValue;
+                        enqNewObj.Tonnage += objInput.TotalTonnage;
+                    }
+                    else
+                    {
+                        objInput.ProductSegID = objInput.ProductSeg.Split('#')[1];
+                        objInput.ProductSeg = objInput.ProductSeg.Split('#')[0];
+                        objInput.BusinessSegment = objInput.BusinessSegment;
+
+                        enqNewObj.TotalValue = (enqNewObj.TotalValue.HasValue ? enqNewObj.TotalValue.Value : 0f) + objInput.TotalValue;
+                        enqNewObj.Tonnage = (enqNewObj.Tonnage.HasValue ? enqNewObj.Tonnage.Value : 0f) + objInput.TotalTonnage;
+
+                        enqNewObj.EnquiryProducts.Add(objInput);
+                    }
+
+
+                    HttpContext.Session.SetObjectAsJson("leadEnquiryConvert", enqNewObj);
+                    return RedirectToAction("EnquiryItemsN", new { BusinessSegment = enqNewObj.BusinessSegment });
+                }
+            }
+            catch (TimeoutException tex) { }
+            catch (Exception ex)
+            {
+
+
+            }
+            return View(objInput);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ConvertToEnquiry(LeadNewModel data)
+        {
+            var leadConvert = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
+            var leadEnquiry = HttpContext.Session.GetObjectFromJson<LeadNewModel>("leadEnquiry");
+            try
+            {
+
+                if (leadConvert != null)
+                {
+                    return View(leadConvert);
+                }
+                else
+                {
+                    leadConvert = new LeadConvertEnquiryModel();
+                    leadConvert.BusinessSegment = data.BusinessSegment;
+                    leadConvert.BusinessSegmentId = data.BusinessSegment;
+                    leadConvert.EnquiryMaturityDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    leadConvert.LeadDocumentCreatedDate = data.DocumentCreatedDate;
+
+                    HttpContext.Session.SetObjectAsJson("leadEnquiryConvert", leadConvert);
+                    HttpContext.Session.SetObjectAsJson("leadEnquiry", data);
+
+                }
+            }
+            catch (TimeoutException tex) { }
+            catch (Exception ex)
+            {
+
+
+            }
+
+            return View(leadConvert);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConvertToEnquiry(LeadConvertEnquiryModel data)
+        {
+            var objInput = HttpContext.Session.GetObjectFromJson<LeadNewModel>("leadEnquiry");
+            var enqNewObj = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
+            try
+            {
+                if (objInput != null)
+                {
+                    AGS_Lead objNewLead = new AGS_Lead();
+                    objNewLead.Division = objInput.Division.Split('#')[1];
+                    objNewLead.DivisionName = objInput.Division.Split('#')[0];
+                    objNewLead.Region = objInput.Region.Split('#')[1];
+                    objNewLead.RegionName = objInput.Region.Split('#')[0];
+                    objNewLead.Branch = objInput.Branch.Split('#')[1];
+                    objNewLead.BranchName = objInput.Branch.Split('#')[0];
+                    objNewLead.SalesOffice = objInput.SalesOffice;
+                    objNewLead.PlantID = objInput.Plant.Split('#')[1];
+                    objNewLead.PlantName = objInput.Plant.Split('#')[0];
+
+                    objNewLead.AccountID = objInput.CustomerCode;
+                    objNewLead.AccountName = objInput.CustomerName;
+
+                    objNewLead.City = objInput.City;
+                    objNewLead.State = objInput.State;
+                    objNewLead.MobileNumber = objInput.MobileNumber;
+                    objNewLead.Pincode = objInput.Pincode;
+                    objNewLead.ContactName = objInput.ContactPerson;
+                    objNewLead.Address1 = objInput.CustomerAddress;
+
+                    objNewLead.CustomerSegmentID = objInput.CustomerSegment.Split('#')[1];
+                    objNewLead.CustomerSegment = objInput.CustomerSegment.Split('#')[0];
+                    objNewLead.SubSegmentID = objInput.CustomerSubSegment.Split('#')[1];
+                    objNewLead.SubSegment = objInput.CustomerSubSegment.Split('#')[0];
+                    objNewLead.CustomerType = objInput.CustomerType.Split('#')[0];
+                    objNewLead.CustomerTypeID = objInput.CustomerType.Split('#')[1];
+                    objNewLead.CustomerClassification = objInput.CustomerClassification.Split('#')[0];
+                    objNewLead.CustomerClassificationId = objInput.CustomerClassification.Split('#')[1];
+
+                    objNewLead.BusinessSegment = objInput.BusinessSegment.Split('#')[0];
+                    objNewLead.BusinessSegmentID = objInput.BusinessSegment.Split('#')[1];
+                    objNewLead.ProductRequired = objInput.ProdcutRequired;
+                    objNewLead.Status = objInput.Status;
+                    objNewLead.ProjectName = objInput.ProjectName;
+                    //objNewLead.Priority = objInput.Priority;
+                    objNewLead.Probability = objInput.Probability;
+                    objNewLead.ContractValue = objInput.ContractValue_IN_LAKHS;
+                    objNewLead.Currency = objInput.Currency;
+                    objNewLead.CurrencyValue = objInput.CurrencyValue;
+                    objNewLead.Description = objInput.Description;
+                    //  objNewLead.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
+                    objNewLead.LeadMaturityDate = SalesStaticMethods.ConvertDate(objInput.LeadMaturityDate);
+                    //objNewLead.Classification1 = objInput.Classification1;
+                    objNewLead.Classification2 = objInput.Classification2;
+                    //objNewLead.Classification3 = objInput.Classification3.Split('#')[0];
+                    //objNewLead.Classificaiton3id = objInput.Classification3.Split('#')[1];
+                    objNewLead.Classification4 = objInput.Classification4;
+                    objNewLead.Architect = objInput.Architect;
+                    objNewLead.Consultant = objInput.Consultant;
+                    objNewLead.CreatedOn = DateTime.Now;
+                    objNewLead.SourceType = objInput.SourceType;
+                    objNewLead.UserID = objInput.LeadAssignTo.Split('#')[1];
+                    objNewLead.Username = objInput.LeadAssignTo.Split('#')[0];
+                    var strRes = await _serLead.CreateLead(objNewLead);
+                    if (strRes != "" && strRes != null)
+                    {
+                        OpportunityProxy.AGS_Opportunity objNewEnquiry = new OpportunityProxy.AGS_Opportunity();
+                        var leadDetails = await _serLead.RetriveLead(strRes);
+                        if (leadDetails != null)
+                        {
+                            objNewEnquiry.CRMLEADID = leadDetails.CRMLeadID;
+                            objNewEnquiry.Division = leadDetails.Division;
+                            objNewEnquiry.DivisionName = leadDetails.DivisionName;
+                            objNewEnquiry.Region = leadDetails.Region;
+                            objNewEnquiry.RegionName = leadDetails.RegionName;
+                            objNewEnquiry.Branch = leadDetails.Branch;
+                            objNewEnquiry.BranchName = leadDetails.BranchName;
+                            objNewEnquiry.SalesOffice = leadDetails.SalesOffice;
+                            objNewEnquiry.PlantID = leadDetails.PlantID;
+                            objNewEnquiry.PlantName = leadDetails.PlantName;
+
+                            objNewEnquiry.AccountID = leadDetails.AccountID;
+                            objNewEnquiry.AccountName = leadDetails.AccountName;
+                            objNewEnquiry.CustomerSegment = leadDetails.CustomerSegment;
+                            objNewEnquiry.CustomerSegmentID = leadDetails.CustomerSegmentID;
+                            objNewEnquiry.SubSegment = leadDetails.SubSegment;
+                            objNewEnquiry.SubSegmentID = leadDetails.SubSegmentID;
+                            objNewEnquiry.CustomerType = leadDetails.CustomerType;
+                            objNewEnquiry.CustomerTypeID = leadDetails.CustomerTypeID;
+                            objNewEnquiry.CustomerClassification = leadDetails.CustomerClassification;
+                            objNewEnquiry.CustomerClassificationId = leadDetails.CustomerClassificationId;
+
+                            objNewEnquiry.BusinessSegmentID = leadDetails.BusinessSegmentID;
+                            objNewEnquiry.BusinessSegment = leadDetails.BusinessSegment;
+                            objNewEnquiry.Classification1 = leadDetails.Classification1;
+                            objNewEnquiry.Classification2 = leadDetails.Classification2;
+                            objNewEnquiry.Classification3 = leadDetails.Classification3;
+                            objNewEnquiry.Classification3ID = leadDetails.Classificaiton3id;
+                            objNewEnquiry.Classification4 = leadDetails.Classification4;
+                            objNewEnquiry.Currency = leadDetails.Currency;
+                            objNewEnquiry.CurrencyValue = leadDetails.CurrencyValue;
+                            objNewEnquiry.UserID = leadDetails.UserID;
+                            objNewEnquiry.Username = leadDetails.Username;
+                            objNewEnquiry.Architect = leadDetails.Architect;
+                            objNewEnquiry.Consultant = leadDetails.Consultant;
+                            objNewEnquiry.SourceType = leadDetails.SourceType;
+                            objNewEnquiry.ProjectName = leadDetails.ProjectName;
+                            objNewEnquiry.ProductRequired = leadDetails.ProductRequired;
+                            objNewEnquiry.Description = leadDetails.Description;
+                            objNewEnquiry.Probability = leadDetails.Probability;
+                            objNewEnquiry.ContractValue = leadDetails.ContractValue;
+
+                            //Enquiry details
+                            objNewEnquiry.EnquiryMaturityDate = DateTime.Now;
+
+
+                            objNewEnquiry.Tonnage = data.Tonnage;
+                            objNewEnquiry.TotalValue = data.TotalValue;
+
+                            objNewEnquiry.Status = "OPEN";
+
+                            objNewEnquiry.OpportunityProducts = new List<OpportunityProxy.AGS_OpportunityProduct>();
+                            if (enqNewObj.EnquiryProducts.Count > 0)
+                            {
+                                var lsProducts = enqNewObj.EnquiryProducts.Select(x => new OpportunityProxy.AGS_OpportunityProduct
+                                {
+                                    EntityState = OpportunityProxy.EntityState.Added,
+                                    MaterialGroup = x.BusinessSegment,
+                                    ProductID = x.ProductSegID,
+                                    ProductName = x.ProductSeg,
+                                    Quantity = x.Quantity,
+                                    TotalValue = x.TotalValue,
+                                    TotalTonnageQuantity = x.TotalTonnage
+                                }).ToList();
+
+
+                                objNewEnquiry.OpportunityProducts = lsProducts;
+                            }
+                            if (objNewEnquiry.OpportunityProducts.Count > 0)
+                            {
+                                var strEnq = await _serEnquiry.CreateOpportunity(objNewEnquiry);
+                                if (strEnq != "")
+                                {
+                                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead (" + leadDetails.CRMLeadID + ") has been converted to enquiry (" + strEnq + ") successfully"));
+
+                                    HttpContext.Session.ClearSession("leadEnquiryConvert");
+                                    HttpContext.Session.ClearSession("division");
+                                    return RedirectToAction("Index");
+                                }
+                            }
+                            
+                        }
+                       
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+                else
+                {
+                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Please provide required fields data"));
+                    var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadNewModel>("LeadNew");
+                    if (objNewEnq != null)
+                    {
+                        objInput.DivisionList = objNewEnq.DivisionList;
+                        objInput.RegionList = objNewEnq.RegionList;
+                        objInput.BranchList = objNewEnq.BranchList;
+                        objInput.PlantsList = objNewEnq.PlantsList;
+
+                        objInput.CustomerSegmentList = objNewEnq.CustomerSegmentList;
+                        objInput.CustomerSubSegmentList = objNewEnq.CustomerSubSegmentList;
+                        objInput.CustomerTypeList = objNewEnq.CustomerTypeList;
+                        objInput.CustomerClassificationList = objNewEnq.CustomerClassificationList;
+                        objInput.ProbabilityList = objNewEnq.ProbabilityList;
+                        objInput.ProdcutRequiredList = objNewEnq.ProdcutRequiredList;
+                        objInput.SourceTypeList = objNewEnq.SourceTypeList;
+                        objInput.BusinessSegmentList = objNewEnq.BusinessSegmentList;
+                        objInput.CurrencyList = objNewEnq.CurrencyList;
+
+                        objInput.LeadAssignToList = objNewEnq.LeadAssignToList;
+                        objInput.Classification1List = objNewEnq.Classification1List;
+                        objInput.Classification2List = objNewEnq.Classification2List;
+                        objInput.Classification3List = objNewEnq.Classification3List;
+                        objInput.Classification4List = objNewEnq.Classification4List;
+                        objInput.SourceTypeList = objNewEnq.SourceTypeList;
+                    }
+
+                    HttpContext.Session.SetObjectAsJson("LeadNew", objInput);
+                    return View(objInput);
+
+                }
+            }
+            catch (TimeoutException tex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return View(objInput);
+        }
     }
 }
