@@ -26,6 +26,7 @@ namespace DPGSalesClient.Models
             public string Probablity { get; set; }
             public string Status { get; set; }
             public DateTime? CreatedOn { get; set; }
+            public bool isDirect { get; set; }
         }
     }
     public class OrderNewModel
@@ -187,6 +188,7 @@ namespace DPGSalesClient.Models
         public List<OrderProduct> OrderProducts { get; set; }
 
         public List<DownloadFileObject> Files { get; set; }
+        public bool isDirect { get; set; }
     }
     public class OrderProduct
     {

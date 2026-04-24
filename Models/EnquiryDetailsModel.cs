@@ -50,5 +50,6 @@ namespace DPGSalesClient.Models
         public string UserRoleID { get; set; }
         public List<DownloadFileObject> Files { get; set; }
         public List<EnquiryProduct> OpportunityProducts { get; set; }
+        public bool isDirect { get; set; }
     }
 }

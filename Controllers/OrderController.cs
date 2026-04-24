@@ -33,6 +33,14 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
+
+        private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
+{
+    "CLNT000002",
+    "CLNT000007",
+    "CLNT000008",
+    "CLNT000009"
+};
         #endregion
 
         #region Constructor
@@ -76,7 +84,7 @@ namespace DPGSalesClient.Controllers
                     var lsOrder = await _serOrder.RetriveOrders("", "", 0, "", 0);
                     if (lsOrder != null)
                     {
-                        objData.OrderList = lsOrder.Select(y => new OrderViewModel.OrderViewItemModel { OrderID = y.CRMOrderID, EnquiryID = y.CRMOPPORTUNITYID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName, Status = y.Wonlose, CreatedOn = y.CreatedOn, LeadID = y.CRMLeadID, Division = y.DivisionName, Branch = y.BranchName, ContractValue = y.ContractValue }).ToList();
+                        objData.OrderList = lsOrder.Select(y => new OrderViewModel.OrderViewItemModel { OrderID = y.CRMOrderID, EnquiryID = y.CRMOPPORTUNITYID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName, Status = y.Wonlose, CreatedOn = y.CreatedOn, LeadID = y.CRMLeadID, Division = y.DivisionName, Branch = y.BranchName, ContractValue = y.ContractValue, isDirect = !ExcludedDivisionIds.Contains(y.Division) }).ToList();
                         return View("Index", objData);
                     }
                 }
@@ -249,7 +257,8 @@ namespace DPGSalesClient.Controllers
                         TotalCost = orderDetails.TotalCost,
                         TurnOver = orderDetails.TurnOverValue,
                         WonLossValue = orderDetails.Wonlose,
-                        Files = lsFiles
+                        Files = lsFiles,
+                        isDirect = !ExcludedDivisionIds.Contains(orderDetails.Division)
                     };
                 }
             }

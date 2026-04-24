@@ -73,7 +73,16 @@
                         <td>@item.Branch</td>
                         <td>@item.QuoteID</td>
                         <td>@item.EnquiryID</td>
-                        <td>@item.LeadID</td>
+                        <td>
+                            @if (item.isDirect)
+                            {
+                                <span> @item.LeadID</span>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="@item.LeadID" />
+                            }
+                        </td>
                         <td>@item.CustomerName</td>
                         <td>@item.BusineeSegment</td>
                         <td>@item.Status</td>

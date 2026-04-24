@@ -25,6 +25,7 @@ namespace DPGSalesClient.Models
             public string Probablity { get; set; }
             public string Status { get; set; }
             public DateTime? CreatedOn { get; set; }
+            public bool isDirect { get; set; }
         }
     }
     public class QuoteNewModel
@@ -204,6 +205,7 @@ namespace DPGSalesClient.Models
         public string strProducts { get; set; }
         public List<EnquiryProduct> QuoteProducts { get; set; }
         public List<DownloadFileObject> Files { get; set; }
+        public bool isDirect { get; set; }
     }
     public class QuoteItemModel
     {

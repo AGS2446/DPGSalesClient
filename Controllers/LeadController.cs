@@ -32,11 +32,17 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
-
+        private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
+{
+    "CLNT000002",
+    "CLNT000007",
+    "CLNT000008",
+    "CLNT000009"
+};
         #endregion
 
         #region Constructure
-        public LeadController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings,IHttpContextAccessor httpContextAccessor)
+        public LeadController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor)
         {
             string strIp = SalesStaticMethods.GetRemoteIp(appSettings);
             _serLead = new ServiceConnectors.LeadServiceConnector(strIp, httpContextAccessor);
@@ -70,9 +76,9 @@ namespace DPGSalesClient.Controllers
             {
                 if (HttpContext.Session.CheckSession("NavigationList"))
                 {
-                    AGS_LoginUserInfo logInfo =    HttpContext.Session.GetObjectFromJson<AGS_LoginUserInfo>( "LoginUserInfo" );
-                    HttpContext.Session.SetString( "UserRoleId", logInfo.RoleInfo[0].RoleID );
-                    ViewBag.RoleId = logInfo.RoleInfo[ 0 ].RoleID;
+                    AGS_LoginUserInfo logInfo = HttpContext.Session.GetObjectFromJson<AGS_LoginUserInfo>("LoginUserInfo");
+                    HttpContext.Session.SetString("UserRoleId", logInfo.RoleInfo[0].RoleID);
+                    ViewBag.RoleId = logInfo.RoleInfo[0].RoleID;
                     var lsLeads = await _serLead.GetLeadsAsync();
                     var lsLocdetails = await _serLocation.RetreiveLocationDetails();
                     var ids = new List<string>
@@ -86,8 +92,23 @@ namespace DPGSalesClient.Controllers
                     objData.Addcount = lsLocdetails.Divisions.Count(x => ids.Contains(x.ID));
                     if (lsLeads != null)
                     {
-                        objData.LeadList = lsLeads.Select(y => new LeadViewModel.LeadViewItemModel { LeadID = y.CRMLeadID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName,ProjectName=y.ProjectName, Status = y.Status, CreatedOn = y.CreatedOn, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue }).OrderByDescending(z=>z.LeadID).ToList();
-                        
+                        objData.LeadList = lsLeads
+     .Where(y => !ids.Contains(y.Division))          // ❌ exclude these IDs
+    .Select(y => new LeadViewModel.LeadViewItemModel
+    {
+        LeadID = y.CRMLeadID,
+        BusineeSegment = y.BusinessSegment,
+        CustomerName = y.AccountName,
+        ProjectName = y.ProjectName,
+        Status = y.Status,
+        CreatedOn = y.CreatedOn,
+        Division = y.DivisionName,
+        Branch = y.BranchName,
+        Probablity = y.Probability,
+        ContractValue = y.ContractValue
+    })
+    .OrderByDescending(z => z.LeadID)
+    .ToList();
                         return View(objData);
                     }
                 }
@@ -115,7 +136,7 @@ namespace DPGSalesClient.Controllers
                 {
 
                     #region Back
-                  
+
                     var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadNewModel>("LeadNew");
                     if (objNewEnq != null)
                     {
@@ -182,11 +203,11 @@ namespace DPGSalesClient.Controllers
                         //Divisions
                         if (lsLocdetails.Divisions.Count > 0)
                         {
-                            lsobjList = lsLocdetails.Divisions.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
-                            if (lsobjList.Count > 1)                            
+                            lsobjList = lsLocdetails.Divisions.Where(y => !ExcludedDivisionIds.Contains(y.ID)).Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
+                            if (lsobjList.Count > 1)
                                 lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
 
-                                objNew.DivisionList = lsobjList;
+                            objNew.DivisionList = lsobjList;
 
                             // objNew.DivisionList = new SelectList(lsobjList, "Value", "Text");
                         }
@@ -277,7 +298,7 @@ namespace DPGSalesClient.Controllers
                         }
                     }
 
-                  
+
 
                     #endregion
 
@@ -316,7 +337,7 @@ namespace DPGSalesClient.Controllers
                     if (objNew.PlantsList == null)
                         objNew.PlantsList = new List<SelectListItemObject>();
 
-               
+
 
 
                     HttpContext.Session.SetObjectAsJson("LeadNew", objNew);
@@ -333,7 +354,7 @@ namespace DPGSalesClient.Controllers
             }
             return View();
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Create(LeadNewModel objInput)
         {
@@ -358,10 +379,10 @@ namespace DPGSalesClient.Controllers
                     objNewLead.City = objInput.City;
                     objNewLead.State = objInput.State;
                     objNewLead.MobileNumber = objInput.MobileNumber;
-                    objNewLead.Pincode = objInput.Pincode;                 
+                    objNewLead.Pincode = objInput.Pincode;
                     objNewLead.ContactName = objInput.ContactPerson;
                     objNewLead.Address1 = objInput.CustomerAddress;
-                    
+
                     objNewLead.CustomerSegmentID = objInput.CustomerSegment.Split('#')[1];
                     objNewLead.CustomerSegment = objInput.CustomerSegment.Split('#')[0];
                     objNewLead.SubSegmentID = objInput.CustomerSubSegment.Split('#')[1];
@@ -378,11 +399,11 @@ namespace DPGSalesClient.Controllers
                     objNewLead.ProjectName = objInput.ProjectName;
                     objNewLead.Priority = objInput.Priority;
                     objNewLead.Probability = objInput.Probability;
-                    objNewLead.ContractValue = objInput.ContractValue_IN_LAKHS;                    
+                    objNewLead.ContractValue = objInput.ContractValue_IN_LAKHS;
                     objNewLead.Currency = objInput.Currency;
                     objNewLead.CurrencyValue = objInput.CurrencyValue;
                     objNewLead.Description = objInput.Description;
-                  //  objNewLead.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
+                    //  objNewLead.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
                     objNewLead.LeadMaturityDate = SalesStaticMethods.ConvertDate(objInput.LeadMaturityDate);
                     objNewLead.Classification1 = objInput.Classification1;
                     objNewLead.Classification2 = objInput.Classification2;
@@ -478,7 +499,7 @@ namespace DPGSalesClient.Controllers
                         ContractValue_IN_LAKHS = objGetLead.ContractValue,
                         Probability = objGetLead.Probability,
                         CustomerClassification = objGetLead.CustomerClassification + "#" + objGetLead.CustomerClassificationId,
-                        CustomerType = objGetLead.CustomerType+"#"+ objGetLead.CustomerTypeID,
+                        CustomerType = objGetLead.CustomerType + "#" + objGetLead.CustomerTypeID,
                         CustomerSegment = objGetLead.CustomerSegment + "#" + objGetLead.CustomerSegmentID,
                         CustomerSubSegment = objGetLead.SubSegment + "#" + objGetLead.SubSegmentID,
                         Status = objGetLead.Status,
@@ -592,7 +613,7 @@ namespace DPGSalesClient.Controllers
 
 
                     var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
-                    if (lsEntity != null && lsEntity.Count>0)
+                    if (lsEntity != null && lsEntity.Count > 0)
                     {
                         objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
                         objNew.CustomerClassificationList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERCLASSIFICATION", lsEntity, "B");
@@ -622,7 +643,7 @@ namespace DPGSalesClient.Controllers
                         }
                     }
                     #endregion
-                    
+
                     return View(objNew);
                 }
             }
@@ -684,7 +705,7 @@ namespace DPGSalesClient.Controllers
                     objNewLead.Currency = objInput.Currency;
                     objNewLead.CurrencyValue = objInput.CurrencyValue;
                     objNewLead.Description = objInput.Description;
-                  //  objNewLead.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
+                    //  objNewLead.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
                     objNewLead.LeadMaturityDate = SalesStaticMethods.ConvertDate(objInput.LeadMaturityDate);
                     objNewLead.Classification1 = objInput.Classification1;
                     objNewLead.Classification2 = objInput.Classification2;
@@ -700,9 +721,9 @@ namespace DPGSalesClient.Controllers
                     var blRes = await _serLead.UpdateLead(objInput.LeadID, objNewLead);
                     if (blRes)
                     {
-                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead ("+ objInput.LeadID+") has been updated successfully"));
+                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead (" + objInput.LeadID + ") has been updated successfully"));
 
-                        return RedirectToAction("Details",new {leadId= objInput.LeadID, status = "OPEN" });
+                        return RedirectToAction("Details", new { leadId = objInput.LeadID, status = "OPEN" });
                     }
 
                 }
@@ -724,8 +745,8 @@ namespace DPGSalesClient.Controllers
             var objAttachModel = new AttachmentsModel();
             try
             {
-                objAttachModel = await _serAttachment.GetAttachmentModel("LEAD", leadId);              
-           
+                objAttachModel = await _serAttachment.GetAttachmentModel("LEAD", leadId);
+
             }
             catch (TimeoutException tex)
             {
@@ -760,8 +781,8 @@ namespace DPGSalesClient.Controllers
                 {
                     TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Please add atleast one document"));
 
-                    return RedirectToAction("Attachments", new { leadId = objInput.ActivityId});
-                }                
+                    return RedirectToAction("Attachments", new { leadId = objInput.ActivityId });
+                }
 
             }
             catch (TimeoutException tex)
@@ -775,11 +796,11 @@ namespace DPGSalesClient.Controllers
             return View(objInput);
         }
 
-        public async Task<IActionResult> DeleteAttachment(int Id,string activityID)
+        public async Task<IActionResult> DeleteAttachment(int Id, string activityID)
         {
             try
             {
-                var res = await _serAttachment.DeleteAttachment(Id);               
+                var res = await _serAttachment.DeleteAttachment(Id);
             }
             catch (TimeoutException tex)
             {
@@ -795,21 +816,21 @@ namespace DPGSalesClient.Controllers
         public async Task<IActionResult> Details(string leadId, string status)
         {
             var detailsObject = new LeadDetailsModel();
-            ViewBag.RoleId = HttpContext.Session.GetString( "UserRoleId" );
+            ViewBag.RoleId = HttpContext.Session.GetString("UserRoleId");
             try
             {
                 var objLead = await _serLead.RetriveLead(leadId);
-                HttpContext.Session.SetObjectAsJson("division", objLead.DivisionName+"#"+objLead.Division);
+                HttpContext.Session.SetObjectAsJson("division", objLead.DivisionName + "#" + objLead.Division);
                 var lsFiles = await _serAttachment.GetAttachments("LEAD", leadId);
 
-                
+
                 detailsObject = new LeadDetailsModel
                 {
                     LeadID = objLead.CRMLeadID,
                     Division = objLead.DivisionName,
 
-                   
-                Region = objLead.RegionName,
+
+                    Region = objLead.RegionName,
                     Branch = objLead.BranchName,
                     SalesOffice = objLead.SalesOffice,
                     Plant = objLead.PlantName,
@@ -829,7 +850,7 @@ namespace DPGSalesClient.Controllers
                     Status = objLead.Status,
                     LeadAssignTo = objLead.Username,
                     LeadMaturityDate = objLead.LeadMaturityDate,
-                   // DocumentCreatedDate = objLead.DocumentCreatedDate,
+                    // DocumentCreatedDate = objLead.DocumentCreatedDate,
                     Description = objLead.Description,
                     Priority = objLead.Priority,
                     SourceType = objLead.SourceType,
@@ -837,7 +858,7 @@ namespace DPGSalesClient.Controllers
                     Classification2 = objLead.Classification2,
                     Classification3 = objLead.Classification3,
                     Classification4 = objLead.Classification4,
-                    Currency = objLead.Currency,                    
+                    Currency = objLead.Currency,
                     Files = lsFiles
                 };
 
@@ -907,11 +928,11 @@ namespace DPGSalesClient.Controllers
             {
                 objData.SearchKey = strKey.Trim();
                 var lsData = await _serLead.SearchLeads(strKey.Trim());
-                ViewBag.RoleId = HttpContext.Session.GetString( "UserRoleId" );
-               
+                ViewBag.RoleId = HttpContext.Session.GetString("UserRoleId");
+
                 if (lsData != null && lsData.Count > 0)
                 {
-                    objData.LeadList = lsData.Select(y => new LeadViewModel.LeadViewItemModel { LeadID = y.CRMLeadID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName,ProjectName=y.ProjectName, Status = y.Status, CreatedOn = y.CreatedOn, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue }).OrderByDescending(z => z.LeadID).ToList();
+                    objData.LeadList = lsData.Select(y => new LeadViewModel.LeadViewItemModel { LeadID = y.CRMLeadID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName, ProjectName = y.ProjectName, Status = y.Status, CreatedOn = y.CreatedOn, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue }).OrderByDescending(z => z.LeadID).ToList();
 
                     return View("Index", objData);
                 }
@@ -998,14 +1019,14 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
-                var lsAcc = await _serCustomer.GetCustomers(accId);                
-               
+                var lsAcc = await _serCustomer.GetCustomers(accId);
+
                 //if (lsAcc != null && lsAcc.Count > 0)
                 //{
-                    return Json(lsAcc);
+                return Json(lsAcc);
 
-             
-              //  }
+
+                //  }
             }
             catch (TimeoutException tex)
             {
@@ -1019,7 +1040,7 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Customers(string strKey,string branch)
+        public async Task<IActionResult> Customers(string strKey, string branch)
         {
             try
             {
@@ -1044,7 +1065,7 @@ namespace DPGSalesClient.Controllers
 
             return Json(null);
         }
-              
+
         [HttpPost]
         public async Task<IActionResult> SubSegment(string strKey)
         {
@@ -1095,15 +1116,15 @@ namespace DPGSalesClient.Controllers
          ******************************************************************/
 
         #region Activities
-        public async Task<IActionResult> ActivityIndex(string leadId,string custname)
+        public async Task<IActionResult> ActivityIndex(string leadId, string custname)
         {
             var objConPlan = new ContactPlanViewModel();
             try
             {
 
                 objConPlan = await _serActivity.GetAllActivitiesByDocumentID(leadId);
-                
-                if (objConPlan != null )
+
+                if (objConPlan != null)
                 {
                     objConPlan.RefObjectID = leadId;
                     objConPlan.CustomerName = custname;
@@ -1124,8 +1145,8 @@ namespace DPGSalesClient.Controllers
             var objContPlan = new ContactPlanNewModel();
             try
             {
-                objContPlan = await _serActivity.ActvityCreateObject(leadId,custname);
-             
+                objContPlan = await _serActivity.ActvityCreateObject(leadId, custname);
+
             }
             catch (TimeoutException tex) { }
             catch (Exception ex)
@@ -1148,7 +1169,7 @@ namespace DPGSalesClient.Controllers
                     {
                         TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead Activity", "Activity (" + strResult + ") has been created successfully"));
 
-                        return RedirectToAction("ActivityIndex", new { leadId = objInput.DocumentID,custname=objInput.Name });
+                        return RedirectToAction("ActivityIndex", new { leadId = objInput.DocumentID, custname = objInput.Name });
                     }
 
                 }
@@ -1167,7 +1188,7 @@ namespace DPGSalesClient.Controllers
             var objAct = new ContactPlanNewModel();
             try
             {
-                objAct = await _serActivity.ActvityEditObject(activityId);            
+                objAct = await _serActivity.ActvityEditObject(activityId);
             }
             catch (TimeoutException tex) { }
             catch (Exception ex)
@@ -1180,7 +1201,7 @@ namespace DPGSalesClient.Controllers
 
         [HttpPost]
         public async Task<IActionResult> ActivityEdit(ContactPlanNewModel objInput)
-        {          
+        {
             try
             {
                 if (ModelState.IsValid)
@@ -1190,15 +1211,16 @@ namespace DPGSalesClient.Controllers
                     {
                         TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead Activity", "Activity (" + objInput.ActivityId + ") has been  updated successfully"));
 
-                        return RedirectToAction("ActivityDetails", "Lead", new { activityId = objInput.ActivityId , leadId =objInput.DocumentID});
+                        return RedirectToAction("ActivityDetails", "Lead", new { activityId = objInput.ActivityId, leadId = objInput.DocumentID });
                     }
-                }else
+                }
+                else
                 {
                     TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead Activity", "Please provide all Values"));
 
-                   // return RedirectToAction("ActivityDetails", "Lead", new { activityId = objInput.ActivityId });
+                    // return RedirectToAction("ActivityDetails", "Lead", new { activityId = objInput.ActivityId });
                 }
-               
+
             }
             catch (TimeoutException tex) { }
             catch (Exception ex)
@@ -1244,7 +1266,7 @@ namespace DPGSalesClient.Controllers
                     {
                         TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Documents", "Documents uploaded successfully"));
 
-                        return RedirectToAction("ActivityIndex", new {  leadId = objInput.RefObjectId,custname=objInput.CustomerName });
+                        return RedirectToAction("ActivityIndex", new { leadId = objInput.RefObjectId, custname = objInput.CustomerName });
                     }
                 }
                 else
@@ -1253,7 +1275,7 @@ namespace DPGSalesClient.Controllers
 
                     return RedirectToAction("ActivityAttachments", new { activityId = objInput.ActivityId, leadId = objInput.RefObjectId, custname = objInput.CustomerName });
                 }
-               
+
             }
             catch (TimeoutException tex) { }
             catch (Exception ex)
@@ -1277,7 +1299,7 @@ namespace DPGSalesClient.Controllers
             {
 
             }
-            return RedirectToAction("ActivityAttachments", new { activityId = activityId, leadId =leadId, custname =custname});
+            return RedirectToAction("ActivityAttachments", new { activityId = activityId, leadId = leadId, custname = custname });
         }
         public async Task<IActionResult> ActivityDetails(string activityId, string leadId)
         {
@@ -1312,8 +1334,8 @@ namespace DPGSalesClient.Controllers
             var blRes = false;
             try
             {
-                 blRes = await _serActivity.CloseActivity(activityId, strOutcome);
-               
+                blRes = await _serActivity.CloseActivity(activityId, strOutcome);
+
             }
             catch (TimeoutException tex)
             {
@@ -1333,7 +1355,7 @@ namespace DPGSalesClient.Controllers
 
         #region Convert To Enquiry
 
-        public async Task<IActionResult> ConvertToEnquiry(string leadId, string BusinesSeg,string DocDate)
+        public async Task<IActionResult> ConvertToEnquiry(string leadId, string BusinesSeg, string DocDate)
         {
             var leadConvert = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
             try
@@ -1348,13 +1370,13 @@ namespace DPGSalesClient.Controllers
                     leadConvert = new LeadConvertEnquiryModel();
                     leadConvert.LeadId = leadId;
                     leadConvert.BusinessSegment = BusinesSeg;
-                    leadConvert.BusinessSegmentId = BusinesSeg;                    
+                    leadConvert.BusinessSegmentId = BusinesSeg;
                     leadConvert.EnquiryMaturityDate = DateTime.Now.ToString("dd/MM/yyyy");
-                   // leadConvert.EnquiryValidDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    // leadConvert.EnquiryValidDate = DateTime.Now.ToString("dd/MM/yyyy");
                     leadConvert.LeadDocumentCreatedDate = DocDate;
 
                     HttpContext.Session.SetObjectAsJson("leadEnquiryConvert", leadConvert);
-                   
+
                 }
             }
             catch (TimeoutException tex) { }
@@ -1419,14 +1441,14 @@ namespace DPGSalesClient.Controllers
                             objNewEnquiry.SourceType = leadDetails.SourceType;
                             objNewEnquiry.ProjectName = leadDetails.ProjectName;
                             objNewEnquiry.ProductRequired = leadDetails.ProductRequired;
-                            objNewEnquiry.Description = leadDetails.Description;                          
+                            objNewEnquiry.Description = leadDetails.Description;
                             objNewEnquiry.Probability = leadDetails.Probability;
                             objNewEnquiry.ContractValue = leadDetails.ContractValue;
 
 
                             //Enquiry details
                             objNewEnquiry.EnquiryMaturityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryMaturityDate);
-                          //  objNewEnquiry.EnquiryValidityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryValidDate);
+                            //  objNewEnquiry.EnquiryValidityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryValidDate);
                             //objNewEnquiry.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.EnquiryDocumentCreatedDate);
                             objNewEnquiry.Tonnage = objInput.Tonnage;
                             objNewEnquiry.TotalValue = objInput.TotalValue;
@@ -1446,7 +1468,7 @@ namespace DPGSalesClient.Controllers
                                     TotalValue = x.TotalValue,
                                     TotalTonnageQuantity = x.TotalTonnage
                                 }).ToList();
-                               
+
 
                                 objNewEnquiry.OpportunityProducts = lsProducts;
                             }
@@ -1456,7 +1478,7 @@ namespace DPGSalesClient.Controllers
                                 var strEnq = await _serEnquiry.CreateOpportunity(objNewEnquiry);
                                 if (strEnq != "")
                                 {
-                                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead ("+ leadDetails .CRMLeadID+ ") has been converted to enquiry ("+strEnq+") successfully"));
+                                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead (" + leadDetails.CRMLeadID + ") has been converted to enquiry (" + strEnq + ") successfully"));
 
                                     HttpContext.Session.ClearSession("leadEnquiryConvert");
                                     HttpContext.Session.ClearSession("division");
@@ -1477,7 +1499,7 @@ namespace DPGSalesClient.Controllers
                         HttpContext.Session.SetObjectAsJson("leadEnquiryConvert", enqNewObj);
 
                         TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "For enquiry conversion should have atleast one product"));
-                                          
+
 
                         return RedirectToAction("ConvertToEnquiry", new { leadId = objInput.LeadId, BusinesSeg = objInput.BusinessSegment });
                     }
@@ -1496,7 +1518,7 @@ namespace DPGSalesClient.Controllers
             try
             {
                 itemsObject.BusinessSegment = BusinessSegment;
-         
+
                 var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadConvertEnquiryModel>("leadEnquiryConvert");
                 if (objNewEnq != null)
                 {
@@ -1553,7 +1575,7 @@ namespace DPGSalesClient.Controllers
             try
             {
                 newEnquiryProduct.BusinessSegment = BusinesSeg;
-                newEnquiryProduct.Division =HttpContext.Session.GetObjectFromJson<string>("division");
+                newEnquiryProduct.Division = HttpContext.Session.GetObjectFromJson<string>("division");
                 // newEnquiryProduct.BusinessSegment = BusinesSeg;
 
                 var lsProds = await _serProduct.GetProducts();
@@ -1607,7 +1629,7 @@ namespace DPGSalesClient.Controllers
                         objInput.BusinessSegment = objInput.BusinessSegment;
 
                         enqNewObj.TotalValue = (enqNewObj.TotalValue.HasValue ? enqNewObj.TotalValue.Value : 0f) + objInput.TotalValue;
-                        enqNewObj.Tonnage = (enqNewObj.Tonnage.HasValue ? enqNewObj.Tonnage.Value:0f) + objInput.TotalTonnage;
+                        enqNewObj.Tonnage = (enqNewObj.Tonnage.HasValue ? enqNewObj.Tonnage.Value : 0f) + objInput.TotalTonnage;
 
                         enqNewObj.EnquiryProducts.Add(objInput);
                     }
@@ -1636,7 +1658,7 @@ namespace DPGSalesClient.Controllers
                     if (enqNewObj.EnquiryProducts != null && enqNewObj.EnquiryProducts.Count > 0)
                     {
                         editEnquiryProduct = enqNewObj.EnquiryProducts.Where(x => x.ProductSeg == productName).FirstOrDefault();
-                        
+
                     }
 
                     var lsProds = await _serProduct.GetProducts();

@@ -38,6 +38,13 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
+{
+    "CLNT000002",
+    "CLNT000007",
+    "CLNT000008",
+    "CLNT000009"
+};
         #endregion
 
         #region Constructor
@@ -59,6 +66,7 @@ namespace DPGSalesClient.Controllers
 
             _logger = loggerFactory.CreateLogger<EnquiryOpportunityController>();
             _hostingEnvironment = hostingEnvironment;
+            
         }
 
         #endregion
@@ -84,6 +92,8 @@ namespace DPGSalesClient.Controllers
 
                     if (lsEnquiry != null)
                     {
+                       
+
                         objData.EnquiryList = lsEnquiry.Select(y => new EnquiryViewModel.EnquiryViewItemModel
                         {
                             EnquiryID = y.CRMOpportunityID,
@@ -97,19 +107,14 @@ namespace DPGSalesClient.Controllers
                             Branch = y.BranchName,
                             Probablity = y.Probability,
                             ContractValue = y.ContractValue,
-                            SAPEnquiryID = y.SAPOpportunityID
+                            SAPEnquiryID = y.SAPOpportunityID,
+                            isDirect= !ExcludedDivisionIds.Contains(y.Division)
 
                         }).ToList();
                         var lsLocdetails = await _serLocation.RetreiveLocationDetails();
-                        var ids = new List<string>
-                                {
-                                    "CLNT000002",
-                                    "CLNT000007",
-                                    "CLNT000008",
-                                    "CLNT000009"
-                                };
+                       
 
-                        objData.Addcount = lsLocdetails.Divisions.Count(x => ids.Contains(x.ID));
+                        objData.Addcount = lsLocdetails.Divisions.Count(x => ExcludedDivisionIds.Contains(x.ID));
                         return View("Index", objData);
                     }
                 }
@@ -578,7 +583,8 @@ namespace DPGSalesClient.Controllers
                         Classification4 = enqDetails.Classification4,
                         Currency = enqDetails.Currency,
                         UserRoleID = strRoleID,
-                        Files = lsFiles
+                        Files = lsFiles,
+                        isDirect = !ExcludedDivisionIds.Contains(enqDetails.Division)
                     };
                 }
             }
@@ -1748,7 +1754,7 @@ namespace DPGSalesClient.Controllers
                         //Divisions
                         if (lsLocdetails.Divisions.Count > 0)
                         {
-                            lsobjList = lsLocdetails.Divisions.Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
+                            lsobjList = lsLocdetails.Divisions.Where(y => ExcludedDivisionIds.Contains(y.ID)).Select(x => new SelectListItemObject { Text = x.Name, Value = x.Name + "#" + x.ID }).ToList();
                             if (lsobjList.Count > 1)
                                 lsobjList.Insert(0, new SelectListItemObject { Text = "SELECT", Value = "" });
 

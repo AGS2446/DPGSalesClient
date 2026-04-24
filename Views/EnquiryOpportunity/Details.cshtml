@@ -236,7 +236,17 @@
                 <div class="col-md-3 details">
 
                     <label class="hdr">Lead ID</label><br />
-                    <label class="val">@Model.LeadID</label>
+                                                      <label class="val">
+                                                          @if (Model.isDirect)
+                                                          {
+                                                              @Model.LeadID
+                                                          }
+                                                          else
+                                                          {
+                                                              <input type="hidden" asp-for="@Model.LeadID" />
+                                                          }
+
+                                                      </label>
 
                 </div>
 

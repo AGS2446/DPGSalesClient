@@ -34,6 +34,13 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
+                private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
+{
+    "CLNT000002",
+    "CLNT000007",
+    "CLNT000008",
+    "CLNT000009"
+};
         #endregion
 
         #region Constructor
@@ -79,7 +86,7 @@ namespace DPGSalesClient.Controllers
                     var lsQuote = await _serQuote.RetriveQuotes("", "", 0, "", 0);
                     if (lsQuote != null)
                     {
-                        objData.QuoteList = lsQuote.Select(y => new QuoteViewModel.QuoteViewItemModel { QuoteID = y.CRMQuotationID, EnquiryID = y.CRMOppotunityID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName, Status = y.Status, CreatedOn = y.CreatedOn, LeadID = y.CRMLeadID, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue }).ToList();
+                        objData.QuoteList = lsQuote.Select(y => new QuoteViewModel.QuoteViewItemModel { QuoteID = y.CRMQuotationID, EnquiryID = y.CRMOppotunityID, BusineeSegment = y.BusinessSegment, CustomerName = y.AccountName, Status = y.Status, CreatedOn = y.CreatedOn, LeadID = y.CRMLeadID, Division = y.DivisionName, Branch = y.BranchName, Probablity = y.Probability, ContractValue = y.ContractValue, isDirect = !ExcludedDivisionIds.Contains(y.Division) }).ToList();
                         return View("Index", objData);
                     }
                 }
@@ -283,7 +290,8 @@ namespace DPGSalesClient.Controllers
                         Classification2 = quoteDetails.Classification2,
                         Classification3 = quoteDetails.Classification3,
                         Classification4 = quoteDetails.Classification4,
-                        Files = lsFiles
+                        Files = lsFiles,
+                        isDirect = !ExcludedDivisionIds.Contains(quoteDetails.Division)
                     };
                 }
 
