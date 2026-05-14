@@ -14,7 +14,8 @@ using SAPEnquiryProxy;
 using AuthorizationProxy;
 using Microsoft.Extensions.Options;
 using LeadProxy;
-
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -38,17 +39,11 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
-        private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
-{
-    "CLNT000002",
-    "CLNT000007",
-    "CLNT000008",
-    "CLNT000009"
-};
+        private readonly HashSet<string> ExcludedDivisionIds;
         #endregion
 
         #region Constructor
-        public EnquiryOpportunityController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor)
+        public EnquiryOpportunityController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             string strIp = SalesStaticMethods.GetRemoteIp(appSettings);
 
@@ -66,7 +61,8 @@ namespace DPGSalesClient.Controllers
 
             _logger = loggerFactory.CreateLogger<EnquiryOpportunityController>();
             _hostingEnvironment = hostingEnvironment;
-            
+            ExcludedDivisionIds = configuration.GetSection("ExcludedDivisionIds").Get<HashSet<string>>();
+
         }
 
         #endregion
@@ -135,11 +131,17 @@ namespace DPGSalesClient.Controllers
 
         public async Task<IActionResult> Edit(string enqId, string stBack)
         {
+            string Entity = "Lead";
             try
             {
                 if (stBack == "BACK")
                 {
                     var objNewEnq = HttpContext.Session.GetObjectFromJson<EnquiryNewModel>("EnquiryNew");
+                    
+                    if (objNewEnq.isDirect)
+                    {
+                        Entity = "ENQUIRY";
+                    }
                     if (objNewEnq != null)
                     {
                         if (objNewEnq.Branch != null)
@@ -172,7 +174,7 @@ namespace DPGSalesClient.Controllers
                         }
                         if (objNewEnq.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", objNewEnq.CustomerSegment.Split('#')[0]);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", objNewEnq.CustomerSegment.Split('#')[0]);
                             if (lsSubseg != null)
                             {
                                 objNewEnq.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -326,9 +328,13 @@ namespace DPGSalesClient.Controllers
                         #endregion
 
                         #region EntityMap Details
-
-
-                        var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
+                        objNew.isDirect = ExcludedDivisionIds.Contains(enqEdit.Division);
+                        //string Entity = "Lead";
+                        if (objNew.isDirect)
+                        {
+                             Entity = "ENQUIRY";
+                        }
+                        var lsEntity = await _serEntity.RetriveByObjectName(Entity);
                         if (lsEntity != null && lsEntity.Count > 0)
                         {
                             objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
@@ -349,7 +355,7 @@ namespace DPGSalesClient.Controllers
 
                         if (objNew.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", enqEdit.CustomerSegment);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", enqEdit.CustomerSegment);
                             if (lsSubseg != null)
                             {
                                 objNew.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -431,10 +437,10 @@ namespace DPGSalesClient.Controllers
 
                         objNewEnquiry.BusinessSegmentID = objInput.BusinessSegment.Split('#')[1];
                         objNewEnquiry.BusinessSegment = objInput.BusinessSegment.Split('#')[0];
-                        objNewEnquiry.Classification1 = objInput.Classification1;
+                       // objNewEnquiry.Classification1 = objInput.Classification1;
                         objNewEnquiry.Classification2 = objInput.Classification2;
-                        objNewEnquiry.Classification3 = objInput.Classification3.Split('#')[0];
-                        objNewEnquiry.Classification3ID = objInput.Classification3.Split('#')[1];
+                       // objNewEnquiry.Classification3 = objInput.Classification3.Split('#')[0];
+                        //objNewEnquiry.Classification3ID = objInput.Classification3.Split('#')[1];
                         objNewEnquiry.Classification4 = objInput.Classification4;
                         objNewEnquiry.UserID = objInput.AssignedToUser.Split('#')[1];
                         objNewEnquiry.Username = objInput.AssignedToUser.Split('#')[0];
@@ -449,7 +455,8 @@ namespace DPGSalesClient.Controllers
                         objNewEnquiry.CurrencyValue = objInput.CurrencyValue;
 
                         //Enquiry details
-                        objNewEnquiry.EnquiryMaturityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryMaturityDate);
+                        objNewEnquiry.EnquiryMaturityDate = string.IsNullOrWhiteSpace(objInput.EnquiryMaturityDate) ? (DateTime?)null : Convert.ToDateTime(objInput.EnquiryMaturityDate);
+                    //    objNewEnquiry.EnquiryMaturityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryMaturityDate);
                         // objNewEnquiry.EnquiryValidityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryValidityDate);
                         // objNewEnquiry.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
                         objNewEnquiry.Tonnage = objInput.Tonnage;
@@ -524,7 +531,7 @@ namespace DPGSalesClient.Controllers
             catch (Exception ex)
             {
             }
-            return View(objInput);
+            return RedirectToAction("Details", new { enqId = objInput.EnquiryID, status = "OPEN" });
         }
 
         public async Task<IActionResult> Details(string enqId, string status)
@@ -572,6 +579,7 @@ namespace DPGSalesClient.Controllers
                         CustomerSubSegment = enqDetails.SubSegment,
                         CustomerType = enqDetails.CustomerType,
                         AssignedToUser = enqDetails.Username,
+                        CustomerDesignation = enqDetails.CustomerDesignation,
                         EnquiryMaturityDate = enqDetails.EnquiryMaturityDate.HasValue ? enqDetails.EnquiryMaturityDate.Value.ToString("dd/MM/yyyy") : "",
                         //EnquiryValidityDate = enqDetails.EnquiryValidityDate.HasValue ? enqDetails.EnquiryValidityDate.Value.ToString("dd/MM/yyyy") : "",
                         // DocumentCreatedDate = enqDetails.DocumentCreatedDate.HasValue ? enqDetails.DocumentCreatedDate.Value.ToString("dd/MM/yyyy") : "",
@@ -596,12 +604,14 @@ namespace DPGSalesClient.Controllers
 
             return View(objDetails);
         }
-        public async Task<IActionResult> Attachments(string enqId)
+        public async Task<IActionResult> Attachments(string enqId, bool isDirect)
         {
             var objAtt = new AttachmentsModel();
+           
             try
             {
                 objAtt = await _serAttachment.GetAttachmentModel("OPPORTUNITY", enqId);
+                objAtt.isDirect = isDirect;
             }
             catch (TimeoutException tex) { }
             catch (Exception ex)
@@ -616,24 +626,55 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
+                var allowedExtensions = new[]
+  {
+    ".pdf", ".xlsx", ".txt", ".ppt", ".png", ".jpg", ".jpeg", ".docx", ".doc", ".xls"
+};
                 var jsObject = Newtonsoft.Json.JsonConvert.DeserializeObject<UploadFile>(objInput.PendingUploadFiles);
+                foreach (var file in jsObject.Files)
+                {
+                    if (string.IsNullOrWhiteSpace(file.Name))
+                        continue;
+
+                    string ext = Path.GetExtension(file.Name).ToLower();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", $"File type not allowed: {file.Name}"));
+
+                        return RedirectToAction("Attachments", new { enqId = objInput.ActivityId, isDirect = objInput.isDirect });
+                    }
+                }
 
                 if (_serAttachment.VarifyJsonFileObject(jsObject))
                 {
-                    var lsFilesUploaded = await _serAttachment.UploadAttachments("OPPORTUNITY", objInput.ActivityId, jsObject);
+                    if (objInput.isDirect)
+                    {
+                        var lsFilesUploaded = await _serAttachment.UploadAttachments( "OPPORTUNITY", objInput.ActivityId, jsObject);
+
+                        if (lsFilesUploaded.Count > 0)
+                        {
+                            TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", "Attachments uploaded successfully"));
+
+                            return RedirectToAction("Attachments", new { enqId = objInput.ActivityId, isDirect= objInput.isDirect});
+                        }
+                    }
+                    else { 
+                    var lsFilesUploaded = await _serAttachment.UploadEnquiryAttachments(objInput.DocumentType, "OPPORTUNITY", objInput.ActivityId, jsObject);
 
                     if (lsFilesUploaded.Count > 0)
                     {
                         TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", "Attachments uploaded successfully"));
 
-                        return RedirectToAction("Index");
+                            return RedirectToAction("Attachments", new { enqId = objInput.ActivityId });
+                        }
                     }
                 }
                 else
                 {
                     TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", "Please add atleast one document"));
 
-                    return RedirectToAction("Attachments", new { enqId = objInput.ActivityId });
+                    return RedirectToAction("Attachments", new { enqId = objInput.ActivityId, isDirect = objInput.isDirect });
                 }
 
 
@@ -677,7 +718,7 @@ namespace DPGSalesClient.Controllers
             }
 
 
-            return View(objInput);
+            return RedirectToAction("Attachments", new { enqId = objInput.ActivityId, isDirect = objInput.isDirect });
         }
 
         public async Task<IActionResult> DeleteAttachment(int Id, string activityID)
@@ -1123,7 +1164,7 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateEnquiryByConfirmation(string enqId, string strAction)
+        public async Task<IActionResult> UpdateEnquiryByConfirmation(string enqId,bool isDirect, string strAction)
         {
             try
             {
@@ -1132,17 +1173,33 @@ namespace DPGSalesClient.Controllers
                 switch (strAction)
                 {
                     case "CONVERT":
-                        // strStatus = "PENDING FOR APPROVAL";
+                         strStatus = "PENDING FOR APPROVAL";
 
                         var objAttach = await _serAttachment.GetAttachments("OPPORTUNITY", enqId);
-                        if (objAttach != null && objAttach.Count > 0)
+                        if (objAttach == null || objAttach.Count == 0)
                         {
-                            strStatus = "PENDING FOR RECOMMEND";
-
+                            return Json(new
+                            {
+                                status = "FAILED",
+                                message = "At least one costsheet should be uploaded for Convert"
+                            });
                         }
-                        else
+
+                        if (!isDirect)
                         {
-                            return Json(new { status = "FAILED", message = "Atleast one costsheet should be upload for Convert" });
+                            bool hasBidNoBid = objAttach.Any(x => x.DocumentType == "BidNoBid");
+                            bool hasContractsFinance = objAttach.Any(x => x.DocumentType == "ContractsFinance");
+                            bool hasManagementApproval = objAttach.Any(x => x.DocumentType == "ManagementApproval");
+
+                           // if (!(hasBidNoBid && hasContractsFinance && hasManagementApproval))
+                            if (!(hasBidNoBid))
+                            {
+                                return Json(new
+                                {
+                                    status = "FAILED",
+                                    message = "Please upload at least one file for  mandatory document type: Bid / No-Bid Analysis."
+                                });
+                            }
                         }
 
                         break;
@@ -1390,11 +1447,16 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubSegment(string strKey)
+        public async Task<IActionResult> SubSegment(string strKey,bool isDirect)
         {
             try
             {
-                var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", strKey);
+                string Entity = "Lead";
+                if (isDirect)
+                {
+                    Entity = "ENQUIRY";
+                }
+                var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", strKey);
                 if (lsSubseg != null && lsSubseg.Count > 0)
                 {
                     return Json(lsSubseg.Select(y => new DropdownObject { Value = y.PropertyName + "#" + y.PropertyValue, Text = y.PropertyName }).ToList());
@@ -1722,7 +1784,7 @@ namespace DPGSalesClient.Controllers
                         }
                         if (objNewEnq.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", objNewEnq.CustomerSegment.Split('#')[0]);
+                            var lsSubseg = await _serEntity.RetriveByParentId("ENQUIRY", "CUSTOMERSUBSEGMENT", objNewEnq.CustomerSegment.Split('#')[0]);
                             if (lsSubseg != null)
                             {
                                 objNewEnq.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -1854,7 +1916,7 @@ namespace DPGSalesClient.Controllers
                     #endregion
 
                     //EntityMap
-                    var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
+                    var lsEntity = await _serEntity.RetriveByObjectName("ENQUIRY");
                     if (lsEntity != null)//&& lsEntity.Count>0
                     {
                         objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
@@ -2123,6 +2185,7 @@ namespace DPGSalesClient.Controllers
                             objNewEnquiry.SalesOffice = leadDetails.SalesOffice;
                             objNewEnquiry.PlantID = leadDetails.PlantID;
                             objNewEnquiry.PlantName = leadDetails.PlantName;
+                            objNewEnquiry.CustomerDesignation = objInput.CustomerDesignation;
 
                             objNewEnquiry.AccountID = leadDetails.AccountID;
                             objNewEnquiry.AccountName = leadDetails.AccountName;
@@ -2186,7 +2249,7 @@ namespace DPGSalesClient.Controllers
                                 var strEnq = await _serEnquiry.CreateOpportunity(objNewEnquiry);
                                 if (strEnq != "")
                                 {
-                                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Lead (" + leadDetails.CRMLeadID + ") has been converted to enquiry (" + strEnq + ") successfully"));
+                                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("ENQUIRY", "Lead (" + leadDetails.CRMLeadID + ") has been converted to enquiry (" + strEnq + ") successfully"));
 
                                     HttpContext.Session.ClearSession("leadEnquiryConvert");
                                     HttpContext.Session.ClearSession("division");
@@ -2206,7 +2269,7 @@ namespace DPGSalesClient.Controllers
                 }
                 else
                 {
-                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Lead", "Please provide required fields data"));
+                    TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("ENQUIRY", "Please provide required fields data"));
                     var objNewEnq = HttpContext.Session.GetObjectFromJson<LeadNewModel>("LeadNew");
                     if (objNewEnq != null)
                     {

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ActivityProxy;
 using Microsoft.Extensions.Options;
 using AuthorizationProxy;
+using System.IO;
 
 namespace DPGSalesClient.Controllers
 {
@@ -764,7 +765,26 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
+                var allowedExtensions = new[]
+{
+    ".pdf", ".xlsx", ".txt", ".ppt", ".png", ".jpg", ".jpeg", ".docx", ".doc", ".xls"
+};
                 var jsObject = Newtonsoft.Json.JsonConvert.DeserializeObject<UploadFile>(objInput.PendingUploadFiles);
+
+                foreach (var file in jsObject.Files)
+                {
+                    if (string.IsNullOrWhiteSpace(file.Name))
+                        continue;
+
+                    string ext = Path.GetExtension(file.Name).ToLower();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", $"File type not allowed: {file.Name}"));
+
+                        return RedirectToAction("Attachments", new { enqId = objInput.ActivityId });
+                    }
+                }
 
                 if (_serAttachment.VarifyJsonFileObject(jsObject))
                 {
@@ -1067,7 +1087,7 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubSegment(string strKey)
+        public async Task<IActionResult> SubSegment(string strKey, bool isDirect=false)
         {
             try
             {
@@ -1447,7 +1467,8 @@ namespace DPGSalesClient.Controllers
 
 
                             //Enquiry details
-                            objNewEnquiry.EnquiryMaturityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryMaturityDate);
+                            objNewEnquiry.EnquiryMaturityDate = string.IsNullOrWhiteSpace(objInput.EnquiryMaturityDate) ? (DateTime?)null : Convert.ToDateTime(objInput.EnquiryMaturityDate);
+                        //    objNewEnquiry.EnquiryMaturityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryMaturityDate);
                             //  objNewEnquiry.EnquiryValidityDate = SalesStaticMethods.ConvertDate(objInput.EnquiryValidDate);
                             //objNewEnquiry.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.EnquiryDocumentCreatedDate);
                             objNewEnquiry.Tonnage = objInput.Tonnage;

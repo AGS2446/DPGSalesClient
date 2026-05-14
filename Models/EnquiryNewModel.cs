@@ -90,6 +90,7 @@ namespace DPGSalesClient.Models
         public string EnquiryID { get; set; }
 
         public string strProducts { get; set; }
+        public bool isDirect { get; set; }
         public List<EnquiryProduct> OpportunityProducts { get; set; }
 
         public List<SelectListItemObject> DivisionList { get; set; }

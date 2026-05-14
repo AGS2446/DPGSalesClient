@@ -23,7 +23,7 @@
                     <label class="hdr">Division </label><br />
 
                     <label class="val">@Model.Division </label>
-                    <input type="hidden" class="form-control" id="hdnDivision" asp-for="@Model.Division"/>
+                    <input type="hidden" class="form-control" id="hdnDivision" asp-for="@Model.Division" />
                 </div>
                 <div class="col-md-3 details">
 
@@ -133,7 +133,7 @@
                 </div>
                 <div class="col-md-3 details">
                     <label class="hdr">Contract Value(In Lakhs) </label><br />
-                    <label class="val">@Model.ContractValue_IN_LAKHS</label>
+                    <label class="val">@Model.ContractValue_IN_LAKHS <a id="version" style="border: 1px solid; margin-left: 50px; padding: 4px; font-size: 13px; border-radius: 16px;"><i class="fa fa-info" aria-hidden="true"></i></a></label>
                 </div>
 
                 <div class="col-md-3 details">
@@ -209,17 +209,17 @@
             <div class="row p-t-15">
                 <div class="col-md-3 details">
                     <label class="hdr">Lead ID </label><br />
-                                                       <label class="val">
-                                                           @if (Model.isDirect)
-                                                           {
-                                                               @Model.LeadID
-                                                           }
-                                                           else
-                                                           {
-                                                               <input type="hidden" asp-for="@Model.LeadID" />
-                                                           }
+                    <label class="val">
+                        @if (Model.isDirect)
+                        {
+                            @Model.LeadID
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="@Model.LeadID" />
+                        }
 
-                                                       </label>
+                    </label>
                 </div>
                 <div class="col-md-3 details">
                     <label class="hdr">Enquiry ID </label><br />
@@ -269,7 +269,7 @@
     </div>
 
     <div class="row">
-        @if(ViewBag.RoleId != "ROLE000010")
+        @if (ViewBag.RoleId != "ROLE000010")
         {
             string strCssDisable = "";
             string strParentCssDisable = "";
@@ -277,7 +277,7 @@
             string strConvertParentCssDisable = "";
             {
 
-                if(Model.Status.ToUpper() == "OPEN")
+                if (Model.Status.ToUpper() == "OPEN")
                 {
                     strCssDisable = "";
                     strParentCssDisable = "";
@@ -288,7 +288,7 @@
                     strParentCssDisable = "disable-hdr";
                 }
 
-                if(Model.Status.ToUpper() == "LOI" || Model.Status.ToUpper() == "OPEN")
+                if (Model.Status.ToUpper() == "LOI" || Model.Status.ToUpper() == "OPEN")
                 {
                     strConvertCssDisable = "";
                     strConvertParentCssDisable = "";
@@ -326,7 +326,7 @@
             <div class="col-md-2 m-t">
                 <a class="btn btn-info btn-details nav-btn" href="@Url.Action( "Index", "Quote" )"><div><i class="fa fa-arrow-circle-o-left"></i><br /><span>Back</span></div></a>
             </div>
-            @if(Model.Status.ToUpper() == "BUDGETARY")
+            @if (Model.Status.ToUpper() == "BUDGETARY")
             {
 
                 <div class="col-md-2 m-t">
@@ -398,7 +398,62 @@
             </div>
         </div>
     </div>
+    <!-- Modal for Versions -->
+    <div class="modal fade" id="versionModal" tabindex="-1" role="dialog" aria-labelledby="versionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1366a8">
+                    <h5 class="modal-title" id="confirmModalLabel" style="font-weight: bold;width: 80%;float: left;color:white"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Contract Value</th>
+                                <th>Modified By</th>
+                                <th>Modified On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Versions.Count > 0)
+                            {
+                                @for (int i = 0; i < Model.Versions.Count; i++)
+                                {
+                                    <tr>
+                                        <td>Version - @(i+1)</td>
+                                        <td>@Model.Versions[i].OldContractValue</td>
+                                        <td>@Model.Versions[i].CreatedBy</td>
+                                        <td>@Model.Versions[i].CreatedDate?.ToString("dd-MM-yyyy")</td>
+                                    </tr>
+                                }
 
+
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>Version - 1</td>
+                                    <td>@Model.ContractValue_IN_LAKHS</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <label id="lblMsg"></label>
+                </div>
+                <div class="modal-footer" style="text-align:center">                   
+                    <button type="button" class="btn btn-secondary" style="width:80px" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
@@ -416,7 +471,7 @@
             switch (btnName.toUpperCase()) {
                 case 'BUDGETARY':
                     $('#remarksModalLabel').html('BUDGETARY');
-                    
+
                     $('#lblMsg').html('Are you sure you want to change status Budgetary?');
                     break;
                 case 'CANCEL':
@@ -436,7 +491,7 @@
                     $('#lblMsg').html('Are you sure you want to update status to OPEN?');
                     break;
             }
-           
+
             $('#confirmModal').modal('show');
             return false;
         });
@@ -459,7 +514,7 @@
 
                 break;
         }
-       
+
             $('#statusRemarksModal').modal('show');
         }
         else {
@@ -482,7 +537,7 @@
             }
             $('#confirmModal').modal('show');
         }
-        
+
         return false;
     });
         $('#btnCloseActivityOk').click(function () {
@@ -520,9 +575,14 @@
                 });
 
             }
-            
-        });
 
+        });
+        $('#version').click(function () {
+            debugger;
+
+            $('#versionModal').modal('show');
+           
+        });
     </script>
    
 }

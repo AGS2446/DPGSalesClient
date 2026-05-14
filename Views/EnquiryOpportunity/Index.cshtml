@@ -98,7 +98,7 @@
                         <td style="text-align:center">@item.ContractValue</td>
                         <td style="text-align:center">@item.Probablity</td>                       
                         <td style="width:80px">
-                            <a class="nav-btn" href="@Url.Action("Attachments", "EnquiryOpportunity", new { enqId = @item.EnquiryID })" style="padding-right:15px;" title="Attachments"><i class="fa fa-paperclip text-aqua" style="font-size:18px;font-weight:500;"></i></a>
+                            <a class="nav-btn" href="@Url.Action("Attachments", "EnquiryOpportunity", new { enqId = @item.EnquiryID,isDirect = @item.isDirect })" style="padding-right:15px;" title="Attachments"><i class="fa fa-paperclip text-aqua" style="font-size:18px;font-weight:500;"></i></a>
                             <a class="nav-btn " href="@Url.Action("Details", "EnquiryOpportunity", new { enqId = @item.EnquiryID, status = @item.Status.ToUpper() })" style="padding-right:15px;" title="Details"><i class="fa fa-list text-orange" style="font-size:18px"></i></a>
                             <a class="nav-btn @strCssDiable" href="@Url.Action("ActivityIndex", "EnquiryOpportunity", new { enqId = @item.EnquiryID, custname = @item.CustomerName })" style="padding-right:5px;" title="Activities"><i class="fa fa-calendar-check-o text-primary" style="font-size:18px"></i></a>
                         </td>

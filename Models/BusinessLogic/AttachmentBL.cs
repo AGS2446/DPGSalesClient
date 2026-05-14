@@ -36,7 +36,8 @@ namespace DPGSalesClient.Models.BusinessLogic
                         FileUrl = x.URL,
                         CreatedOn=x.CreatedOn,
                         UserID=x.UserID,
-                        UserName=x.Username
+                        UserName=x.Username,
+                        DocumentType=x.DocumentType
                         
                     }).ToList();
 
@@ -80,7 +81,8 @@ namespace DPGSalesClient.Models.BusinessLogic
                                 Name = objFU.Files[intF].Name,
                                 DocumentID = documentId,
                                 ObjectName = procesName.ToUpper(),
-                                Base = objFU.Files[intF].File
+                                Base = objFU.Files[intF].File,
+                                DocumentType=""
                             });
 
                             if (blRes)
@@ -161,7 +163,8 @@ namespace DPGSalesClient.Models.BusinessLogic
                         FileUrl = x.URL,
                         CreatedOn = x.CreatedOn,
                         UserID=x.UserID,
-                        UserName=x.Username
+                        UserName=x.Username,
+                        DocumentType=x.DocumentType
                     }).ToList();
                 }
             }
@@ -207,6 +210,46 @@ namespace DPGSalesClient.Models.BusinessLogic
             {
             }
             return blRes;
+        }
+        public async Task<List<string>> UploadEnquiryAttachments(string Type,string procesName, string documentId, UploadFile objFU)
+        {
+            var lsFilesUploaded = new List<string>();
+            try
+            {
+
+                if (objFU.Files.Count > 0)
+                {
+                    for (int intF = 0; intF < objFU.Files.Count; intF++)
+                    {
+                        if (objFU.Files[intF].Name != "")
+                        {
+                            var blRes = await _serFile.UploadFile(new FileManagerProxy.AGS_Attachment_Upload
+                            {
+                                Name = objFU.Files[intF].Name,
+                                DocumentID = documentId,
+                                ObjectName = procesName.ToUpper(),
+                                Base = objFU.Files[intF].File,
+                                DocumentType = Type
+                            });
+
+                            if (blRes)
+                            {
+                                lsFilesUploaded.Add(objFU.Files[intF].Name + " - Uploaded");
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (TimeoutException tex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return lsFilesUploaded;
         }
     }
 }

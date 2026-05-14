@@ -13,7 +13,7 @@ namespace QuotationProxy
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AGS_Quotation", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
         "ities")]
     public partial class AGS_Quotation : object
@@ -116,9 +116,9 @@ namespace QuotationProxy
         private string ProjectNameField;
         
         private System.Nullable<System.DateTime> QuoteMaturityDateField;
-        
+
         private System.Collections.Generic.List<QuotationProxy.AGS_QuoteProduct> QuoteProductsField;
-        
+
         private System.Nullable<System.DateTime> QuoteValidityDateField;
         
         private string ReasonField;
@@ -152,6 +152,9 @@ namespace QuotationProxy
         private string UserIDField;
         
         private string UsernameField;
+        
+       // private QuotationProxy.AGS_VersionHistory[] VersionsField;
+        private System.Collections.Generic.List<QuotationProxy.AGS_VersionHistory> VersionsField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string AccountID
@@ -1023,10 +1026,24 @@ namespace QuotationProxy
                 this.UsernameField = value;
             }
         }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.Generic.List<QuotationProxy.AGS_VersionHistory> Versions
+          
+        {
+            get
+            {
+                return this.VersionsField;
+            }
+            set
+            {
+                this.VersionsField = value;
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AGS_QuoteProduct", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
         "ities")]
     public partial class AGS_QuoteProduct : object
@@ -1288,7 +1305,105 @@ namespace QuotationProxy
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AGS_VersionHistory", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
+        "ities")]
+    public partial class AGS_VersionHistory : object
+    {
+        
+        private string CRMQuoteIDField;
+        
+        private string CreatedByField;
+        
+        private System.Nullable<System.DateTime> CreatedDateField;
+        
+        private int IdField;
+        
+        private System.Nullable<double> NewContractValueField;
+        
+        private System.Nullable<double> OldContractValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CRMQuoteID
+        {
+            get
+            {
+                return this.CRMQuoteIDField;
+            }
+            set
+            {
+                this.CRMQuoteIDField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CreatedBy
+        {
+            get
+            {
+                return this.CreatedByField;
+            }
+            set
+            {
+                this.CreatedByField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> CreatedDate
+        {
+            get
+            {
+                return this.CreatedDateField;
+            }
+            set
+            {
+                this.CreatedDateField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id
+        {
+            get
+            {
+                return this.IdField;
+            }
+            set
+            {
+                this.IdField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<double> NewContractValue
+        {
+            get
+            {
+                return this.NewContractValueField;
+            }
+            set
+            {
+                this.NewContractValueField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<double> OldContractValue
+        {
+            get
+            {
+                return this.OldContractValueField;
+            }
+            set
+            {
+                this.OldContractValueField = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="EntityState", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer")]
     public enum EntityState : int
     {
@@ -1307,7 +1422,7 @@ namespace QuotationProxy
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AGS_UploadContractValue", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
         "ities")]
     public partial class AGS_UploadContractValue : object
@@ -1375,7 +1490,7 @@ namespace QuotationProxy
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AGS_QuotationHistory", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
         "ities")]
     public partial class AGS_QuotationHistory : object
@@ -1458,7 +1573,7 @@ namespace QuotationProxy
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CrmObjectReportRequest", Namespace="http://schemas.datacontract.org/2004/07/SmartServe.BusinessLogicLayer.BusinessEnt" +
         "ities")]
     public partial class CrmObjectReportRequest : object
@@ -1735,23 +1850,22 @@ namespace QuotationProxy
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="QuotationProxy.IQuotationProxyService")]
     public interface IQuotationProxyService
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/RetrieveAll", ReplyAction="http://tempuri.org/IQuotationProxyService/RetrieveAllResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> RetrieveAllAsync(string sortBy, string sortOrder, int pageSize, string marker, int currentIndex);
-        
+
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/PagerCount", ReplyAction="http://tempuri.org/IQuotationProxyService/PagerCountResponse")]
         System.Threading.Tasks.Task<int> PagerCountAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/Search", ReplyAction="http://tempuri.org/IQuotationProxyService/SearchResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> SearchAsync(string Key);
-        
+
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/SearchByStatus", ReplyAction="http://tempuri.org/IQuotationProxyService/SearchByStatusResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> SearchByStatusAsync(string value);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/Retrieve", ReplyAction="http://tempuri.org/IQuotationProxyService/RetrieveResponse")]
         System.Threading.Tasks.Task<QuotationProxy.AGS_Quotation> RetrieveAsync(string id);
         
@@ -1769,16 +1883,15 @@ namespace QuotationProxy
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/History", ReplyAction="http://tempuri.org/IQuotationProxyService/HistoryResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_QuotationHistory>> HistoryAsync(string id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/ReportData", ReplyAction="http://tempuri.org/IQuotationProxyService/ReportDataResponse")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IQuotationProxyService/ReportData", ReplyAction = "http://tempuri.org/IQuotationProxyService/ReportDataResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> ReportDataAsync(QuotationProxy.CrmObjectReportRequest model);
     }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     public interface IQuotationProxyServiceChannel : QuotationProxy.IQuotationProxyService, System.ServiceModel.IClientChannel
     {
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
     public partial class QuotationProxyServiceClient : System.ServiceModel.ClientBase<QuotationProxy.IQuotationProxyService>, QuotationProxy.IQuotationProxyService
@@ -1823,27 +1936,27 @@ namespace QuotationProxy
                 base(binding, remoteAddress)
         {
         }
-        
+
         public System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> RetrieveAllAsync(string sortBy, string sortOrder, int pageSize, string marker, int currentIndex)
         {
             return base.Channel.RetrieveAllAsync(sortBy, sortOrder, pageSize, marker, currentIndex);
         }
-        
+
         public System.Threading.Tasks.Task<int> PagerCountAsync()
         {
             return base.Channel.PagerCountAsync();
         }
-        
+
         public System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> SearchAsync(string Key)
         {
             return base.Channel.SearchAsync(Key);
         }
-        
+
         public System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> SearchByStatusAsync(string value)
         {
             return base.Channel.SearchByStatusAsync(value);
         }
-        
+
         public System.Threading.Tasks.Task<QuotationProxy.AGS_Quotation> RetrieveAsync(string id)
         {
             return base.Channel.RetrieveAsync(id);
@@ -1868,17 +1981,17 @@ namespace QuotationProxy
         {
             return base.Channel.DeleteAsync(id);
         }
-        
+
         public System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_QuotationHistory>> HistoryAsync(string id)
         {
             return base.Channel.HistoryAsync(id);
         }
-        
+
         public System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> ReportDataAsync(QuotationProxy.CrmObjectReportRequest model)
         {
             return base.Channel.ReportDataAsync(model);
         }
-        
+
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -1907,7 +2020,7 @@ namespace QuotationProxy
         {
             if ((endpointConfiguration == EndpointConfiguration.QuotationProxySOAPEndPoint))
             {
-                return new System.ServiceModel.EndpointAddress("http://192.168.10.146/GateKeeper/Proxy/QuotationProxyService.svc/SOAP");
+                return new System.ServiceModel.EndpointAddress("http://localhost/GateKeeper/Proxy/QuotationProxyService.svc/SOAP");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

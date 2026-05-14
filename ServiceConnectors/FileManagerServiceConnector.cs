@@ -35,7 +35,7 @@ namespace DPGSalesClient.ServiceConnectors
 
         public async Task<List<AGS_Attachment_Download>> GetFiles(string objectName,string docId)
         {
-            return await _serFM.GetFilesAsync(objectName, docId);
+            return (await _serFM.GetFilesAsync(objectName, docId)).ToList();
         }
         public async Task<bool> DeleteFile(string Id)
         {

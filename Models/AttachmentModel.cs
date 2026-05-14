@@ -11,7 +11,8 @@ namespace DPGSalesClient.Models
         public string RefObjectId { get; set; }
         public string CustomerName { get; set; }
         public string PendingUploadFiles { get; set; }
-        public string DocType { get; set; }
+        public string DocumentType { get; set; }
+        public bool isDirect { get; set; }
         public List<DownloadFileObject> UploadedFiles { get; set; }
     }
     public class UploadFileobject
@@ -32,5 +33,6 @@ namespace DPGSalesClient.Models
         public string FileUrl { get; set; }
         public string UserID { get; set; }
         public string UserName { get; set; }
+        public string DocumentType { get; set; }
     }
 }

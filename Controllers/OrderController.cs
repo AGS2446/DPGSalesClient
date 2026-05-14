@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ActivityProxy;
 using Microsoft.Extensions.Options;
 using AuthorizationProxy;
-
+using Microsoft.Extensions.Configuration;
 namespace DPGSalesClient.Controllers
 {
     public class OrderController : Controller
@@ -34,17 +34,11 @@ namespace DPGSalesClient.Controllers
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
-{
-    "CLNT000002",
-    "CLNT000007",
-    "CLNT000008",
-    "CLNT000009"
-};
+        private readonly HashSet<string> ExcludedDivisionIds;
         #endregion
 
         #region Constructor
-        public OrderController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor)
+        public OrderController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             string strIp = SalesStaticMethods.GetRemoteIp(appSettings);
 
@@ -61,6 +55,7 @@ namespace DPGSalesClient.Controllers
 
             _logger = loggerFactory.CreateLogger<OrderController>();
             _hostingEnvironment = hostingEnvironment;
+            ExcludedDivisionIds = configuration.GetSection("ExcludedDivisionIds").Get<HashSet<string>>();
         }
 
         #endregion
@@ -276,11 +271,16 @@ namespace DPGSalesClient.Controllers
 
         public async Task<IActionResult> Edit(string ordId, string strBack)
         {
+            string Entity = "Lead";
             try
             {
                 if (strBack == "BACK")
                 {
                     var objNewOrder = HttpContext.Session.GetObjectFromJson<OrderNewModel>("OrderEdit");
+                    if (objNewOrder.isDirect)
+                    {
+                        Entity = "ENQUIRY";
+                    }
                     if (objNewOrder != null)
                     {
                         if (objNewOrder.Branch != null)
@@ -302,7 +302,7 @@ namespace DPGSalesClient.Controllers
 
                         if (objNewOrder.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", objNewOrder.CustomerSegment.Split('#')[0]);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", objNewOrder.CustomerSegment.Split('#')[0]);
                             if (lsSubseg != null)
                             {
                                 objNewOrder.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -452,8 +452,13 @@ namespace DPGSalesClient.Controllers
 
                         #region EntityMap Details
 
-
-                        var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
+                        objNew.isDirect = ExcludedDivisionIds.Contains(ordEdit.Division);
+                      //  string Entity = "Lead";
+                        if (objNew.isDirect)
+                        {
+                            Entity = "ENQUIRY";
+                        }
+                        var lsEntity = await _serEntity.RetriveByObjectName(Entity);
                         if (lsEntity != null)//&& lsEntity.Count > 0
                         {
                             objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
@@ -484,7 +489,7 @@ namespace DPGSalesClient.Controllers
 
                         if (objNew.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", ordEdit.CustomerSegment);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", ordEdit.CustomerSegment);
                             if (lsSubseg != null)
                             {
                                 objNew.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -580,15 +585,15 @@ namespace DPGSalesClient.Controllers
                                 objEditOrder.CustomerSegmentID = objInput.CustomerSegment.Split('#')[1];
                                 objEditOrder.SubSegment = objInput.CustomerSubSegment.Split('#')[0];
                                 objEditOrder.SubSegmentID = objInput.CustomerSubSegment.Split('#')[1];
-                                objEditOrder.CustomerType = objInput.CustomerType;
+                                objEditOrder.CustomerType = objInput.CustomerType.Split('#')[0];
 
 
                                 objEditOrder.BusinessSegmentID = objInput.BusinessSegment.Split('#')[1];
                                 objEditOrder.BusinessSegment = objInput.BusinessSegment.Split('#')[0];
-                                objEditOrder.Classification1 = objInput.Classification1;
+                                //objEditOrder.Classification1 = objInput.Classification1;
                                 objEditOrder.Classification2 = objInput.Classification2;
-                                objEditOrder.Classification3 = objInput.Classification3.Split('#')[0];
-                                objEditOrder.Classification3ID = objInput.Classification3.Split('#')[1];
+                               // objEditOrder.Classification3 = objInput.Classification3.Split('#')[0];
+                              //  objEditOrder.Classification3ID = objInput.Classification3.Split('#')[1];
                                 objEditOrder.Classification4 = objInput.Classification4;
                                 objEditOrder.Consultant = objInput.Consultant;
                                 objEditOrder.Architect = objInput.Architect;
@@ -614,6 +619,7 @@ namespace DPGSalesClient.Controllers
 
 
                                 objEditOrder.PoNo = objInput.PONo;
+                                objEditOrder.PoDate = string.IsNullOrWhiteSpace(objInput.PODate) ? (DateTime?)null : Convert.ToDateTime(objInput.PODate);
                                 objEditOrder.PoDate = SalesStaticMethods.ConvertDate(objInput.PODate);
                                 objEditOrder.OrderType = objInput.OrderType;
                                 objEditOrder.Wonlose = objInput.WonLossValue;
@@ -714,7 +720,7 @@ namespace DPGSalesClient.Controllers
             {
             }
 
-            return View(objInput);
+            return RedirectToAction("Details", new { ordId = objInput.OrderID, status = "OPEN" });
         }
 
         [HttpPost]
@@ -1173,11 +1179,17 @@ namespace DPGSalesClient.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SubSegment(string strKey)
+        public async Task<IActionResult> SubSegment(string strKey,  bool isDirect)
         {
             try
             {
-                var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", strKey);
+                string Entity = "Lead";
+                if (isDirect)
+                {
+                    Entity = "ENQUIRY";
+                }
+
+                var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", strKey);
                 if (lsSubseg != null && lsSubseg.Count > 0)
                 {
                     return Json(lsSubseg.Select(y => new DropdownObject { Value = y.PropertyName + "#" + y.PropertyValue, Text = y.PropertyName }).ToList());

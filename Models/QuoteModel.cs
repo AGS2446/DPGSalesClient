@@ -114,6 +114,7 @@ namespace DPGSalesClient.Models
         public string QuoteID { get; set; }
 
         public string strProducts { get; set; }
+        public bool isDirect { get; set; }
         public List<QuoteProduct> QuoteProducts { get; set; }
 
         public List<SelectListItemObject> DivisionList { get; set; }
@@ -204,6 +205,7 @@ namespace DPGSalesClient.Models
         public string QuoteID { get; set; }
         public string strProducts { get; set; }
         public List<EnquiryProduct> QuoteProducts { get; set; }
+        public List<AGS_VersionHistory> Versions { get; set; }
         public List<DownloadFileObject> Files { get; set; }
         public bool isDirect { get; set; }
     }
@@ -256,5 +258,15 @@ namespace DPGSalesClient.Models
         public string QuoteID { get; set; }
         public string Status { get; set; }
         public List<QuotationProxy.AGS_QuotationHistory> HistoryRecords { get; set; }
+    }
+    public partial class AGS_VersionHistory
+    {
+        public int Id { get; set; }
+        public string CRMQuoteID { get; set; }
+        public Nullable<double> OldContractValue { get; set; }
+        public Nullable<double> NewContractValue { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string Remarks { get; set; }
     }
 }

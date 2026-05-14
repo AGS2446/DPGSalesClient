@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using AuthorizationProxy;
 using DPGSalesClient.CommonLibrary.Exceptions;
-
+using System.IO;
+using Microsoft.Extensions.Configuration;
 namespace DPGSalesClient.Controllers
 {
     public class QuoteController : Controller
@@ -34,17 +35,11 @@ namespace DPGSalesClient.Controllers
 
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
-                private static readonly HashSet<string> ExcludedDivisionIds = new HashSet<string>
-{
-    "CLNT000002",
-    "CLNT000007",
-    "CLNT000008",
-    "CLNT000009"
-};
+        private readonly HashSet<string> ExcludedDivisionIds;
         #endregion
 
         #region Constructor
-        public QuoteController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor)
+        public QuoteController(ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             string strIp = SalesStaticMethods.GetRemoteIp(appSettings);
 
@@ -63,6 +58,7 @@ namespace DPGSalesClient.Controllers
 
             _logger = loggerFactory.CreateLogger<QuoteController>();
             _hostingEnvironment = hostingEnvironment;
+            ExcludedDivisionIds = configuration.GetSection("ExcludedDivisionIds").Get<HashSet<string>>();
         }
 
         #endregion
@@ -162,8 +158,25 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
+                var allowedExtensions = new[]
+{
+    ".pdf", ".xlsx", ".txt", ".ppt", ".png", ".jpg", ".jpeg", ".docx", ".doc", ".xls"
+};
                 var jsObject = Newtonsoft.Json.JsonConvert.DeserializeObject<UploadFile>(objInput.PendingUploadFiles);
+                foreach (var file in jsObject.Files)
+                {
+                    if (string.IsNullOrWhiteSpace(file.Name))
+                        continue;
 
+                    string ext = Path.GetExtension(file.Name).ToLower();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", $"File type not allowed: {file.Name}"));
+
+                        return RedirectToAction("Attachments", new { enqId = objInput.ActivityId });
+                    }
+                }
                 if (_serAttachment.VarifyJsonFileObject(jsObject))
                 {
                     var lsFilesUploaded = await _serAttachment.UploadAttachments("QUOTATION", objInput.ActivityId, jsObject);
@@ -291,8 +304,17 @@ namespace DPGSalesClient.Controllers
                         Classification3 = quoteDetails.Classification3,
                         Classification4 = quoteDetails.Classification4,
                         Files = lsFiles,
-                        isDirect = !ExcludedDivisionIds.Contains(quoteDetails.Division)
-                    };
+                        isDirect = !ExcludedDivisionIds.Contains(quoteDetails.Division),
+                        Versions = quoteDetails.Versions?
+    .Select(x => new DPGSalesClient.Models.AGS_VersionHistory
+    {
+        OldContractValue = x.OldContractValue,
+        NewContractValue = x.NewContractValue,
+        CreatedBy = x.CreatedBy,
+        CreatedDate = x.CreatedDate,
+        Remarks=x.r
+    }).ToList() ?? new List<DPGSalesClient.Models.AGS_VersionHistory>()
+                };
                 }
 
 
@@ -309,11 +331,16 @@ namespace DPGSalesClient.Controllers
 
         public async Task<IActionResult> Edit(string qteId, string status, string stBack)
         {
+            string Entity = "Lead";
             try
             {
                 if (stBack == "BACK")
                 {
                     var objNewQte = HttpContext.Session.GetObjectFromJson<QuoteNewModel>("QuoteNew");
+                    if (objNewQte.isDirect)
+                    {
+                        Entity = "ENQUIRY";
+                    }
                     if (objNewQte != null)
                     {
                         if (objNewQte.Branch != null)
@@ -346,7 +373,7 @@ namespace DPGSalesClient.Controllers
                         }
                         if (objNewQte.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", objNewQte.CustomerSegment.Split('#')[0]);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", objNewQte.CustomerSegment.Split('#')[0]);
                             if (lsSubseg != null)
                             {
                                 objNewQte.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -501,9 +528,14 @@ namespace DPGSalesClient.Controllers
                         #endregion
 
                         #region EntityMap Details
+                        objNew.isDirect = ExcludedDivisionIds.Contains(qteEdit.Division);
+                        //string Entity = "Lead";
+                        if (objNew.isDirect)
+                        {
+                            Entity = "ENQUIRY";
+                        }
 
-
-                        var lsEntity = await _serEntity.RetriveByObjectName("LEAD");
+                        var lsEntity = await _serEntity.RetriveByObjectName(Entity);
                         if (lsEntity != null && lsEntity.Count > 0)
                         {
                             objNew.CustomerSegmentList = SalesStaticMethods.GetSelectlistItemsByName("CUSTOMERSEGMENT", lsEntity, "B");
@@ -523,7 +555,7 @@ namespace DPGSalesClient.Controllers
 
                         if (objNew.CustomerSubSegment != null)
                         {
-                            var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", qteEdit.CustomerSegment);
+                            var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", qteEdit.CustomerSegment);
                             if (lsSubseg != null)
                             {
                                 objNew.CustomerSubSegmentList = lsSubseg.Select(x => new SelectListItemObject { Value = x.PropertyName + "#" + x.PropertyValue, Text = x.PropertyName }).ToList();
@@ -601,16 +633,16 @@ namespace DPGSalesClient.Controllers
                         objEditQuote.CustomerSegmentID = objInput.CustomerSegment.Split('#')[1];
                         objEditQuote.SubSegment = objInput.CustomerSubSegment.Split('#')[0];
                         objEditQuote.SubSegmentID = objInput.CustomerSubSegment.Split('#')[1];
-                        objEditQuote.CustomerType = objInput.CustomerType;
+                        objEditQuote.CustomerType = objInput.CustomerType.Split('#')[0];
                         objEditQuote.CustomerClassification = objInput.CustomerClassification.Split('#')[0];
                         objEditQuote.CustomerClassificationId = objInput.CustomerClassification.Split('#')[1];
 
                         objEditQuote.BusinessSegmentID = objInput.BusinessSegment.Split('#')[1];
                         objEditQuote.BusinessSegment = objInput.BusinessSegment.Split('#')[0];
-                        objEditQuote.Classification1 = objInput.Classification1;
+                        //objEditQuote.Classification1 = objInput.Classification1;
                         objEditQuote.Classification2 = objInput.Classification2;
-                        objEditQuote.Classification3 = objInput.Classification3.Split('#')[0];
-                        objEditQuote.Classification3ID = objInput.Classification3.Split('#')[1];
+                        //objEditQuote.Classification3 = objInput.Classification3.Split('#')[0];
+                       // objEditQuote.Classification3ID = objInput.Classification3.Split('#')[1];
                         objEditQuote.Classification4 = objInput.Classification4;
                         objEditQuote.UserID = objInput.QuoteAssignTo.Split('#')[1];
                         objEditQuote.Username = objInput.QuoteAssignTo.Split('#')[0];
@@ -1126,12 +1158,12 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateContractValue(string qutId, double contractValue)
+        public async Task<IActionResult> UpdateContractValue(string qutId, double contractValue,string remarks)
         {
             try
             {
                 AGS_UploadContractValue request = new AGS_UploadContractValue();
-                request.DocumentId = qutId;
+                request.DocumentId = qutId+"~"+remarks;
                 request.ContractValue = contractValue;
 
                 var blRes = await _serQuote.UploadContractValue(request);
@@ -1799,11 +1831,17 @@ namespace DPGSalesClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubSegment(string strKey)
+        public async Task<IActionResult> SubSegment(string strKey,bool isDirect)
         {
             try
             {
-                var lsSubseg = await _serEntity.RetriveByParentId("Lead", "CUSTOMERSUBSEGMENT", strKey);
+                string Entity = "Lead";
+                if (isDirect)
+                {
+                    Entity = "ENQUIRY";
+                }
+
+                var lsSubseg = await _serEntity.RetriveByParentId(Entity, "CUSTOMERSUBSEGMENT", strKey);
                 if (lsSubseg != null && lsSubseg.Count > 0)
                 {
                     return Json(lsSubseg.Select(y => new DropdownObject { Value = y.PropertyName + "#" + y.PropertyValue, Text = y.PropertyName }).ToList());

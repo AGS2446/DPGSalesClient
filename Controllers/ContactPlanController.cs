@@ -200,8 +200,25 @@ namespace DPGSalesClient.Controllers
         {
             try
             {
+                var allowedExtensions = new[]
+{
+    ".pdf", ".xlsx", ".txt", ".ppt", ".png", ".jpg", ".jpeg", ".docx", ".doc", ".xls"
+};
                 var jsObject = Newtonsoft.Json.JsonConvert.DeserializeObject<UploadFile>(objInput.PendingUploadFiles);
+                foreach (var file in jsObject.Files)
+                {
+                    if (string.IsNullOrWhiteSpace(file.Name))
+                        continue;
 
+                    string ext = Path.GetExtension(file.Name).ToLower();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        TempData.SetObjectAsJson("PopupViewModel", SalesStaticMethods.CreatePopupModel("Enquiry", $"File type not allowed: {file.Name}"));
+
+                        return RedirectToAction("Attachments", new { enqId = objInput.ActivityId });
+                    }
+                }
                 var lsFilesUploaded = await _serAttachment.UploadAttachments("ACTIVITY", objInput.ActivityId, jsObject);
 
                 if (lsFilesUploaded.Count > 0)

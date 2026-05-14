@@ -171,7 +171,7 @@ $('#CustomerSegment').change(function () {
     debugger;
     $('#CustomerSubSegment').empty();
     $('#CustomerSubSegment').append('<option value="">SELECT</option>')
-    $.post('SubSegment', { strKey: $('#CustomerSegment').val().split('#')[0] }).done(function (data) {
+    $.post('SubSegment', { strKey: $('#CustomerSegment').val().split('#')[0], isDirect: $('#isDirect').val()}).done(function (data) {
         debugger;
         if (data != null && data != undefined) {
 
@@ -451,7 +451,7 @@ $("#ordEditForm").validate({
                 if ($('#WonLossValue').val() == 'Lost')
                     return false;
                 else if ($('#WonLossValue').val() == 'Win') {
-                    return true;
+                    return false;
                 }
 
             }
@@ -462,7 +462,7 @@ $("#ordEditForm").validate({
                 if ($('#WonLossValue').val() == 'Lost')
                     return false;
                 else if ($('#WonLossValue').val() == 'Win') {
-                    return true;
+                    return false;
                 }
 
             }
@@ -473,7 +473,7 @@ $("#ordEditForm").validate({
                 if ($('#WonLossValue').val() == 'Lost')
                     return false;
                 else if ($('#WonLossValue').val() == 'Win') {
-                    return true;
+                    return false;
                 }
 
             }

@@ -114,6 +114,7 @@ namespace DPGSalesClient.Models
         public string EnquiryID { get; set; }
         public string QuoteID { get; set; }
         public string OrderID { get; set; }
+        public bool isDirect { get; set; }
         public List<OrderProduct> OrderProducts { get; set; }
 
         public List<SelectListItemObject> DivisionList { get; set; }

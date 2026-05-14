@@ -101,7 +101,9 @@ namespace DPGSalesClient.Models
         public string SourceType { get; set; }
         [Required]
         public string Description { get; set; }
+        public bool isDirect { get; set; }
 
+        public string CustomerDesignation { get; set; }
         public List<SelectListItemObject> DivisionList { get; set; }
         public List<SelectListItemObject> RegionList { get; set; }
         public List<SelectListItemObject> BranchList { get; set; }

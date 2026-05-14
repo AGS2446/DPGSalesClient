@@ -37,6 +37,7 @@ namespace DPGSalesClient.Models
         public string Classification1 { get; set; }
         public string Classification2 { get; set; }
         public string Classification3 { get; set; }
+        public string CustomerDesignation { get; set; }
         public string Classification4 { get; set; }
         public double? Tonnage { get; set; }
         public double? TotalValue { get; set; }
