@@ -83,7 +83,7 @@ function handleFileSelect() {
     }
     else if (!input.files[0]) {
         AlertPopup("Please select a file before clicking 'Add'");
-    } else if ((input.files[0].size / 1024 / 1024) > 3) {
+    } else if ((input.files[0].size / 1024 / 1024) > 10) {
         AlertPopup("File size should be below 3 MB");
     }
     else {

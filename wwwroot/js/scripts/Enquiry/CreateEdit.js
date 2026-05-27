@@ -522,7 +522,7 @@ jQuery.validator.addMethod("DigitsTwoDecimal", function (value, element) {
                 required: "Please select Business Segment"
             },
             ProdcutRequired: {
-                required: "Please select Product Required"
+                required: "Please select Service Required"
             },
             Probability: {
                 required: "Please select Probability"
@@ -755,7 +755,7 @@ jQuery.validator.addMethod("DigitsTwoDecimal", function (value, element) {
                 required: "Please select Business Segment"
             },
             ProdcutRequired: {
-                required: "Please select Product Required"
+                required: "Please select Service Required"
             },
             Probability: {
                 required: "Please select Probability"

@@ -419,7 +419,7 @@ $("#frmLeadCreate").validate({
             required: "Please select Business Segment"
         },
         ProdcutRequired: {
-            required: "Please select Product Required"
+            required: "Please select Service Required"
         },
         Probability: {
             required: "Please select Probability"
@@ -657,7 +657,7 @@ $("#frmLeadEdit").validate({
             required: "Please select Business Segment"
         },
         ProdcutRequired: {
-            required: "Please select Product Required"
+            required: "Please select Service Required"
         },
         Probability: {
             required: "Please select Probability"

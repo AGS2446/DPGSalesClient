@@ -90,7 +90,11 @@
                         @foreach (var file in Model.UploadedFiles)
                         {
         <tr>
-            <td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>
+            @*<td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>*@
+            <td><a href="@Url.Action("DownloadFile","EnquiryOpportunity",
+                new { filePath = @file.FileUrl })" target="_blank">
+                    <i class="fa fa-download"></i>
+                </a></td>
             <td>@file.Name</td>
             <td>
                 @(

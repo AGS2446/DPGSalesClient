@@ -114,7 +114,7 @@
                     <label class="val">@Model.BusinessSegment</label>
                 </div>
                 <div class="col-md-3 details">
-                    <label class="hdr">Product Required</label><br />
+                    <label class="hdr">Service Required</label><br />
                     <label class="val">@Model.ProdcutRequired</label>
                 </div>
                 <div class="col-md-3 details">
@@ -151,14 +151,14 @@
             </div>
 
             <div class="row p-t-15">
-                <div class="col-md-3 details">
+                @*<div class="col-md-3 details">
                     <label class="hdr">Architect</label><br />
                     <label class="val">@Model.Architect</label>
                 </div>
                 <div class="col-md-3 details">
                     <label class="hdr">Consultant</label><br />
                     <label class="val">@Model.Consultant</label>
-                </div>
+                </div>*@
                 <div class="col-md-3 details ">
                     <label class="hdr">Offer Date</label><br />
                     <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.QuoteOfferDate)</label>
@@ -188,25 +188,33 @@
                 </div>
             </div>
             <div class="row p-t-15">
-                <div class="col-md-3 details">
-                    <label class="hdr">Classification 1</label><br />
-                    <label class="val">@Model.Classification1</label>
-                </div>
+                @*<div class="col-md-3 details">
+            <label class="hdr">Classification 1</label><br />
+            <label class="val">@Model.Classification1</label>
+        </div>*@
 
                 <div class="col-md-3 details">
                     <label class="hdr">Classification 2 </label><br />
                     <label class="val">@Model.Classification2</label>
                 </div>
-                <div class="col-md-3 details ">
-                    <label class="hdr">Classification 3</label><br />
-                    <label class="val">@Model.Classification3</label>
-                </div>
+                @*<div class="col-md-3 details ">
+            <label class="hdr">Classification 3</label><br />
+            <label class="val">@Model.Classification3</label>
+        </div>*@
                 <div class="col-md-3 details">
                     <label class="hdr">Classification 4 </label><br />
                     <label class="val">@Model.Classification4</label>
                 </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Enquiry ID </label><br />
+                    <label class="val">@Model.EnquiryID</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Quote ID </label><br />
+                    <label class="val">@Model.QuoteID</label>
+                </div>
             </div>
-            <div class="row p-t-15">
+            @*<div class="row p-t-15">
                 <div class="col-md-3 details">
                     <label class="hdr">Lead ID </label><br />
                     <label class="val">
@@ -221,18 +229,8 @@
 
                     </label>
                 </div>
-                <div class="col-md-3 details">
-                    <label class="hdr">Enquiry ID </label><br />
-                    <label class="val">@Model.EnquiryID</label>
-                </div>
-                <div class="col-md-3 details">
-                    <label class="hdr">Quote ID </label><br />
-                    <label class="val">@Model.QuoteID</label>
-                </div>
-                <div class="col-md-3 details">
-
-                </div>
-            </div>
+                
+            </div>*@
         </div>
     </div>
 
@@ -417,6 +415,7 @@
                                 <th>Contract Value</th>
                                 <th>Modified By</th>
                                 <th>Modified On</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -424,12 +423,13 @@
                             {
                                 @for (int i = 0; i < Model.Versions.Count; i++)
                                 {
-                                    <tr>
-                                        <td>Version - @(i+1)</td>
-                                        <td>@Model.Versions[i].OldContractValue</td>
-                                        <td>@Model.Versions[i].CreatedBy</td>
-                                        <td>@Model.Versions[i].CreatedDate?.ToString("dd-MM-yyyy")</td>
-                                    </tr>
+                            <tr>
+                                <td>Version - @(i+1)</td>
+                                <td>@Model.Versions[i].OldContractValue</td>
+                                <td>@Model.Versions[i].CreatedBy</td>
+                                <td>@Model.Versions[i].CreatedDate?.ToString("dd-MM-yyyy")</td>
+                                <td>@Model.Versions[i].Remarks</td>
+                            </tr>
                                 }
 
 

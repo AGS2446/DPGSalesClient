@@ -177,21 +177,21 @@
 
                 @*<div class="col-md-3 details">
 
-                        <label class="hdr">Document Created Date</label><br />
-                        <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.DocumentCreatedDate)</label>
+            <label class="hdr">Document Created Date</label><br />
+            <label class="val">@String.Format("{0:dd/MM/yyyy}", Model.DocumentCreatedDate)</label>
 
-                    </div>*@
-                <div class="col-md-3 details">
+        </div>*@
+                @*<div class="col-md-3 details">
 
-                    <label class="hdr">Architect</label><br />
-                    <label class="val">@Model.Architect</label>
+            <label class="hdr">Architect</label><br />
+            <label class="val">@Model.Architect</label>
 
-                </div>
+        </div>
 
-                <div class="col-md-3 details">
-                    <label class="hdr">Consultant </label><br />
-                    <label class="val">@Model.Consultant</label>
-                </div>
+        <div class="col-md-3 details">
+            <label class="hdr">Consultant </label><br />
+            <label class="val">@Model.Consultant</label>
+        </div>*@
                 <div class="col-md-3 details">
                     <label class="hdr">Total Value(In Lakhs) </label><br />
                     <label class="val">@Model.TotalValue</label>
@@ -200,32 +200,32 @@
                     <label class="hdr">Tonnage </label><br />
                     <label class="val">@Model.Tonnage</label>
                 </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 2 </label><br />
+                    <label class="val">@Model.Classification2</label>
+                </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Classification 4 </label><br />
+                    <label class="val">@Model.Classification4</label>
+                </div>
             </div>
 
             <div class="row p-t-15">
                 @*<div class="col-md-3 details">
 
-                        <label class="hdr">Classification 1</label><br />
-                        <label class="val">@Model.Classification1</label>
+            <label class="hdr">Classification 1</label><br />
+            <label class="val">@Model.Classification1</label>
 
-                    </div>*@
+        </div>*@
 
-                <div class="col-md-3 details">
-                    <label class="hdr">Classification 2 </label><br />
-                    <label class="val">@Model.Classification2</label>
-                </div>
+
                 @*<div class="col-md-3 details ">
 
-                        <label class="hdr">Classification 3</label><br />
-                        <label class="val">@Model.Classification3</label>
+            <label class="hdr">Classification 3</label><br />
+            <label class="val">@Model.Classification3</label>
 
-                    </div>*@
-                <div class="col-md-3 details">
+        </div>*@
 
-                    <label class="hdr">Classification 4 </label><br />
-                    <label class="val">@Model.Classification4</label>
-
-                </div>
                 <div class="col-md-3 details">
 
                     <label class="hdr">Source Type </label><br />
@@ -239,9 +239,17 @@
                     <label class="val">@Model.EnquiryDescription</label>
 
                 </div>
+                <div class="col-md-3 details">
+                    <label class="hdr">Enquiry ID</label><br />
+                    <label class="val">@Model.EnquiryID</label>
+                </div>
 
+                <div class="col-md-3 details">
+                    <label class="hdr">SAP EnquiryID</label><br />
+                    <label class="val">@Model.SAPEnquiryID</label>
+                </div>
             </div>
-            <div class="row p-t-15">
+            @*<div class="row p-t-15">
 
                 <div class="col-md-3 details">
 
@@ -260,17 +268,9 @@
 
                 </div>
 
-                <div class="col-md-3 details">
-                    <label class="hdr">Enquiry ID</label><br />
-                    <label class="val">@Model.EnquiryID</label>
-                </div>
+                
 
-                <div class="col-md-3 details">
-                    <label class="hdr">SAP EnquiryID</label><br />
-                    <label class="val">@Model.SAPEnquiryID</label>
-                </div>
-
-            </div>
+            </div>*@
 
         </div>
     </div>

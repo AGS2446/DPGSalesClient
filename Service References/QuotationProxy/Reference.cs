@@ -152,10 +152,10 @@ namespace QuotationProxy
         private string UserIDField;
         
         private string UsernameField;
-        
-       // private QuotationProxy.AGS_VersionHistory[] VersionsField;
+
+        // private QuotationProxy.AGS_VersionHistory[] VersionsField;
         private System.Collections.Generic.List<QuotationProxy.AGS_VersionHistory> VersionsField;
-        
+
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string AccountID
         {
@@ -1029,7 +1029,7 @@ namespace QuotationProxy
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Collections.Generic.List<QuotationProxy.AGS_VersionHistory> Versions
-          
+
         {
             get
             {
@@ -1324,6 +1324,8 @@ namespace QuotationProxy
         
         private System.Nullable<double> OldContractValueField;
         
+        private string RemarksField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string CRMQuoteID
         {
@@ -1399,6 +1401,19 @@ namespace QuotationProxy
             set
             {
                 this.OldContractValueField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Remarks
+        {
+            get
+            {
+                return this.RemarksField;
+            }
+            set
+            {
+                this.RemarksField = value;
             }
         }
     }
@@ -1866,6 +1881,7 @@ namespace QuotationProxy
 
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/SearchByStatus", ReplyAction="http://tempuri.org/IQuotationProxyService/SearchByStatusResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<QuotationProxy.AGS_Quotation>> SearchByStatusAsync(string value);
+
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQuotationProxyService/Retrieve", ReplyAction="http://tempuri.org/IQuotationProxyService/RetrieveResponse")]
         System.Threading.Tasks.Task<QuotationProxy.AGS_Quotation> RetrieveAsync(string id);
         
@@ -1891,9 +1907,9 @@ namespace QuotationProxy
     public interface IQuotationProxyServiceChannel : QuotationProxy.IQuotationProxyService, System.ServiceModel.IClientChannel
     {
     }
-
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     public partial class QuotationProxyServiceClient : System.ServiceModel.ClientBase<QuotationProxy.IQuotationProxyService>, QuotationProxy.IQuotationProxyService
     {
         
@@ -1941,7 +1957,7 @@ namespace QuotationProxy
         {
             return base.Channel.RetrieveAllAsync(sortBy, sortOrder, pageSize, marker, currentIndex);
         }
-
+        
         public System.Threading.Tasks.Task<int> PagerCountAsync()
         {
             return base.Channel.PagerCountAsync();
@@ -1956,7 +1972,7 @@ namespace QuotationProxy
         {
             return base.Channel.SearchByStatusAsync(value);
         }
-
+        
         public System.Threading.Tasks.Task<QuotationProxy.AGS_Quotation> RetrieveAsync(string id)
         {
             return base.Channel.RetrieveAsync(id);
@@ -1991,7 +2007,7 @@ namespace QuotationProxy
         {
             return base.Channel.ReportDataAsync(model);
         }
-
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));

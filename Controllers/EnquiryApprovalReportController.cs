@@ -583,7 +583,8 @@ namespace DPGSalesClient.Controllers
                         objNew.Consultant = enqObj.Consultant;
                         objNew.ContractValue = enqObj.ContractValue;
                         objNew.CreatedOn = DateTime.Now;
-                        // objNew.Currency = "";
+                        objNew.Currency = enqObj.Currency;
+                        objNew.CurrencyValue = enqObj.CurrencyValue;
                         objNew.Architect = enqObj.Architect;
 
                      //   objNew.DocumentCreatedDate = enqObj.DocumentCreatedDate;

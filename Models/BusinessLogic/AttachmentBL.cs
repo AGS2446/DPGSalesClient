@@ -34,7 +34,7 @@ namespace DPGSalesClient.Models.BusinessLogic
                         AttachmentId=x.AttachmentID,
                         Name = x.Name,
                         FileUrl = x.URL,
-                        CreatedOn=x.CreatedOn,
+                        CreatedOn =x.CreatedOn,
                         UserID=x.UserID,
                         UserName=x.Username,
                         DocumentType=x.DocumentType
@@ -251,5 +251,7 @@ namespace DPGSalesClient.Models.BusinessLogic
 
             return lsFilesUploaded;
         }
+
+
     }
 }

@@ -39,7 +39,7 @@
                         <th>Branch</th>
                         <th>QuoteNo</th>
                         <th>EnquiryID</th>
-                        <th>LeadID</th>
+                        @*<th>LeadID</th>*@
                         <th>Customer</th>
                         <th>Business Segment</th>
                         <th>Status</th>
@@ -73,7 +73,7 @@
                         <td>@item.Branch</td>
                         <td>@item.QuoteID</td>
                         <td>@item.EnquiryID</td>
-                        <td>
+                        @*<td>
                             @if (item.isDirect)
                             {
                                 <span> @item.LeadID</span>
@@ -82,7 +82,7 @@
                             {
                                 <input type="hidden" asp-for="@item.LeadID" />
                             }
-                        </td>
+                        </td>*@
                         <td>@item.CustomerName</td>
                         <td>@item.BusineeSegment</td>
                         <td>@item.Status</td>

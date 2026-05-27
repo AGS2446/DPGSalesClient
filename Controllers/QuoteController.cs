@@ -269,7 +269,7 @@ namespace DPGSalesClient.Controllers
                     {
                         QuoteID = quoteDetails.CRMQuotationID,
                         EnquiryID = quoteDetails.CRMOppotunityID,
-                        LeadID = quoteDetails.CRMLeadID,
+                        //LeadID = quoteDetails.CRMLeadID,
                         Status = quoteDetails.Status,
                         Division = quoteDetails.DivisionName,
                         Region = quoteDetails.RegionName,
@@ -287,8 +287,8 @@ namespace DPGSalesClient.Controllers
                         BusinessSegment = quoteDetails.BusinessSegment,
                         ProdcutRequired = quoteDetails.ProductRequired,
                         ProjectName = quoteDetails.ProjectName,
-                        Architect = quoteDetails.Architect,
-                        Consultant = quoteDetails.Consultant,
+                        //Architect = quoteDetails.Architect,
+                        //Consultant = quoteDetails.Consultant,
                         ContractValue_IN_LAKHS = quoteDetails.ContractValue,
                         Probability = quoteDetails.Probability,
                         QuoteAssignTo = quoteDetails.Username,
@@ -312,7 +312,7 @@ namespace DPGSalesClient.Controllers
         NewContractValue = x.NewContractValue,
         CreatedBy = x.CreatedBy,
         CreatedDate = x.CreatedDate,
-        Remarks=x.r
+        Remarks=x.Remarks
     }).ToList() ?? new List<DPGSalesClient.Models.AGS_VersionHistory>()
                 };
                 }
@@ -397,7 +397,7 @@ namespace DPGSalesClient.Controllers
                     {
                         objNew.QuoteID = qteEdit.CRMQuotationID;
                         objNew.EnquiryID = qteEdit.CRMOppotunityID;
-                        objNew.LeadID = qteEdit.CRMLeadID;
+                        //objNew.LeadID = qteEdit.CRMLeadID;
                         objNew.Division = qteEdit.DivisionName + "#" + qteEdit.Division;
                         HttpContext.Session.SetObjectAsJson("quoteDivision", objNew.Division);
                         objNew.Region = qteEdit.RegionName + "#" + qteEdit.Region;
@@ -420,8 +420,8 @@ namespace DPGSalesClient.Controllers
                         objNew.ProjectName = qteEdit.ProjectName;
                         objNew.Currency = qteEdit.Currency;
                         objNew.CurrencyValue = qteEdit.CurrencyValue;
-                        objNew.Architect = qteEdit.Architect;
-                        objNew.Consultant = qteEdit.Consultant;
+                        //objNew.Architect = qteEdit.Architect;
+                        //objNew.Consultant = qteEdit.Consultant;
                         objNew.QuoteDescription = qteEdit.Description;
                         //  objNew.DocumentCreatedDate = qteEdit.DocumentCreatedDate.HasValue ? qteEdit.DocumentCreatedDate.Value.ToString("dd/MM/yyyy") : "";
                         objNew.QuoteMaturityDate = qteEdit.QuoteMaturityDate.HasValue ? qteEdit.QuoteMaturityDate.Value.ToString("dd/MM/yyyy") : "";
@@ -432,9 +432,9 @@ namespace DPGSalesClient.Controllers
                         objNew.BusinessSegment = qteEdit.BusinessSegment + "#" + qteEdit.BusinessSegmentID;
                         objNew.ProdcutRequired = qteEdit.ProductRequired;
                         objNew.SourceType = qteEdit.SourceType;
-                        objNew.Classification1 = qteEdit.Classification1;
+                        //objNew.Classification1 = qteEdit.Classification1;
                         objNew.Classification2 = qteEdit.Classification2;
-                        objNew.Classification3 = qteEdit.Classification3 + "#" + qteEdit.Classification3ID;
+                        //objNew.Classification3 = qteEdit.Classification3 + "#" + qteEdit.Classification3ID;
                         objNew.Classification4 = qteEdit.Classification4;
                         objNew.QuoteAssignTo = qteEdit.Username + "#" + qteEdit.UserID;
 
@@ -545,9 +545,9 @@ namespace DPGSalesClient.Controllers
                             objNew.ProdcutRequiredList = SalesStaticMethods.GetSelectlistItemsByName("PRODUCTREQUIRED", lsEntity, "P");
                             objNew.ProbabilityList = SalesStaticMethods.GetSelectlistItemsByName("PROBABILITY", lsEntity, "P");
                             objNew.CurrencyList = SalesStaticMethods.GetSelectlistItemsByName("CURRENCY", lsEntity, "P");
-                            objNew.Classification1List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION1", lsEntity, "P");
+                            //objNew.Classification1List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION1", lsEntity, "P");
                             objNew.Classification2List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION2", lsEntity, "P");
-                            objNew.Classification3List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION3", lsEntity, "B");
+                            //objNew.Classification3List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION3", lsEntity, "B");
                             objNew.Classification4List = SalesStaticMethods.GetSelectlistItemsByName("CLASSIFICATION4", lsEntity, "P");
                             objNew.SourceTypeList = SalesStaticMethods.GetSelectlistItemsByName("SOURCETYPE", lsEntity, "P");
 
@@ -607,7 +607,7 @@ namespace DPGSalesClient.Controllers
                         AGS_Quotation objEditQuote = new AGS_Quotation();
                         objEditQuote.CRMQuotationID = objNewQte.QuoteID;
                         objEditQuote.CRMOppotunityID = objNewQte.EnquiryID;
-                        objEditQuote.CRMLeadID = objNewQte.LeadID;
+                        //objEditQuote.CRMLeadID = objNewQte.LeadID;
 
                         objEditQuote.Division = objInput.Division.Split('#')[1];
                         objEditQuote.DivisionName = objInput.Division.Split('#')[0];
@@ -646,8 +646,8 @@ namespace DPGSalesClient.Controllers
                         objEditQuote.Classification4 = objInput.Classification4;
                         objEditQuote.UserID = objInput.QuoteAssignTo.Split('#')[1];
                         objEditQuote.Username = objInput.QuoteAssignTo.Split('#')[0];
-                        objEditQuote.Architect = objInput.Architect;
-                        objEditQuote.Consultant = objInput.Consultant;
+                        //objEditQuote.Architect = objInput.Architect;
+                        //objEditQuote.Consultant = objInput.Consultant;
                         objEditQuote.SourceType = objInput.SourceType;
                         objEditQuote.ProjectName = objInput.ProjectName;
                         objEditQuote.ProductRequired = objInput.ProdcutRequired;
@@ -657,10 +657,12 @@ namespace DPGSalesClient.Controllers
                         objEditQuote.CurrencyValue = objInput.CurrencyValue;
 
                         //Enquiry details
-                        objEditQuote.QuoteMaturityDate = SalesStaticMethods.ConvertDate(objInput.QuoteMaturityDate);
+                      //  objEditQuote.QuoteMaturityDate = SalesStaticMethods.ConvertDate(objInput.QuoteMaturityDate);
+                        objEditQuote.QuoteMaturityDate = string.IsNullOrWhiteSpace(objInput.QuoteMaturityDate) ? (DateTime?)null : Convert.ToDateTime(objInput.QuoteMaturityDate);
                         // objEditQuote.QuoteValidityDate = SalesStaticMethods.ConvertDate(objInput.QuoteValidityDate);
                         // objEditQuote.DocumentCreatedDate = SalesStaticMethods.ConvertDate(objInput.DocumentCreatedDate);
-                        objEditQuote.OfferDate = SalesStaticMethods.ConvertDate(objInput.QuoteOfferDate);
+                        objEditQuote.OfferDate = string.IsNullOrWhiteSpace(objInput.QuoteOfferDate) ? (DateTime?)null : Convert.ToDateTime(objInput.QuoteOfferDate);
+                        //objEditQuote.OfferDate = SalesStaticMethods.ConvertDate(objInput.QuoteOfferDate);
                         objEditQuote.Tonnage = objInput.Tonnage.Value;
                         objEditQuote.TotalValue = objInput.TotalValue;
                         objEditQuote.Description = objInput.QuoteDescription;

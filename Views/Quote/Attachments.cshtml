@@ -38,14 +38,19 @@
                                 <tbody>
                                     @foreach (var file in Model.UploadedFiles)
                                     {
-                                        <tr>
-                                            <td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>
-                                            <td>@file.Name</td>
-                                            <td>@file.UserID</td>
-                                            <td>@file.UserName</td>
-                                            <td>@String.Format("{0:dd/MM/yyyy HH:mm:ss}", file.CreatedOn)</td>
-                                            <th><a class="nav-btn text-danger" href="@Url.Action("DeleteAttachment", "Quote", new {Id = file.AttachmentId,activityID= Model.ActivityId })" style="padding-right:15px;"><i class="fa fa-trash" style="font-size:18px;font-weight:500;"></i></a></th>
-                                        </tr>
+                                    <tr>
+                                        @*<td><a href="@file.FileUrl" target="_blank"><i class="fa fa-download"></i></a></td>*@
+                                        <td>
+                                        <a href="@Url.Action("DownloadFile","EnquiryOpportunity",
+                new { filePath = @file.FileUrl })" target="_blank">
+                                            <i class="fa fa-download"></i>
+                                        </a></td>
+                                        <td>@file.Name</td>
+                                        <td>@file.UserID</td>
+                                        <td>@file.UserName</td>
+                                        <td>@String.Format("{0:dd/MM/yyyy HH:mm:ss}", file.CreatedOn)</td>
+                                        <th><a class="nav-btn text-danger" href="@Url.Action("DeleteAttachment", "Quote", new {Id = file.AttachmentId,activityID= Model.ActivityId })" style="padding-right:15px;"><i class="fa fa-trash" style="font-size:18px;font-weight:500;"></i></a></th>
+                                    </tr>
                                     }
                                 </tbody>
                             </table>

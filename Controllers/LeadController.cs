@@ -97,7 +97,7 @@ namespace DPGSalesClient.Controllers
      .Where(y => !ids.Contains(y.Division))          // ❌ exclude these IDs
     .Select(y => new LeadViewModel.LeadViewItemModel
     {
-        LeadID = y.CRMLeadID,
+        //LeadID = y.CRMLeadID,
         BusineeSegment = y.BusinessSegment,
         CustomerName = y.AccountName,
         ProjectName = y.ProjectName,
